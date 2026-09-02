@@ -1,0 +1,5 @@
+[functions.push-gateway]
+verify_jwt = false
+
+[functions.background-tick]
+verify_jwt = false

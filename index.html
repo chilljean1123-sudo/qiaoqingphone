@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F2F2F7">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
 <title>AI 小手机</title>
 <style>
   /* ============ 基础 ============ */
@@ -1311,6 +1315,28 @@
   .btn-success:active { opacity: 0.85; transform: scale(0.99); }
   .btn-success svg { stroke: #FFFFFF; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
+  /* ============ PWA / 后台推送 ============ */
+  .push-status-card {
+    margin: 12px 16px 20px;
+    padding: 16px;
+    border-radius: 14px;
+    background: #FFFFFF;
+  }
+  .push-status-line { display: flex; align-items: flex-start; gap: 10px; }
+  .push-status-dot {
+    width: 10px; height: 10px; margin-top: 5px;
+    border-radius: 50%; background: #FF9F0A; flex-shrink: 0;
+  }
+  .push-status-dot.on { background: #34C759; }
+  .push-status-dot.off { background: #8E8E93; }
+  .push-status-title { font-size: 16px; font-weight: 600; }
+  .push-status-detail { margin-top: 3px; color: #8E8E93; font-size: 12px; line-height: 1.45; }
+  .push-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .push-actions .btn { margin: 0; font-size: 14px; padding: 11px 8px; }
+  .push-secret { -webkit-text-security: disc; }
+  .push-note { padding: 8px 20px 18px; color: #8E8E93; font-size: 12px; line-height: 1.55; }
+  .push-danger { margin: 0 16px 24px; width: calc(100% - 32px); }
+
   /* 生图测试结果 */
   .test-result {
     margin: 0 16px 16px;
@@ -1401,7 +1427,7 @@
 
       <div class="section">
         <div class="list with-icons">
-          <div class="list-item" onclick="nav.go('pushSettings')">
+          <div class="list-item" onclick="nav.go('pushSettings');Push.render()">
             <div class="item-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -1409,6 +1435,7 @@
               </svg>
             </div>
             <span class="list-item-label">后台消息推送</span>
+            <span class="list-item-value" id="settingsPushValue">未开启</span>
             <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
           </div>
           <div class="list-item" onclick="nav.go('themeSettings')">
@@ -1594,14 +1621,61 @@
       <div class="nav-title">后台消息推送</div>
     </div>
     <div class="content">
-      <div class="empty" style="padding-top:120px">
-        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-        </svg>
-        <div class="empty-title">后台消息推送</div>
-        <div class="empty-sub">待补充内容</div>
+      <div class="push-status-card">
+        <div class="push-status-line">
+          <span class="push-status-dot off" id="pushStatusDot"></span>
+          <div>
+            <div class="push-status-title" id="pushStatusTitle">未开启</div>
+            <div class="push-status-detail" id="pushStatusDetail">正在检查当前环境</div>
+          </div>
+        </div>
+        <div class="push-actions">
+          <button class="btn" id="pushEnableBtn" onclick="Push.enable()">开启系统通知</button>
+          <button class="btn secondary" id="pushTestBtn" onclick="Push.test()">测试通知</button>
+        </div>
       </div>
+
+      <div class="section-title">Supabase Web Push</div>
+      <div class="card">
+        <div class="card-row">
+          <div class="card-label">Supabase Project URL</div>
+          <input class="card-input" id="pushSupabaseUrl" placeholder="https://xxxx.supabase.co" autocapitalize="off" spellcheck="false">
+        </div>
+        <div class="card-row">
+          <div class="card-label">Publishable / anon key</div>
+          <input class="card-input push-secret" id="pushSupabaseAnonKey" placeholder="sb_publishable_... 或 eyJ..." autocapitalize="off" spellcheck="false">
+        </div>
+        <div class="card-row">
+          <div class="card-label">VAPID Public Key</div>
+          <textarea class="card-textarea push-secret" id="pushVapidPublicKey" style="min-height:76px" placeholder="B..."></textarea>
+        </div>
+      </div>
+      <div style="padding:12px 16px 20px">
+        <button class="btn-success" id="pushSaveBtn" onclick="Push.saveSettings()">保存推送配置</button>
+      </div>
+
+      <div class="section-title">角色主动消息</div>
+      <div class="switch-card">
+        <div class="icon-box">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="info">
+          <div class="name">退出后角色仍可找我</div>
+          <div class="sub">由 Supabase Edge Function 在后台生成并推送</div>
+        </div>
+        <div class="switch" id="pushAutoSwitch" onclick="Push.toggleAuto()"></div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="card-row">
+          <div class="card-label">随机间隔（分钟）</div>
+          <div class="card-grid-2">
+            <input class="card-input" id="pushMinMinutes" type="number" min="15" max="10080" value="180" placeholder="最短">
+            <input class="card-input" id="pushMaxMinutes" type="number" min="15" max="10080" value="360" placeholder="最长">
+          </div>
+        </div>
+      </div>
+      <div class="push-note">iPhone 需要先把 HTTPS 网站“添加到主屏幕”，再从桌面图标打开并开启通知。角色设定和最近聊天会同步到你自己的 Supabase，后台 AI 密钥只放在 Edge Function Secrets，不会写进网页或 GitHub。</div>
+      <button class="btn danger push-danger" id="pushDisableBtn" onclick="Push.disable()">关闭并取消订阅</button>
     </div>
   </div>
 
@@ -1938,10 +2012,13 @@ const Store = {
     // 补齐默认字段
     const d = this.defaults();
     for (const k in d) if (!(k in this.data)) this.data[k] = d[k];
+    this.data.imgApi = { ...d.imgApi, ...(this.data.imgApi || {}) };
+    this.data.notificationSettings = { ...d.notificationSettings, ...(this.data.notificationSettings || {}) };
   },
   save() {
     try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); }
     catch (e) { UI.toast('保存失败：存储空间不足'); }
+    if (typeof Push !== 'undefined') Push.scheduleSync();
   },
   defaults() {
     return {
@@ -1960,6 +2037,18 @@ const Store = {
         size: 'auto',
         quality: 'auto',
         extraPrompt: ''
+      },
+      notificationSettings: {
+        enabled: false,
+        supabaseUrl: '',
+        supabaseAnonKey: '',
+        vapidPublicKey: 'BDteq7QAVZbdmyHbY0_7-aGiGJlYepvdogl-vU3PZsXZwqWPCnN1qB4RFcGSfWRreLNy1ieelrN4DQLC916ATWc',
+        deviceId: '',
+        deviceSecret: '',
+        autoMessage: false,
+        minMinutes: 180,
+        maxMinutes: 360,
+        lastSyncAt: 0
       }
     };
   },
@@ -2081,6 +2170,287 @@ const nav = {
 };
 
 /* ============================================================
+   PWA / iOS Web Push
+============================================================ */
+const Push = {
+  syncTimer: null,
+  cfg() { return Store.data.notificationSettings; },
+  baseUrl() { return String(this.cfg().supabaseUrl || '').trim().replace(/\/+$/, ''); },
+  randomHex(bytes = 16) {
+    const values = new Uint8Array(bytes);
+    crypto.getRandomValues(values);
+    return Array.from(values, value => value.toString(16).padStart(2, '0')).join('');
+  },
+  ensureIdentity() {
+    const p = this.cfg();
+    if (!p.deviceId) p.deviceId = 'phone_' + this.randomHex(12);
+    if (!p.deviceSecret) p.deviceSecret = this.randomHex(24);
+  },
+  isStandalone() {
+    return window.matchMedia?.('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  },
+  isSupported() {
+    return !!(window.isSecureContext && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window);
+  },
+  isConfigured() {
+    const p = this.cfg();
+    return !!(this.baseUrl() && p.supabaseAnonKey && p.vapidPublicKey);
+  },
+  status() {
+    const p = this.cfg();
+    if (location.protocol === 'file:' || !window.isSecureContext) return { title: '需要 HTTPS', detail: '当前页面不是安全网站，暂时不能注册后台通知。', tone: 'off' };
+    if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return { title: '当前环境不支持', detail: '这个浏览器没有可用的 Web Push。', tone: 'off' };
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent) && !this.isStandalone()) return { title: '请先添加到主屏幕', detail: 'iPhone 必须从桌面图标打开小手机后，才能请求通知权限。', tone: 'warn' };
+    if (Notification.permission === 'denied') return { title: '通知已被拒绝', detail: '请到 iPhone“设置 → 通知”里重新允许。', tone: 'off' };
+    if (Notification.permission === 'granted' && p.enabled) return { title: '后台通知已开启', detail: '退出小手机后，通知可以送到锁屏和通知中心。', tone: 'on' };
+    if (!this.isConfigured()) return { title: '还差 Supabase 配置', detail: '填写 Project URL 和 Publishable / anon key 后即可开启。', tone: 'warn' };
+    return { title: '可以开启通知', detail: '点击“开启系统通知”，完成当前设备订阅。', tone: 'warn' };
+  },
+  render() {
+    const p = this.cfg();
+    const set = (id, value) => { const el = document.getElementById(id); if (el) el.value = value ?? ''; };
+    set('pushSupabaseUrl', p.supabaseUrl);
+    set('pushSupabaseAnonKey', p.supabaseAnonKey);
+    set('pushVapidPublicKey', p.vapidPublicKey);
+    set('pushMinMinutes', Math.max(15, Number(p.minMinutes) || 180));
+    set('pushMaxMinutes', Math.max(15, Number(p.maxMinutes) || 360));
+    document.getElementById('pushAutoSwitch')?.classList.toggle('on', !!p.autoMessage);
+    this.refreshStatus();
+  },
+  refreshStatus() {
+    const status = this.status();
+    const dot = document.getElementById('pushStatusDot');
+    if (dot) dot.className = 'push-status-dot ' + status.tone;
+    const title = document.getElementById('pushStatusTitle');
+    const detail = document.getElementById('pushStatusDetail');
+    if (title) title.textContent = status.title;
+    if (detail) detail.textContent = status.detail;
+    const enable = document.getElementById('pushEnableBtn');
+    if (enable) enable.textContent = this.cfg().enabled ? '重新订阅' : '开启系统通知';
+    const summary = document.getElementById('settingsPushValue');
+    if (summary) summary.textContent = this.cfg().enabled && ('Notification' in window) && Notification.permission === 'granted' ? '已开启' : '未开启';
+  },
+  readForm() {
+    const p = this.cfg();
+    const value = id => String(document.getElementById(id)?.value || '').trim();
+    p.supabaseUrl = value('pushSupabaseUrl');
+    p.supabaseAnonKey = value('pushSupabaseAnonKey');
+    p.vapidPublicKey = value('pushVapidPublicKey');
+    p.minMinutes = Math.max(15, Math.min(10080, Number(value('pushMinMinutes')) || 180));
+    p.maxMinutes = Math.max(p.minMinutes, Math.min(10080, Number(value('pushMaxMinutes')) || 360));
+    this.ensureIdentity();
+    return p;
+  },
+  toggleAuto() {
+    const p = this.cfg();
+    p.autoMessage = !p.autoMessage;
+    document.getElementById('pushAutoSwitch')?.classList.toggle('on', p.autoMessage);
+  },
+  async saveSettings() {
+    const p = this.readForm();
+    Store.save();
+    if (p.enabled && this.isConfigured()) {
+      try { await this.sync(); UI.toast('推送配置已保存并同步'); }
+      catch (e) { UI.toast('已保存，但同步失败：' + (e.message || e), 3600); }
+    } else UI.toast('推送配置已保存');
+    this.refreshStatus();
+  },
+  toApplicationKey(key) {
+    const padding = '='.repeat((4 - key.length % 4) % 4);
+    const raw = atob((key + padding).replace(/-/g, '+').replace(/_/g, '/'));
+    return Uint8Array.from(raw, char => char.charCodeAt(0));
+  },
+  async registerServiceWorker() {
+    if (!window.isSecureContext || !('serviceWorker' in navigator)) return null;
+    return navigator.serviceWorker.register('./sw.js', { scope: './' });
+  },
+  async gateway(action, payload = {}) {
+    const p = this.cfg();
+    if (!this.baseUrl() || !p.supabaseAnonKey) throw new Error('请先填写 Supabase URL 和 Publishable / anon key');
+    this.ensureIdentity();
+    const headers = { 'Content-Type': 'application/json', apikey: p.supabaseAnonKey };
+    if (p.supabaseAnonKey.startsWith('eyJ')) headers.Authorization = 'Bearer ' + p.supabaseAnonKey;
+    const response = await fetch(this.baseUrl() + '/functions/v1/push-gateway', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ action, deviceId: p.deviceId, deviceSecret: p.deviceSecret, ...payload })
+    });
+    let result = {};
+    try { result = await response.json(); } catch (_) {}
+    if (!response.ok || result.error) throw new Error(result.error || ('HTTP ' + response.status));
+    return result;
+  },
+  prefs() {
+    const p = this.cfg();
+    return {
+      autoMessage: !!p.autoMessage,
+      minMinutes: Math.max(15, Number(p.minMinutes) || 180),
+      maxMinutes: Math.max(Math.max(15, Number(p.minMinutes) || 180), Number(p.maxMinutes) || 360)
+    };
+  },
+  snapshot() {
+    const characters = Store.data.characters.map(character => ({
+      id: character.id,
+      name: character.name || '',
+      notes: character.notes || '',
+      persona: character.persona || '',
+      worldBooks: (typeof WB !== 'undefined' ? WB.getApplicableForCharacter(character) : [])
+        .map(book => ({ name: book.name || '', content: book.content || '' }))
+    }));
+    const chats = {};
+    characters.forEach(character => {
+      chats[character.id] = (Store.data.chats[character.id] || []).slice(-36).map(message => ({
+        role: message.role,
+        type: message.type || 'text',
+        content: message.content || '',
+        timestamp: message.timestamp || 0
+      }));
+    });
+    return { user: { name: Store.data.userName || '用户' }, characters, chats, updatedAt: Date.now() };
+  },
+  scheduleSync() {
+    if (!Store.data?.notificationSettings?.enabled || !this.isConfigured()) return;
+    clearTimeout(this.syncTimer);
+    this.syncTimer = setTimeout(() => this.sync().catch(error => console.warn('push sync failed', error)), 1800);
+  },
+  async sync() {
+    const p = this.cfg();
+    if (!p.enabled || !this.isConfigured()) return false;
+    await this.gateway('sync', { prefs: this.prefs(), snapshot: this.snapshot() });
+    p.lastSyncAt = Date.now();
+    localStorage.setItem(Store.KEY, JSON.stringify(Store.data));
+    return true;
+  },
+  setBusy(busy) {
+    ['pushEnableBtn', 'pushTestBtn', 'pushSaveBtn', 'pushDisableBtn'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = busy;
+    });
+  },
+  async enable() {
+    try {
+      this.setBusy(true);
+      this.readForm();
+      Store.save();
+      if (!this.isSupported()) throw new Error(this.status().detail);
+      if (/iPhone|iPad|iPod/i.test(navigator.userAgent) && !this.isStandalone()) throw new Error('请先添加到主屏幕，再从桌面图标打开');
+      if (!this.isConfigured()) throw new Error('请先填写完整的 Supabase 推送配置');
+      const registration = await this.registerServiceWorker();
+      if (!registration) throw new Error('Service Worker 注册失败');
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') throw new Error('没有获得系统通知权限');
+      let subscription = await registration.pushManager.getSubscription();
+      if (subscription) {
+        const currentKey = subscription.options?.applicationServerKey;
+        if (currentKey && btoa(String.fromCharCode(...new Uint8Array(currentKey))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '') !== this.cfg().vapidPublicKey.replace(/=+$/, '')) {
+          await subscription.unsubscribe();
+          subscription = null;
+        }
+        if (!subscription) await registration.update();
+      }
+      if (!subscription) subscription = await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: this.toApplicationKey(this.cfg().vapidPublicKey) });
+      this.cfg().enabled = true;
+      await this.gateway('register', { subscription: subscription.toJSON(), prefs: this.prefs(), snapshot: this.snapshot() });
+      this.cfg().lastSyncAt = Date.now();
+      localStorage.setItem(Store.KEY, JSON.stringify(Store.data));
+      UI.toast('系统通知已开启');
+    } catch (e) {
+      this.cfg().enabled = false;
+      localStorage.setItem(Store.KEY, JSON.stringify(Store.data));
+      UI.toast(e.message || '开启失败', 4200);
+    } finally {
+      this.setBusy(false);
+      this.refreshStatus();
+    }
+  },
+  async test() {
+    try {
+      this.setBusy(true);
+      if (!this.cfg().enabled || Notification.permission !== 'granted') throw new Error('请先开启系统通知');
+      await this.sync();
+      await this.gateway('test');
+      UI.toast('测试通知已发送');
+    } catch (e) { UI.toast(e.message || '测试失败', 3800); }
+    finally { this.setBusy(false); }
+  },
+  async disable(silent = false) {
+    try {
+      this.setBusy(true);
+      const registration = await navigator.serviceWorker?.getRegistration('./');
+      const subscription = await registration?.pushManager?.getSubscription();
+      try { if (this.isConfigured() && this.cfg().deviceId) await this.gateway('disable'); } catch (_) {}
+      await subscription?.unsubscribe();
+      this.cfg().enabled = false;
+      localStorage.setItem(Store.KEY, JSON.stringify(Store.data));
+      if (!silent) UI.toast('通知已关闭');
+    } finally {
+      this.setBusy(false);
+      this.refreshStatus();
+    }
+  },
+  injectMessages(rows) {
+    let changed = false;
+    const ackIds = [];
+    for (const row of rows || []) {
+      const character = Store.data.characters.find(item => String(item.id) === String(row.char_id));
+      if (!character || !row.id) continue;
+      const list = Store.data.chats[character.id] = Store.data.chats[character.id] || [];
+      if (!list.some(message => message.backgroundSourceId === row.id)) {
+        list.push({ role: 'assistant', type: 'text', content: String(row.content || ''), timestamp: Date.parse(row.created_at || '') || Date.now(), backgroundSourceId: row.id });
+        changed = true;
+      }
+      ackIds.push(row.id);
+    }
+    if (changed) {
+      localStorage.setItem(Store.KEY, JSON.stringify(Store.data));
+      if (Msg.currentTab === 'chats') Msg.renderChats();
+      if (Chat.currentId) Chat.render();
+    }
+    return ackIds;
+  },
+  async pull() {
+    if (!this.cfg().enabled || !this.isConfigured()) return [];
+    const result = await this.gateway('pull');
+    const rows = Array.isArray(result.messages) ? result.messages : [];
+    const ids = this.injectMessages(rows);
+    if (ids.length) await this.gateway('ack', { messageIds: ids });
+    return rows;
+  },
+  openChatFromUrl() {
+    const url = new URL(location.href);
+    const characterId = url.searchParams.get('chat');
+    if (!characterId || !Store.data.characters.some(item => String(item.id) === characterId)) return;
+    url.searchParams.delete('chat');
+    history.replaceState(null, '', url.pathname + url.search + url.hash);
+    nav.go('messaging');
+    Msg.showTab('chats');
+    Chat.open(characterId);
+  },
+  async init() {
+    try { await this.registerServiceWorker(); } catch (error) { console.warn('service worker register failed', error); }
+    if (this.cfg().enabled && this.isConfigured()) {
+      try { await this.pull(); } catch (error) { console.warn('background message pull failed', error); }
+    }
+    this.openChatFromUrl();
+    navigator.serviceWorker?.addEventListener('message', event => {
+      if (event.data?.type === 'PHONE_PUSH_RECEIVED' || event.data?.type === 'PHONE_PUSH_OPEN') {
+        this.pull().finally(() => {
+          if (event.data?.charId) {
+            const url = new URL(location.href);
+            url.searchParams.set('chat', event.data.charId);
+            history.replaceState(null, '', url.toString());
+            this.openChatFromUrl();
+          }
+        });
+      }
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') this.pull().catch(() => {});
+    });
+  }
+};
+
+/* ============================================================
    设置 / API
 ============================================================ */
 const Settings = {
@@ -2091,6 +2461,7 @@ const Settings = {
       const active = API.getActive();
       apiVal.textContent = active ? active.name : (Store.data.apis.length ? '未选择' : '未配置');
     }
+    Push.refreshStatus();
   },
   editUserName() {
     UI.prompt('修改昵称', '', Store.data.userName, v => {
@@ -2098,7 +2469,8 @@ const Settings = {
     });
   },
   clearAllData() {
-    UI.confirm('清空所有数据', '所有 API、角色、世界书、聊天记录、表情包都将被删除，且不可恢复。', () => {
+    UI.confirm('清空所有数据', '所有 API、角色、世界书、聊天记录、表情包都将被删除，且不可恢复。', async () => {
+      await Push.disable(true);
       localStorage.removeItem(Store.KEY);
       Store.load();
       this.refresh();
@@ -3214,6 +3586,7 @@ function updateHomeTime() {
 document.addEventListener('DOMContentLoaded', () => {
   Store.load();
   Settings.refresh();
+  Push.init();
   updateHomeTime();
   setInterval(updateHomeTime, 1000 * 30);
 

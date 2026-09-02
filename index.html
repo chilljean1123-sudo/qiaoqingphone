@@ -3792,7 +3792,7 @@ const Push = {
       this.refreshStatus();
     }
   },
-  injectMessages(rows) {
+  async injectMessages(rows) {
     let changed = false;
     const ackIds = [];
     for (const row of rows || []) {
@@ -3800,7 +3800,14 @@ const Push = {
       if (!character || !row.id) continue;
       const list = Store.data.chats[character.id] = Store.data.chats[character.id] || [];
       if (!list.some(message => message.backgroundSourceId === row.id)) {
-        list.push({ role: 'assistant', type: 'text', content: String(row.content || ''), timestamp: Date.parse(row.created_at || '') || Date.now(), backgroundSourceId: row.id });
+        const raw = String(row.content || '');
+        if (raw.startsWith('__CHAT_RELAY__')) {
+          const before = list.length;
+          await Chat.deliverAssistantReply(character.id, raw.slice('__CHAT_RELAY__'.length));
+          list.slice(before).forEach(message => { message.backgroundSourceId = row.id; });
+        } else {
+          list.push({ role: 'assistant', type: 'text', content: raw, timestamp: Date.parse(row.created_at || '') || Date.now(), backgroundSourceId: row.id });
+        }
         changed = true;
       }
       ackIds.push(row.id);
@@ -3816,9 +3823,20 @@ const Push = {
     if (!this.cfg().enabled || !this.isConfigured()) return [];
     const result = await this.gateway('pull');
     const rows = Array.isArray(result.messages) ? result.messages : [];
-    const ids = this.injectMessages(rows);
+    const ids = await this.injectMessages(rows);
     if (ids.length) await this.gateway('ack', { messageIds: ids });
     return rows;
+  },
+  canRelayChat() {
+    return !!(this.cfg().enabled && this.isConfigured() && this.cfg().deviceId);
+  },
+  async waitForChat(charId) {
+    for (let attempt = 0; attempt < 30; attempt++) {
+      if (document.visibilityState !== 'visible') return;
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      const rows = await this.pull();
+      if (rows.some(row => String(row.char_id) === String(charId) && String(row.content || '').startsWith('__CHAT_RELAY__'))) return;
+    }
   },
   openChatFromUrl() {
     const url = new URL(location.href);
@@ -6627,11 +6645,27 @@ const Chat = {
     this.loading = true;
     this.render();
     try {
-      const reply = await API.chat(messages);
-      await this.deliverAssistantReply(this.currentId, reply);
+      if (Push.canRelayChat()) {
+        await Push.gateway('chat-submit', {
+          apiUrl: api.url,
+          apiKey: api.key,
+          model: api.model,
+          charId: ch.id,
+          charName: ch.name,
+          messages
+        });
+        Push.waitForChat(ch.id).catch(() => {});
+      } else {
+        const reply = await API.chat(messages);
+        await this.deliverAssistantReply(this.currentId, reply);
+      }
     } catch (e) {
-      const arr = Store.data.chats[this.currentId];
-      arr.push({ role: 'assistant', type: 'text', content: '[出错] ' + (e.message || e), timestamp: Date.now(), isError: true });
+      if (Push.canRelayChat()) {
+        UI.toast('消息已交给后台，回复完成后会通知你');
+      } else {
+        const arr = Store.data.chats[this.currentId];
+        arr.push({ role: 'assistant', type: 'text', content: '[出错] ' + (e.message || e), timestamp: Date.now(), isError: true });
+      }
     } finally {
       this.loading = false;
       this.render();

@@ -2319,6 +2319,72 @@
     box-shadow: none !important;
   }
 
+
+  /* ============ 世界书工作台 ============ */
+  #worldbook,#wbEdit,#wbEntryEdit { background:#f2f0eb; color:#292722; }
+  .wb-content { padding:18px 15px 34px; }
+  .wb-hero { padding:22px 20px; border-radius:26px; color:#fff; background:linear-gradient(145deg,#37342e,#686156); box-shadow:0 16px 35px rgba(48,43,35,.18); }
+  .wb-hero-kicker { font-size:11px; letter-spacing:.18em; opacity:.65; }
+  .wb-hero-title { margin-top:8px; font-size:27px; font-weight:760; }
+  .wb-hero-meta { margin-top:8px; font-size:12px; opacity:.7; }
+  .wb-shelf { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; margin-top:17px; }
+  .wb-book-card { position:relative; min-height:190px; padding:18px 16px 15px; border:0; border-radius:23px; text-align:left; background:#fff; box-shadow:0 9px 24px rgba(67,60,49,.08); overflow:hidden; }
+  .wb-book-card:before { content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--wb-accent,#918674); }
+  .wb-book-icon { width:48px; height:55px; display:grid; place-items:center; border-radius:5px 13px 13px 5px; color:#fff; background:var(--wb-accent,#918674); box-shadow:5px 6px 13px rgba(0,0,0,.12); }
+  .wb-book-icon svg { width:25px; height:25px; fill:none; stroke:currentColor; stroke-width:1.7; }
+  .wb-book-name { display:block; margin-top:17px; font-size:16px; font-weight:720; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .wb-book-desc { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:34px; margin-top:5px; color:#8a857c; font-size:11px; line-height:1.5; }
+  .wb-book-foot { display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; }
+  .wb-pill { display:inline-flex; align-items:center; height:22px; padding:0 9px; border-radius:20px; background:#f0eee9; color:#716c63; font-size:9px; }
+  .wb-new-card { border:1.5px dashed #cfc9be; background:rgba(255,255,255,.42); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#8e887f; }
+  .wb-new-plus { width:54px; height:54px; display:grid; place-items:center; border-radius:50%; background:#fff; font-size:30px; font-weight:250; box-shadow:0 7px 18px rgba(67,60,49,.1); }
+  .wb-new-label { margin-top:13px; font-size:13px; font-weight:650; }
+  .wb-editor-body { padding:15px 15px 110px; overflow-y:auto; }
+  .wb-cover-card { padding:18px; border-radius:25px; background:linear-gradient(145deg,#474138,#776e60); color:#fff; }
+  .wb-title-input,.wb-desc-input { width:100%; border:0; outline:0; color:#fff; background:transparent; }
+  .wb-title-input { font-size:24px; font-weight:760; }
+  .wb-title-input::placeholder,.wb-desc-input::placeholder { color:rgba(255,255,255,.45); }
+  .wb-desc-input { height:60px; margin-top:8px; font-size:12px; line-height:1.5; }
+  .wb-panel { margin-top:13px; padding:17px; border-radius:22px; background:#fff; box-shadow:0 8px 24px rgba(67,60,49,.06); }
+  .wb-panel-title { margin-bottom:12px; color:#777168; font-size:10px; font-weight:720; letter-spacing:.12em; }
+  .wb-scope { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+  .wb-scope button { height:44px; border:0; border-radius:15px; background:#f1efea; color:#777168; font-size:12px; }
+  .wb-scope button.on { background:#393630; color:#fff; }
+  .wb-char-chips { display:flex; gap:8px; flex-wrap:wrap; margin-top:13px; }
+  .wb-char-chip { display:flex; align-items:center; gap:6px; height:34px; padding:0 11px 0 6px; border:1px solid #e4e0d8; border-radius:18px; background:#fff; color:#777168; font-size:11px; }
+  .wb-char-chip.on { color:#fff; background:#817766; border-color:#817766; }
+  .wb-char-chip .avatar { width:23px!important; height:23px!important; font-size:9px!important; }
+  .wb-entry-head { display:flex; align-items:center; justify-content:space-between; margin:21px 3px 10px; }
+  .wb-entry-head strong { font-size:17px; }
+  .wb-entry-head button { border:0; background:none; color:#6f6659; font-size:12px; font-weight:650; }
+  .wb-entry-card { width:100%; display:flex; gap:12px; align-items:flex-start; margin-bottom:10px; padding:15px; border:0; border-radius:20px; background:#fff; text-align:left; box-shadow:0 7px 19px rgba(67,60,49,.055); }
+  .wb-entry-mark { flex:none; width:39px; height:39px; display:grid; place-items:center; border-radius:13px; background:#eeeae2; color:#6f6659; }
+  .wb-entry-mark svg { width:21px; height:21px; fill:none; stroke:currentColor; stroke-width:1.8; }
+  .wb-entry-copy { min-width:0; flex:1; }
+  .wb-entry-name { font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .wb-entry-preview { margin-top:4px; color:#99938a; font-size:10px; line-height:1.45; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .wb-entry-tags { display:flex; gap:5px; margin-top:8px; }
+  .wb-entry-toggle { flex:none; width:36px; height:22px; padding:3px; border-radius:12px; background:#d8d5cf; }
+  .wb-entry-toggle:after { content:""; display:block; width:16px; height:16px; border-radius:50%; background:#fff; transition:.2s; }
+  .wb-entry-toggle.on { background:#6f7d65; }
+  .wb-entry-toggle.on:after { transform:translateX(14px); }
+  .wb-empty-entries { padding:30px 15px; border:1px dashed #d2cdc3; border-radius:20px; color:#99938a; text-align:center; font-size:11px; }
+  .wb-bottom-bar { position:absolute; z-index:4; left:15px; right:15px; bottom:calc(16px + env(safe-area-inset-bottom,0px)); display:flex; gap:9px; }
+  .wb-bottom-bar button { height:49px; border:0; border-radius:17px; font-size:13px; font-weight:700; box-shadow:0 9px 22px rgba(45,41,35,.18); }
+  .wb-bottom-save { flex:1; color:#fff; background:#302e29; }
+  .wb-bottom-delete { width:49px; color:#d5534d; background:#fff; }
+  .wb-entry-form { padding:15px 15px 110px; overflow-y:auto; }
+  .wb-form-card { margin-bottom:12px; padding:16px; border-radius:21px; background:#fff; }
+  .wb-field { display:block; margin-bottom:14px; }
+  .wb-field:last-child { margin-bottom:0; }
+  .wb-field-label { display:flex; align-items:center; justify-content:space-between; margin-bottom:7px; color:#767168; font-size:10px; font-weight:680; }
+  .wb-field input,.wb-field textarea,.wb-field select { width:100%; border:0; outline:0; border-radius:14px; background:#f2f1ee; font-size:12px; padding:12px; }
+  .wb-field textarea { min-height:90px; resize:vertical; line-height:1.55; }
+  .wb-field textarea.wb-content-area { min-height:210px; }
+  .wb-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .wb-check-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .wb-check { height:35px; padding:0 12px; border:0; border-radius:12px; background:#efede8; color:#7d776e; font-size:10px; }
+  .wb-check.on { background:#6f7d65; color:#fff; }
 </style>
 </head>
 <body>
@@ -3061,61 +3127,66 @@
   <!-- ========== 世界书 ========== -->
   <div class="screen hidden" id="worldbook">
     <div class="nav-bar">
-      <div class="nav-back" onclick="nav.back()">
-        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>主屏</span>
-      </div>
+      <div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>主屏</span></div>
       <div class="nav-title">世界书</div>
-      <div class="nav-action" onclick="WB.openEditor()">
-        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </div>
+      <div class="nav-action" onclick="WB.openEditor()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
     </div>
-    <div class="content" id="wbListContent"></div>
+    <div class="content wb-content" id="wbListContent"></div>
   </div>
 
-  <!-- ========== 世界书编辑 ========== -->
   <div class="screen hidden" id="wbEdit">
     <div class="nav-bar">
-      <div class="nav-back" onclick="nav.back()">
-        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>世界书</span>
-      </div>
-      <div class="nav-title" id="wbEditTitle">新建世界书</div>
-      <div class="nav-action" onclick="WB.save()">保存</div>
+      <div class="nav-back" onclick="WB.cancelBook()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>书架</span></div>
+      <div class="nav-title" id="wbEditTitle">新世界书</div>
+      <div class="nav-action" onclick="WB.saveBook(true)">完成</div>
     </div>
-    <div class="content">
-      <div class="section">
-        <div class="section-title">基本</div>
-        <div class="form">
-          <div class="form-field">
-            <label>名称</label>
-            <input id="wbName" placeholder="例如：奇幻世界设定">
-          </div>
-          <div class="form-field">
-            <label>分组</label>
-            <input id="wbGroup" placeholder="选填，例如：世界观">
-          </div>
-          <div class="form-field">
-            <label>全局生效</label>
-            <div style="flex:1;display:flex;justify-content:flex-end">
-              <div class="switch" id="wbGlobalSwitch" onclick="WB.toggleGlobal()"></div>
-            </div>
-          </div>
-        </div>
-        <div class="section-hint">开启后此世界书将对所有角色自动生效；关闭后需在角色编辑中手动勾选。</div>
+    <div class="wb-editor-body">
+      <div class="wb-cover-card">
+        <input class="wb-title-input" id="wbName" maxlength="60" placeholder="给世界书起个名字">
+        <textarea class="wb-desc-input" id="wbDescription" maxlength="240" placeholder="写一句简介，方便以后快速找到"></textarea>
       </div>
-
-      <div class="section">
-        <div class="section-title">守则内容</div>
-        <div class="form">
-          <div class="form-field column">
-            <textarea id="wbContent" placeholder="写下角色回复时必须遵守的世界观、规则、设定……" style="min-height:200px"></textarea>
-          </div>
-        </div>
+      <div class="wb-panel">
+        <div class="wb-panel-title">生效范围</div>
+        <div class="wb-scope"><button id="wbScopeGlobal" onclick="WB.setScope(true)">全局生效</button><button id="wbScopeRole" onclick="WB.setScope(false)">角色绑定</button></div>
+        <div class="wb-char-chips" id="wbCharacterBindings"></div>
       </div>
-
-      <button class="btn danger btn-block" id="wbDeleteBtn" onclick="WB.delete()" style="display:none">删除该世界书</button>
+      <div class="wb-entry-head"><strong>篇章</strong><button onclick="WB.openEntry()">＋ 新建篇章</button></div>
+      <div id="wbEntryList"></div>
     </div>
+    <div class="wb-bottom-bar"><button class="wb-bottom-delete" id="wbDeleteBtn" onclick="WB.delete()" aria-label="删除">⌫</button><button class="wb-bottom-save" onclick="WB.saveBook(true)">保存世界书</button></div>
   </div>
 
+  <div class="screen hidden" id="wbEntryEdit">
+    <div class="nav-bar">
+      <div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>世界书</span></div>
+      <div class="nav-title" id="wbEntryTitle">新建篇章</div>
+      <div class="nav-action" onclick="WB.saveEntry()">保存</div>
+    </div>
+    <div class="wb-entry-form">
+      <div class="wb-form-card">
+        <label class="wb-field"><span class="wb-field-label">篇章名称</span><input id="wbeName" maxlength="80" placeholder="例如：王城与魔法议会"></label>
+        <label class="wb-field"><span class="wb-field-label">备注</span><input id="wbeComment" maxlength="200" placeholder="这段设定的用途"></label>
+      </div>
+      <div class="wb-form-card">
+        <div class="wb-field"><span class="wb-field-label">触发方式</span><div class="wb-check-row"><button class="wb-check" id="wbeConstant" onclick="WB.toggleEntryFlag('constant')">常驻激活</button><button class="wb-check" id="wbeRegex" onclick="WB.toggleEntryFlag('regex')">使用正则</button><button class="wb-check" id="wbeProbabilityEnabled" onclick="WB.toggleEntryFlag('probabilityEnabled')">概率触发</button></div></div>
+        <label class="wb-field"><span class="wb-field-label">触发关键词</span><input id="wbeKeys" placeholder="魔法, 王城, 议会"></label>
+        <div class="wb-grid">
+          <label class="wb-field"><span class="wb-field-label">注入位置</span><select id="wbePosition"><option value="before">角色设定前</option><option value="after">角色设定后</option><option value="depth">按深度插入</option></select></label>
+          <label class="wb-field"><span class="wb-field-label">消息角色</span><select id="wbeRole"><option value="system">System</option><option value="user">User</option><option value="assistant">Assistant</option></select></label>
+        </div>
+        <div class="wb-grid">
+          <label class="wb-field"><span class="wb-field-label">注入深度</span><input id="wbeDepth" type="number" min="0" max="100" value="4"></label>
+          <label class="wb-field"><span class="wb-field-label">权重优先级</span><input id="wbeOrder" type="number" min="-9999" max="9999" value="50"></label>
+        </div>
+        <label class="wb-field" id="wbeProbabilityWrap"><span class="wb-field-label">触发概率 <span id="wbeProbabilityValue">100%</span></span><input id="wbeProbability" type="range" min="0" max="100" value="100" oninput="document.getElementById('wbeProbabilityValue').textContent=this.value+'%'"></label>
+      </div>
+      <div class="wb-form-card">
+        <label class="wb-field"><span class="wb-field-label">设定内容</span><textarea class="wb-content-area" id="wbeContent" placeholder="输入这篇世界书设定。触发后会作为背景信息注入角色对话。"></textarea></label>
+      </div>
+      <button class="btn danger btn-block" id="wbeDeleteBtn" onclick="WB.deleteEntry()" style="display:none">删除该篇章</button>
+    </div>
+    <div class="wb-bottom-bar"><button class="wb-bottom-save" onclick="WB.saveEntry()">保存篇章</button></div>
+  </div>
 
   <div class="moments-compose-overlay" id="momentsComposer" onclick="if(event.target===this)Moments.closeComposer()">
     <div class="moments-compose-card">
@@ -4911,104 +4982,148 @@ async function resizeImage(file, maxSize = 512) {
    世界书
 ============================================================ */
 const WB = {
-  editingId: null,
-  editing: null,
-  renderList() {
-    const c = document.getElementById('wbListContent');
-    if (!Store.data.worldBooks.length) {
-      c.innerHTML = `
-        <div class="empty">
-          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-          </svg>
-          <div class="empty-title">还没有世界书</div>
-          <div class="empty-sub">点击右上角 + 创建你的第一本世界书</div>
-        </div>`;
-      return;
-    }
-    // 按分组
-    const groups = {};
-    Store.data.worldBooks.forEach(w => {
-      const g = w.group || '未分组';
-      (groups[g] = groups[g] || []).push(w);
+  editingId:null, draft:null, entryIndex:-1, entryDraft:null,
+  colors:['#817766','#687468','#777083','#8b6e68','#6d7885'],
+  migrate(){
+    (Store.data.worldBooks||[]).forEach(book=>{
+      if(!Array.isArray(book.entries)){
+        book.entries=[];
+        if(String(book.content||'').trim()) book.entries.push({
+          id:Store.uid(),name:'主设定',comment:'由旧版世界书自动迁移',content:String(book.content||''),
+          enabled:true,constant:true,regex:false,keys:[],position:'after',depth:4,order:50,role:'system',probabilityEnabled:false,probability:100
+        });
+      }
+      if(!Array.isArray(book.characterIds)){
+        book.characterIds=Store.data.characters.filter(ch=>ch.worldBookIds?.includes(book.id)).map(ch=>ch.id);
+      }
+      if(!book.description) book.description='';
     });
-    let html = '';
-    Object.keys(groups).sort().forEach(g => {
-      html += `<div class="section"><div class="section-title">${escapeHtml(g)}</div><div class="list">`;
-      groups[g].forEach(w => {
-        html += `
-          <div class="list-item" onclick="WB.openEditor('${w.id}')">
-            <div class="list-item-column">
-              <div class="list-item-label">${escapeHtml(w.name)} ${w.isGlobal ? '<span class="badge green">全局</span>' : ''}</div>
-              <div class="list-item-sub">${escapeHtml((w.content || '').slice(0, 40) || '（空）')}</div>
-            </div>
-            <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
-          </div>`;
-      });
-      html += '</div></div>';
+  },
+  newEntry(){return {id:Store.uid(),name:'',comment:'',content:'',enabled:true,constant:false,regex:false,keys:[],position:'depth',depth:4,order:50,role:'system',probabilityEnabled:false,probability:100};},
+  renderList(){
+    this.migrate();
+    const box=document.getElementById('wbListContent'),books=Store.data.worldBooks||[];
+    const chapters=books.reduce((n,b)=>n+(b.entries?.length||0),0);
+    let html='<div class="wb-hero"><div class="wb-hero-kicker">WORLDBOOK LIBRARY</div><div class="wb-hero-title">世界由细节生长</div><div class="wb-hero-meta">'+books.length+' 本世界书 · '+chapters+' 个篇章</div></div><div class="wb-shelf">';
+    books.forEach((book,index)=>{
+      const bound=(book.characterIds||[]).map(id=>Store.data.characters.find(ch=>ch.id===id)?.name).filter(Boolean);
+      const scope=book.isGlobal?'全局':(bound.length?bound.slice(0,2).join('、'):'未绑定');
+      html+='<button class="wb-book-card" style="--wb-accent:'+this.colors[index%this.colors.length]+'" onclick="WB.openEditor(\''+book.id+'\')"><span class="wb-book-icon"><svg viewBox="0 0 24 24"><path d="M5 4.5A2.5 2.5 0 0 1 7.5 2H20v18H7.5A2.5 2.5 0 0 0 5 22Z"/><path d="M5 4.5V22M9 6h7M9 10h7"/></svg></span><span class="wb-book-name">'+escapeHtml(book.name||'未命名世界书')+'</span><span class="wb-book-desc">'+escapeHtml(book.description||'尚未写简介')+'</span><span class="wb-book-foot"><span class="wb-pill">'+scope+'</span><span class="wb-pill">'+(book.entries?.length||0)+' 篇</span></span></button>';
     });
-    c.innerHTML = html;
+    html+='<button class="wb-book-card wb-new-card" onclick="WB.openEditor()"><span class="wb-new-plus">＋</span><span class="wb-new-label">新建世界书</span></button></div>';
+    box.innerHTML=html;
   },
-  openEditor(id) {
-    this.editingId = id || null;
-    const item = id ? Store.data.worldBooks.find(w => w.id === id) : null;
-    this.editing = item ? { ...item } : { isGlobal: false };
-    document.getElementById('wbEditTitle').textContent = item ? '编辑世界书' : '新建世界书';
-    document.getElementById('wbName').value = item?.name || '';
-    document.getElementById('wbGroup').value = item?.group || '';
-    document.getElementById('wbContent').value = item?.content || '';
-    const sw = document.getElementById('wbGlobalSwitch');
-    sw.classList.toggle('on', !!this.editing.isGlobal);
-    document.getElementById('wbDeleteBtn').style.display = item ? 'block' : 'none';
-    nav.go('wbEdit');
+  openEditor(id){
+    this.migrate();this.editingId=id||null;
+    const source=id?Store.data.worldBooks.find(book=>book.id===id):null;
+    this.draft=source?JSON.parse(JSON.stringify(source)):{id:Store.uid(),name:'',description:'',group:'',isGlobal:true,characterIds:[],entries:[]};
+    document.getElementById('wbEditTitle').textContent=source?'编辑世界书':'新世界书';
+    document.getElementById('wbName').value=this.draft.name||'';
+    document.getElementById('wbDescription').value=this.draft.description||'';
+    document.getElementById('wbDeleteBtn').style.visibility=source?'visible':'hidden';
+    this.renderScope();this.renderEntries();nav.go('wbEdit');
   },
-  toggleGlobal() {
-    this.editing.isGlobal = !this.editing.isGlobal;
-    document.getElementById('wbGlobalSwitch').classList.toggle('on', this.editing.isGlobal);
+  cancelBook(){this.draft=null;this.editingId=null;nav.back();},
+  setScope(global){this.draft.isGlobal=!!global;this.renderScope();},
+  toggleCharacter(id){
+    const ids=this.draft.characterIds||(this.draft.characterIds=[]),at=ids.indexOf(id);
+    if(at>=0)ids.splice(at,1);else ids.push(id);
+    this.renderScope();
   },
-  save() {
-    const name = document.getElementById('wbName').value.trim();
-    const group = document.getElementById('wbGroup').value.trim();
-    const content = document.getElementById('wbContent').value.trim();
-    if (!name) { UI.toast('请填写名称'); return; }
-    if (!content) { UI.toast('请填写内容'); return; }
-    let item;
-    if (this.editingId) {
-      item = Store.data.worldBooks.find(w => w.id === this.editingId);
-    } else {
-      item = { id: Store.uid() };
-      Store.data.worldBooks.push(item);
-    }
-    item.name = name;
-    item.group = group;
-    item.content = content;
-    item.isGlobal = !!this.editing.isGlobal;
-    Store.save();
-    this.renderList();
-    nav.back();
-    UI.toast('已保存');
+  renderScope(){
+    if(!this.draft)return;
+    document.getElementById('wbScopeGlobal').classList.toggle('on',!!this.draft.isGlobal);
+    document.getElementById('wbScopeRole').classList.toggle('on',!this.draft.isGlobal);
+    const box=document.getElementById('wbCharacterBindings');
+    box.style.display=this.draft.isGlobal?'none':'flex';
+    box.innerHTML=Store.data.characters.map(ch=>'<button class="wb-char-chip '+((this.draft.characterIds||[]).includes(ch.id)?'on':'')+'" onclick="WB.toggleCharacter(\''+ch.id+'\')">'+renderAvatar(ch)+'<span>'+escapeHtml(ch.name)+'</span></button>').join('')||'<span style="font-size:11px;color:#999">还没有角色</span>';
   },
-  delete() {
-    if (!this.editingId) return;
-    UI.confirm('删除世界书', '此操作不可撤销。', () => {
-      Store.data.worldBooks = Store.data.worldBooks.filter(w => w.id !== this.editingId);
-      // 从角色绑定中移除
-      Store.data.characters.forEach(c => {
-        if (c.worldBookIds) c.worldBookIds = c.worldBookIds.filter(x => x !== this.editingId);
-      });
-      Store.save();
-      this.renderList();
-      nav.back();
-    }, { danger: true, okText: '删除' });
+  renderEntries(){
+    const box=document.getElementById('wbEntryList'),entries=this.draft?.entries||[];
+    if(!entries.length){box.innerHTML='<div class="wb-empty-entries">这本书还是空白的<br>点击“新建篇章”写下第一段设定</div>';return;}
+    box.innerHTML=entries.map((entry,index)=>{
+      const mode=entry.constant?'常驻':((entry.keys||[]).length?'关键词':'未设置触发');
+      return '<button class="wb-entry-card" onclick="WB.openEntry('+index+')"><span class="wb-entry-mark"><svg viewBox="0 0 24 24"><path d="M5 3h11a3 3 0 0 1 3 3v15H8a3 3 0 0 1-3-3Z"/><path d="M8 7h7M8 11h7"/></svg></span><span class="wb-entry-copy"><span class="wb-entry-name">'+escapeHtml(entry.name||'未命名篇章')+'</span><span class="wb-entry-preview">'+escapeHtml(entry.comment||entry.content||'尚未填写内容')+'</span><span class="wb-entry-tags"><span class="wb-pill">'+mode+'</span><span class="wb-pill">'+escapeHtml(entry.position==='before'?'设定前':entry.position==='after'?'设定后':'深度 '+(entry.depth??4))+'</span></span></span><span class="wb-entry-toggle '+(entry.enabled!==false?'on':'')+'" onclick="event.stopPropagation();WB.toggleEntry('+index+')"></span></button>';
+    }).join('');
   },
-  getApplicableForCharacter(char) {
-    const books = [];
-    Store.data.worldBooks.forEach(w => {
-      if (w.isGlobal) books.push(w);
-      else if (char?.worldBookIds?.includes(w.id)) books.push(w);
+  toggleEntry(index){const entry=this.draft.entries[index];entry.enabled=entry.enabled===false;this.renderEntries();},
+  saveBook(close){
+    if(!this.draft)return;
+    this.draft.name=document.getElementById('wbName').value.trim();
+    this.draft.description=document.getElementById('wbDescription').value.trim();
+    if(!this.draft.name){UI.toast('请填写世界书名称');return false;}
+    const existing=Store.data.worldBooks.findIndex(book=>book.id===this.draft.id);
+    const saved=JSON.parse(JSON.stringify(this.draft));
+    saved.content=this.compile(saved,null,true);
+    if(existing>=0)Store.data.worldBooks[existing]=saved;else Store.data.worldBooks.push(saved);
+    Store.data.characters.forEach(ch=>{
+      const ids=ch.worldBookIds||(ch.worldBookIds=[]),at=ids.indexOf(saved.id),bound=(saved.characterIds||[]).includes(ch.id);
+      if(bound&&at<0)ids.push(saved.id);if(!bound&&at>=0)ids.splice(at,1);
     });
-    return books;
+    Store.save();this.editingId=saved.id;this.draft=JSON.parse(JSON.stringify(saved));this.renderList();
+    if(close){nav.back();UI.toast('世界书已保存');}
+    return true;
+  },
+  openEntry(index=-1){
+    if(!this.draft)return;
+    this.entryIndex=index;this.entryDraft=index>=0?JSON.parse(JSON.stringify(this.draft.entries[index])):this.newEntry();
+    const e=this.entryDraft;
+    document.getElementById('wbEntryTitle').textContent=index>=0?'编辑篇章':'新建篇章';
+    document.getElementById('wbeName').value=e.name||'';
+    document.getElementById('wbeComment').value=e.comment||'';
+    document.getElementById('wbeKeys').value=(e.keys||[]).join(', ');
+    document.getElementById('wbePosition').value=e.position||'depth';
+    document.getElementById('wbeDepth').value=e.depth??4;
+    document.getElementById('wbeOrder').value=e.order??50;
+    document.getElementById('wbeRole').value=e.role||'system';
+    document.getElementById('wbeProbability').value=e.probability??100;
+    document.getElementById('wbeProbabilityValue').textContent=(e.probability??100)+'%';
+    document.getElementById('wbeContent').value=e.content||'';
+    document.getElementById('wbeDeleteBtn').style.display=index>=0?'block':'none';
+    this.renderEntryFlags();nav.go('wbEntryEdit');
+  },
+  toggleEntryFlag(key){this.entryDraft[key]=!this.entryDraft[key];this.renderEntryFlags();},
+  renderEntryFlags(){
+    ['constant','regex','probabilityEnabled'].forEach(key=>document.getElementById('wbe'+key[0].toUpperCase()+key.slice(1)).classList.toggle('on',!!this.entryDraft[key]));
+    document.getElementById('wbeProbabilityWrap').style.opacity=this.entryDraft.probabilityEnabled?'1':'.42';
+  },
+  saveEntry(){
+    const e=this.entryDraft;if(!e)return;
+    e.name=document.getElementById('wbeName').value.trim();
+    e.comment=document.getElementById('wbeComment').value.trim();
+    e.keys=document.getElementById('wbeKeys').value.split(/[,，\n]/).map(x=>x.trim()).filter(Boolean);
+    e.position=document.getElementById('wbePosition').value;e.depth=Math.max(0,Number(document.getElementById('wbeDepth').value)||0);
+    e.order=Number(document.getElementById('wbeOrder').value)||0;e.role=document.getElementById('wbeRole').value;
+    e.probability=Math.max(0,Math.min(100,Number(document.getElementById('wbeProbability').value)||0));
+    e.content=document.getElementById('wbeContent').value.trim();
+    if(!e.name){UI.toast('请填写篇章名称');return;}if(!e.content){UI.toast('请填写设定内容');return;}
+    if(this.entryIndex>=0)this.draft.entries[this.entryIndex]=e;else this.draft.entries.push(e);
+    this.renderEntries();nav.back();UI.toast('篇章已保存');
+  },
+  deleteEntry(){if(this.entryIndex<0)return;UI.confirm('删除篇章','将删除这段世界书设定。',()=>{this.draft.entries.splice(this.entryIndex,1);this.renderEntries();nav.back();},{danger:true,okText:'删除'});},
+  delete(){
+    if(!this.editingId)return;
+    UI.confirm('删除世界书','书内所有篇章也会一起删除。',()=>{
+      Store.data.worldBooks=Store.data.worldBooks.filter(book=>book.id!==this.editingId);
+      Store.data.characters.forEach(ch=>{ch.worldBookIds=(ch.worldBookIds||[]).filter(id=>id!==this.editingId);});
+      Store.save();this.renderList();this.draft=null;nav.back();
+    },{danger:true,okText:'删除'});
+  },
+  matches(entry,context){
+    if(entry.enabled===false)return false;
+    if(entry.probabilityEnabled&&Math.random()*100>Number(entry.probability??100))return false;
+    if(entry.constant)return true;
+    const keys=entry.keys||[];if(!keys.length)return false;
+    if(entry.regex){return keys.some(key=>{try{return new RegExp(key,'i').test(context);}catch(_){return false;}});}
+    const text=context.toLowerCase();return keys.some(key=>text.includes(String(key).toLowerCase()));
+  },
+  compile(book,char,all=false){
+    const recent=char?(Store.data.chats[char.id]||[]).slice(-20).map(m=>m.content||'').join('\n'):'';
+    return (book.entries||[]).filter(entry=>all||this.matches(entry,recent)).sort((a,b)=>(Number(b.order)||0)-(Number(a.order)||0)).map(entry=>entry.content).filter(Boolean).join('\n\n');
+  },
+  getApplicableForCharacter(char){
+    this.migrate();
+    return Store.data.worldBooks.filter(book=>book.isGlobal||(book.characterIds||[]).includes(char?.id)||char?.worldBookIds?.includes(book.id)).map(book=>({...book,content:this.compile(book,char)})).filter(book=>book.content);
   }
 };
 

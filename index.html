@@ -1563,7 +1563,7 @@
   .moments-camera,.moments-back { right:17px; top:17px; width:46px; height:46px; border-radius:50%; display:grid; place-items:center; }
   .moments-back { right:auto; left:17px; }
   .moments-camera svg,.moments-back svg { width:25px; fill:none; stroke:currentColor; stroke-width:1.8; }
-  #messaging.messaging-moments-view #messagingNav { display:none; }
+  #messaging.messaging-moments-view #messagingNav,#messaging.messaging-me-view #messagingNav { display:none; }
   .moments-cover-edit { right:17px; bottom:20px; padding:8px 12px; border-radius:18px; font-size:12px; }
   .moments-profile { position:absolute; z-index:2; left:22px; right:22px; bottom:18px; padding-right:92px; }
   .moments-profile-avatar { width:70px; height:70px; border:3px solid #fff; box-shadow:0 4px 18px rgba(0,0,0,.18); font-size:27px; }
@@ -5319,6 +5319,7 @@ const Msg = {
     document.getElementById('messaging').classList.toggle('messaging-chats-view', tab === 'chats');
     document.getElementById('messaging').classList.toggle('messaging-contacts-view', tab === 'contacts');
     document.getElementById('messaging').classList.toggle('messaging-moments-view', tab === 'moments');
+    document.getElementById('messaging').classList.toggle('messaging-me-view', tab === 'me');
     const action = document.getElementById('messagingAction');
     action.style.display = (tab === 'contacts' || tab === 'chats') ? 'flex' : 'none';
     action.title = tab === 'chats' ? '新信息' : '新建联系人';

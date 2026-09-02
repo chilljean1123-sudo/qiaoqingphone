@@ -1676,6 +1676,34 @@
     .me-p2-orbit-icon { width:60px; height:60px; }
   }
 
+
+  /* 我的主页尺寸修正 */
+  .me-p2 { padding:18px 18px 30px; }
+  .me-p2-back,.me-p2-edit { height:44px; }
+  .me-p2-back { width:44px; }
+  .me-p2-edit { min-width:68px; padding:0 16px; font-size:14px; }
+  .me-p2-profile { margin-top:18px; }
+  .me-p2-avatar { width:142px; height:142px; font-size:49px; }
+  .me-p2-name { margin-top:17px; font-size:27px; }
+  .me-p2-signature { margin-top:6px; font-size:10px; }
+  .me-p2-orbits { margin:20px auto 20px; gap:8px; }
+  .me-p2-orbit-icon { width:60px; height:60px; }
+  .me-p2-orbit svg { width:23px; height:23px; }
+  .me-p2-orbit-label { font-size:9px; }
+  .me-p2-card { min-height:62px; margin-top:10px; padding:0 20px; border-radius:21px; }
+  .me-p2-card-icon { width:23px; height:23px; }
+  .me-p2-card-title { font-size:16px; }
+  .me-p2-card-value { font-size:11px; }
+  .msg-bubble[data-favorite="true"]::after,.sticker-wrap[data-favorite="true"]::after {
+    content:"♥"; position:absolute; right:-5px; bottom:-9px; width:18px; height:18px; border-radius:50%;
+    display:grid; place-items:center; background:#fff; color:#6f6a63; box-shadow:0 2px 7px rgba(0,0,0,.15); font-size:10px;
+  }
+  .sticker-wrap { position:relative; }
+  .favorite-list { display:flex; flex-direction:column; gap:10px; padding:5px 0 12px; }
+  .favorite-item { padding:13px 14px; border-radius:15px; background:#f2f2f5; }
+  .favorite-item-head { display:flex; justify-content:space-between; gap:10px; margin-bottom:6px; color:#8d9198; font-size:10px; }
+  .favorite-item-text { font-size:13px; line-height:1.5; word-break:break-word; }
+
 </style>
 </head>
 <body>
@@ -2414,6 +2442,8 @@
   </div>
   <input type="file" id="momentsCoverInput" accept="image/*" hidden onchange="Moments.importCover(event)">
 
+  <input type="file" id="userAvatarInput" accept="image/*" hidden onchange="UserProfile.importAvatar(event)">
+
   <!-- ========== 通用弹窗 / 抽屉 / Toast ========== -->
   <div class="modal" id="modal">
     <div class="modal-box">
@@ -2455,6 +2485,7 @@ const Store = {
     const d = this.defaults();
     for (const k in d) if (!(k in this.data)) this.data[k] = d[k];
     this.data.chatReadAt = { ...d.chatReadAt, ...(this.data.chatReadAt || {}) };
+    if (!Array.isArray(this.data.favoriteMessages)) this.data.favoriteMessages = [];
     this.data.imgApi = { ...d.imgApi, ...(this.data.imgApi || {}) };
     this.data.notificationSettings = { ...d.notificationSettings, ...(this.data.notificationSettings || {}) };
     this.data.theme = {
@@ -2491,6 +2522,7 @@ const Store = {
       chats: {},        // { charId: [ {role,content,type,duration?,timestamp} ] }
       chatReadAt: {},   // { charId: lastOpenedTimestamp }
       stickers: [],     // [ {id, name, dataUrl} ]
+      favoriteMessages: [],
       userName: '用户',
       userAvatar: '',
       momentsProfile: { cover: '', signature: '点击编辑签名', posts: [] },
@@ -4003,18 +4035,9 @@ const WB = {
 ============================================================ */
 
 
-const Me = {
-  profile() {
-    if (!Store.data.meProfile) Store.data.meProfile={status:'今天也要认真生活',enterToSend:true,ringtone:'默认铃声'};
-    return Store.data.meProfile;
-  },
-  edit() {
-    UI.sheet('<div class="sheet-title">编辑主页</div>'+
 
-      '<button class="sheet-action" onclick="UI.closeSheet();Settings.editUserName()">修改昵称</button>'+
-      '<button class="sheet-action" onclick="UI.closeSheet();Me.editStatus()">修改今日状态</button>'+
-      '<button class="sheet-action" onclick="UI.closeSheet();Moments.editSignature()">修改签名</button>');
-  },
+const UserProfile = {
+  edit() { UserProfile.edit(); },
   editStatus() {
     UI.prompt('今日状态','写下此刻的心情',this.profile().status||'',v=>{
       this.profile().status=String(v||'').trim()||'今天也要认真生活'; Store.save(); Msg.renderMe();
@@ -4027,7 +4050,7 @@ const Me = {
   },
   setRingtone(v){ this.profile().ringtone=v; Store.save(); UI.closeSheet(); Msg.renderMe(); UI.toast('已设为'+v); },
   feature(type) {
-    if(type==='moments'){ Msg.showTab('moments'); return; }
+    if(type==='favorites'){ Favorite.open(); return; }
     if(type==='memory'){ nav.go('worldbook'); WB.renderList(); return; }
     if(type==='interaction'){ nav.go('pushSettings'); Push.render(); return; }
     const count=(Store.data.stickers||[]).length;
@@ -4289,18 +4312,18 @@ const Msg = {
     const avatar=Store.data.userAvatar?'<img src="'+Store.data.userAvatar+'" alt="我的头像">':initials(Store.data.userName);
     c.innerHTML =
       '<div class="me-p2">'+
-        '<header class="me-p2-top"><button class="me-p2-back" onclick="nav.home()" aria-label="返回主屏"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button><button class="me-p2-edit" onclick="Me.edit()">编辑</button></header>'+
+        '<header class="me-p2-top"><button class="me-p2-back" onclick="nav.home()" aria-label="返回主屏"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button><button class="me-p2-edit" onclick="UserProfile.edit()">编辑</button></header>'+
         '<section class="me-p2-profile"><div class="me-p2-avatar">'+avatar+'</div><div class="me-p2-name">'+escapeHtml(Store.data.userName)+'</div><div class="me-p2-signature" onclick="Moments.editSignature()">'+escapeHtml(mp.signature||'点击编辑签名')+'</div></section>'+
         '<nav class="me-p2-orbits" aria-label="个人功能">'+
           '<button class="me-p2-orbit" onclick="Me.feature(\'emoji\')"><span class="me-p2-orbit-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="10" r=".8" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r=".8" fill="currentColor" stroke="none"/></svg></span><span class="me-p2-orbit-label">表情包</span></button>'+
           '<button class="me-p2-orbit" onclick="Me.feature(\'interaction\')"><span class="me-p2-orbit-icon"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10 20h4"/></svg></span><span class="me-p2-orbit-label">互动设置</span></button>'+
-          '<button class="me-p2-orbit" onclick="Me.feature(\'moments\')"><span class="me-p2-orbit-icon"><svg viewBox="0 0 24 24"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z"/><path d="m8 10 2.5 2.5L16 7"/></svg></span><span class="me-p2-orbit-label">我的动态</span></button>'+
+          '<button class="me-p2-orbit" onclick="Me.feature(\'moments\')"><span class="me-p2-orbit-icon"><svg viewBox="0 0 24 24"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z"/><path d="m8 10 2.5 2.5L16 7"/></svg></span><span class="me-p2-orbit-label">喜欢的消息</span></button>'+
           '<button class="me-p2-orbit" onclick="Me.feature(\'memory\')"><span class="me-p2-orbit-icon"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5Z"/><path d="M8 3v17M12 8h4M12 12h4"/></svg></span><span class="me-p2-orbit-label">记忆</span></button>'+
         '</nav>'+
-        '<button class="me-p2-card" onclick="Me.wallet()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><path d="M3 7h16a2 2 0 0 1 2 2v10H5a2 2 0 0 1-2-2Z"/><path d="M3 7V5a2 2 0 0 1 2-2h13v4"/><path d="M16 12h5v4h-5a2 2 0 0 1 0-4Z"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">钱包</span><span class="me-p2-card-sub">关系积分与虚拟物品入口</span></span><svg class="me-p2-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>'+
+        '<button class="me-p2-card" onclick="Me.wallet()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><path d="M3 7h16a2 2 0 0 1 2 2v10H5a2 2 0 0 1-2-2Z"/><path d="M3 7V5a2 2 0 0 1 2-2h13v4"/><path d="M16 12h5v4h-5a2 2 0 0 1 0-4Z"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">钱包</span></span><svg class="me-p2-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>'+
         '<button class="me-p2-card" onclick="Me.editStatus()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">今日状态</span><span class="me-p2-card-sub">'+escapeHtml(p.status)+'</span></span><svg class="me-p2-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>'+
-        '<button class="me-p2-card" onclick="Me.toggleEnter()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><path d="M20 5v8a3 3 0 0 1-3 3H5"/><path d="m9 12-4 4 4 4"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">回车键发送</span><span class="me-p2-card-sub">控制聊天输入框的发送方式</span></span><span class="me-p2-switch '+(p.enterToSend?'on':'')+'"></span></button>'+
-        '<button class="me-p2-card" onclick="Me.ringtone()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10 20h4"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">铃声</span><span class="me-p2-card-sub">通知提示音与静音模式</span></span><span class="me-p2-card-value">'+escapeHtml(p.ringtone)+'</span></button>'+
+        '<button class="me-p2-card" onclick="Me.toggleEnter()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><path d="M20 5v8a3 3 0 0 1-3 3H5"/><path d="m9 12-4 4 4 4"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">回车键发送</span></span><span class="me-p2-switch '+(p.enterToSend?'on':'')+'"></span></button>'+
+        '<button class="me-p2-card" onclick="Me.ringtone()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10 20h4"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">铃声</span></span><span class="me-p2-card-value">'+escapeHtml(p.ringtone)+'</span></button>'+
       '</div>';
   }};
 
@@ -4651,9 +4674,9 @@ function renderMsgBubble(m, i) {
   if (m.type === 'sticker') {
     const s = Store.data.stickers.find(x => x.id === m.content);
     if (!s) return `<div class="msg-bubble">[表情包已删除]</div>`;
-    return `<div class="sticker-wrap"><img class="msg-sticker" src="${s.dataUrl}" alt="${escapeHtml(s.name)}"></div>`;
+    return `<div class="sticker-wrap" data-favorite="${Favorite.isSaved(Chat.currentId,i)}" onclick="Favorite.toggle(Chat.currentId,${i})"><img class="msg-sticker" src="${s.dataUrl}" alt="${escapeHtml(s.name)}"></div>`;
   }
-  return `<div class="msg-bubble">${escapeHtml(m.content)}</div>`;
+  return `<div class="msg-bubble" data-favorite="${Favorite.isSaved(Chat.currentId,i)}" onclick="Favorite.toggle(Chat.currentId,${i})">${escapeHtml(m.content)}</div>`;
 }
 
 /* ============================================================
@@ -4679,7 +4702,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const t = document.getElementById('chatInput');
   t.addEventListener('input', () => Chat.autoResize());
   t.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && Me.profile().enterToSend) {
       e.preventDefault();
       Chat.send();
     }

@@ -2495,6 +2495,57 @@
   .mood-thought-top b { font-size:11px; }
   .mood-thought-text { margin-top:10px; color:#b9bdca; white-space:pre-wrap; font:12px/1.75 "Songti SC","STSong",serif; }
   .mood-bottom { position:absolute; z-index:4; left:15px; right:15px; bottom:calc(15px + env(safe-area-inset-bottom,0px)); }
+
+  /* ============ 秘密匿名论坛 ============ */
+  #secretForum,#secretSettings,#secretDetail { background:#171716; color:#e9e5dc; }
+  .secret-nav { background:rgba(23,23,22,.9)!important; border-bottom-color:rgba(255,255,255,.07)!important; backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
+  .secret-nav .nav-back,.secret-nav .nav-title,.secret-nav .nav-action { color:#eee9df; }
+  .secret-nav-actions { display:flex; align-items:center; gap:4px; padding-right:7px; }
+  .secret-nav-actions button { width:34px; height:34px; display:grid; place-items:center; border:0; border-radius:12px; color:#ded8cd; background:transparent; }
+  .secret-nav-actions svg { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .secret-body { flex:1; overflow-y:auto; padding:18px 15px 40px; background:radial-gradient(circle at 13% 4%,rgba(139,45,48,.14),transparent 25%),#171716; }
+  .secret-banner { position:relative; padding:22px 19px; border:1px solid rgba(255,255,255,.08); border-radius:25px; background:#222220; overflow:hidden; }
+  .secret-banner:after { content:"密"; position:absolute; right:18px; top:7px; color:rgba(157,58,60,.26); font:700 72px/1 "Songti SC",serif; transform:rotate(-8deg); }
+  .secret-banner-kicker { color:#a85d5e; font-size:9px; letter-spacing:.22em; }
+  .secret-banner-title { position:relative; z-index:1; margin-top:8px; font:700 25px/1.35 "Songti SC","STSong",serif; }
+  .secret-banner-sub { position:relative; z-index:1; margin-top:7px; max-width:75%; color:#7f7b73; font-size:10px; line-height:1.55; }
+  .secret-write { width:100%; height:47px; margin-top:12px; border:1px solid rgba(255,255,255,.07); border-radius:16px; color:#d9d3c8; background:#242421; font-size:12px; }
+  .secret-feed-head { display:flex; justify-content:space-between; margin:22px 3px 10px; }
+  .secret-feed-head strong { font-size:16px; }
+  .secret-feed-head span { color:#726e67; font-size:9px; }
+  .secret-post { width:100%; margin-bottom:11px; padding:17px; border:1px solid rgba(255,255,255,.07); border-radius:21px; text-align:left; color:#e4dfd5; background:#20201e; box-shadow:0 13px 28px rgba(0,0,0,.12); }
+  .secret-post-head { display:flex; align-items:center; gap:8px; }
+  .secret-anon { flex:1; color:#a85d5e; font:700 11px ui-monospace,monospace; letter-spacing:.04em; }
+  .secret-time { color:#69665f; font-size:9px; }
+  .secret-topic { display:inline-flex; height:20px; align-items:center; margin-top:10px; padding:0 8px; border-radius:10px; color:#928b80; background:#2d2c29; font-size:8px; }
+  .secret-content { margin-top:10px; color:#d5d0c6; white-space:pre-wrap; font:13px/1.75 "Songti SC","STSong",serif; }
+  .secret-post-foot { display:flex; justify-content:space-between; margin-top:14px; color:#6f6c65; font-size:9px; }
+  .secret-empty { padding:70px 20px; color:#6f6b64; text-align:center; font:12px/1.9 "Songti SC",serif; }
+  .secret-settings-body,.secret-detail-body { flex:1; overflow-y:auto; padding:17px 15px 95px; }
+  .secret-card { margin-bottom:12px; padding:17px; border:1px solid rgba(255,255,255,.07); border-radius:21px; background:#222220; }
+  .secret-card-title { margin-bottom:11px; color:#9a5758; font-size:9px; font-weight:700; letter-spacing:.14em; }
+  .secret-field { display:block; margin-bottom:13px; }
+  .secret-field:last-child { margin-bottom:0; }
+  .secret-field span { display:block; margin-bottom:7px; color:#88837a; font-size:10px; }
+  .secret-field input,.secret-field textarea { width:100%; border:1px solid rgba(255,255,255,.06); outline:0; border-radius:15px; padding:12px; color:#e4dfd5; background:#2a2a27; font-size:12px; }
+  .secret-field textarea { min-height:135px; resize:vertical; line-height:1.65; }
+  .secret-char-grid { display:flex; gap:8px; flex-wrap:wrap; }
+  .secret-char { height:34px; padding:0 12px; border:1px solid rgba(255,255,255,.09); border-radius:18px; color:#8e8980; background:transparent; font-size:10px; }
+  .secret-char.on { color:#f0eae0; border-color:#8f4b4d; background:#713b3d; }
+  .secret-primary { width:100%; height:48px; border:0; border-radius:16px; color:#f5eee4; background:#833f41; font-size:12px; font-weight:700; }
+  .secret-detail-post { padding:20px; border:1px solid rgba(255,255,255,.075); border-radius:23px; background:#222220; }
+  .secret-detail-post .secret-content { font-size:14px; line-height:1.9; }
+  .secret-share { width:100%; height:44px; margin-top:12px; border:1px solid rgba(168,93,94,.45); border-radius:15px; color:#c7797b; background:rgba(131,63,65,.1); font-size:11px; }
+  .secret-comment-head { display:flex; align-items:center; justify-content:space-between; margin:22px 3px 10px; }
+  .secret-comment-head strong { font-size:15px; }
+  .secret-comment-head button { border:0; color:#b46b6d; background:none; font-size:10px; }
+  .secret-comment { margin-bottom:9px; padding:14px; border-left:2px solid #754143; border-radius:4px 17px 17px 4px; background:#21211f; }
+  .secret-comment-meta { display:flex; justify-content:space-between; color:#9e5b5d; font:9px ui-monospace,monospace; }
+  .secret-comment-text { margin-top:8px; color:#c7c2b8; white-space:pre-wrap; font:12px/1.7 "Songti SC",serif; }
+  .secret-private { margin-top:12px; padding:15px; border:1px solid rgba(158,91,93,.3); border-radius:18px; background:rgba(117,65,67,.12); }
+  .secret-private b { color:#c8797b; font-size:10px; }
+  .secret-private p { margin-top:7px; color:#c9c3b9; white-space:pre-wrap; font:12px/1.7 "Songti SC",serif; }
+  .secret-bottom { position:absolute; left:15px; right:15px; bottom:calc(14px + env(safe-area-inset-bottom,0px)); }
 </style>
 </head>
 <body>
@@ -2530,6 +2581,12 @@
           <svg viewBox="0 0 24 24"><path d="M4 19c4-1 7-4 8-8 2 2 5 3 8 2-1 5-5 8-10 8H4Z"/><path d="M16 3v3M14.5 4.5h3"/><path d="M5 5h5"/></svg>
         </div>
         <div class="app-label">心绪一缕</div>
+      </div>
+      <div class="app-icon" data-theme-app="secretForum" onclick="nav.go('secretForum');SecretForum.render()">
+        <div class="app-icon-box" data-app-icon="secretForum" style="background:#242321;color:#d5cbc0">
+          <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 10a3 3 0 1 1 6 0c0 2-3 2-3 4"/><path d="M12 17h.01"/></svg>
+        </div>
+        <div class="app-label">秘密</div>
       </div>
     </div>
     <div class="home-dock"></div>
@@ -2580,6 +2637,26 @@
       <div class="nav-title">日记</div><span></span>
     </div>
     <div class="mood-detail-body"><div id="moodDiaryPaper"></div><div class="mood-thought-head"><strong>读后心绪</strong><button onclick="MoodDiary.chooseThought()">＋ 选择角色发表想法</button></div><div id="moodThoughtList"></div></div>
+  </div>
+
+  <!-- ========== 秘密匿名论坛 ========== -->
+  <div class="screen hidden" id="secretForum">
+    <div class="nav-bar secret-nav">
+      <div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>主屏</span></div>
+      <div class="nav-title">秘密</div>
+      <div class="secret-nav-actions"><button onclick="SecretForum.openSettings()" aria-label="设置"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1A7 7 0 0 0 14.8 6L14.5 3h-5L9.2 6a7 7 0 0 0-1.7 1.1l-2.4-1-2 3.4L5.1 11a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1A7 7 0 0 0 9.2 18l.3 3h5l.3-3a7 7 0 0 0 1.7-1.1l2.4 1 2-3.4-2-1.5Z"/></svg></button><button onclick="SecretForum.refreshPosts()" aria-label="刷新"><svg viewBox="0 0 24 24"><path d="M20 6v5h-5"/><path d="M4 18v-5h5"/><path d="M18.5 9A7 7 0 0 0 6.2 6.2L4 8M5.5 15A7 7 0 0 0 17.8 17.8L20 16"/></svg></button></div>
+    </div>
+    <div class="secret-body"><div class="secret-banner"><div class="secret-banner-kicker">ANONYMOUS SIGNAL</div><div class="secret-banner-title">没有名字，只有秘密</div><div class="secret-banner-sub">代号由内容生成。身份藏在字句后面，刷新会带来新的陌生人。</div></div><button class="secret-write" onclick="SecretForum.writePost()">匿名写一条秘密</button><div class="secret-feed-head"><strong>正在流动</strong><span id="secretPostCount"></span></div><div id="secretPostList"></div></div>
+  </div>
+
+  <div class="screen hidden" id="secretSettings">
+    <div class="nav-bar secret-nav"><div class="nav-back" onclick="SecretForum.saveSettings()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>秘密</span></div><div class="nav-title">论坛设置</div><span></span></div>
+    <div class="secret-settings-body"><div class="secret-card"><div class="secret-card-title">论坛规则</div><label class="secret-field"><span>告诉所有匿名发言者这里允许和禁止什么</span><textarea id="secretRules" placeholder="例如：不讨论现实身份；可以坦白难以启齿的情绪；避免重复话题。"></textarea></label></div><div class="secret-card"><div class="secret-card-title">发言主题</div><label class="secret-field"><span>每行一个主题或方向</span><textarea id="secretTopics" placeholder="深夜没说出口的话&#10;关系里的误解&#10;工作与生活"></textarea></label></div><div class="secret-card"><div class="secret-card-title">允许参与的角色</div><div class="secret-char-grid" id="secretCharacterBindings"></div></div><button class="secret-primary" onclick="SecretForum.saveSettings()">保存设置</button></div>
+  </div>
+
+  <div class="screen hidden" id="secretDetail">
+    <div class="nav-bar secret-nav"><div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>秘密</span></div><div class="nav-title">匿名帖</div><div class="secret-nav-actions"><button onclick="SecretForum.refreshComments()" aria-label="刷新评论"><svg viewBox="0 0 24 24"><path d="M20 6v5h-5"/><path d="M4 18v-5h5"/><path d="M18.5 9A7 7 0 0 0 6.2 6.2L4 8M5.5 15A7 7 0 0 0 17.8 17.8L20 16"/></svg></button></div></div>
+    <div class="secret-detail-body"><div id="secretDetailPost"></div><div class="secret-comment-head"><strong>匿名回应</strong><button onclick="SecretForum.writeComment()">＋ 写一条新评论</button></div><div id="secretCommentList"></div></div>
   </div>
 
   <!-- ========== 设置 ========== -->
@@ -3657,6 +3734,9 @@ const Store = {
     this.data.moodDiary = { ...d.moodDiary, ...(this.data.moodDiary || {}), settings: { ...d.moodDiary.settings, ...((this.data.moodDiary || {}).settings || {}) } };
     if (!Array.isArray(this.data.moodDiary.entries)) this.data.moodDiary.entries = [];
     if (!Array.isArray(this.data.moodDiary.settings.characterIds)) this.data.moodDiary.settings.characterIds = [];
+    this.data.secretForum = { ...d.secretForum, ...(this.data.secretForum || {}), settings: { ...d.secretForum.settings, ...((this.data.secretForum || {}).settings || {}) } };
+    if (!Array.isArray(this.data.secretForum.posts)) this.data.secretForum.posts = [];
+    if (!Array.isArray(this.data.secretForum.settings.characterIds)) this.data.secretForum.settings.characterIds = [];
     this.data.interactionSettings = { ...d.interactionSettings, ...(this.data.interactionSettings || {}) };
     if (!Array.isArray(this.data.interactionSettings.characterIds)) this.data.interactionSettings.characterIds = [];
     this.data.imgApi = { ...d.imgApi, ...(this.data.imgApi || {}) };
@@ -3700,6 +3780,7 @@ const Store = {
       worldBooks: [],
       regexRules: [],
       moodDiary: { entries: [], settings: { enabled: false, startHour: 21, endHour: 23, characterIds: [], targetDate: '', targetHour: 21 } },
+      secretForum: { posts: [], settings: { rules: '', topics: '', characterIds: [] } },
       chats: {},        // { charId: [ {role,content,type,duration?,timestamp} ] }
       chatSettings: {},
       friendRequests: [],
@@ -4776,6 +4857,51 @@ const Theme = {
       this.saveAndApply();
       UI.toast('外观已恢复默认');
     }, { danger: true, okText: '恢复' });
+  }
+};
+
+/* ============================================================
+   秘密匿名论坛
+============================================================ */
+const SecretForum = {
+  currentId:null,busy:false,
+  data(){return Store.data.secretForum;},cfg(){return this.data().settings;},
+  hash(text){let h=2166136261;for(const ch of String(text||'')){h^=ch.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;},
+  anonId(content,salt=''){const a=['雾','夜','灰','纸','雨','灯','河','岛','风','砂','钟','羽'],b=['痕','声','影','隙','岸','页','火','弦','梦','尘','井','星'],h=this.hash(content+salt);return a[h%a.length]+b[(h>>>5)%b.length]+'-'+String(h%10000).padStart(4,'0');},
+  formatTime(time){const d=new Date(time),now=new Date();if(d.toDateString()===now.toDateString())return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');return (d.getMonth()+1)+'月'+d.getDate()+'日';},
+  render(){
+    const posts=[...this.data().posts].sort((a,b)=>b.timestamp-a.timestamp);document.getElementById('secretPostCount').textContent=posts.length+' 条';
+    document.getElementById('secretPostList').innerHTML=posts.map(post=>'<button class="secret-post" onclick="SecretForum.openPost(\''+post.id+'\')"><div class="secret-post-head"><span class="secret-anon">'+escapeHtml(post.anonId)+'</span><span class="secret-time">'+this.formatTime(post.timestamp)+'</span></div><span class="secret-topic"># '+escapeHtml(post.topic||'未分类')+'</span><div class="secret-content">'+escapeHtml(post.content)+'</div><div class="secret-post-foot"><span>无人知道我是谁</span><span>'+(post.comments?.length||0)+' 条回应</span></div></button>').join('')||'<div class="secret-empty">暂时没有秘密浮上来<br>刷新会听见新的声音</div>';
+  },
+  openSettings(){const c=this.cfg();document.getElementById('secretRules').value=c.rules||'';document.getElementById('secretTopics').value=c.topics||'';this.renderChars();nav.go('secretSettings');},
+  renderChars(){const ids=this.cfg().characterIds||[];document.getElementById('secretCharacterBindings').innerHTML=Store.data.characters.map(ch=>'<button class="secret-char '+(ids.includes(ch.id)?'on':'')+'" onclick="SecretForum.toggleChar(\''+ch.id+'\')">'+escapeHtml(ch.name)+'</button>').join('')||'<span style="color:#777;font-size:10px">还没有角色</span>';},
+  toggleChar(id){const ids=this.cfg().characterIds||(this.cfg().characterIds=[]),i=ids.indexOf(id);if(i>=0)ids.splice(i,1);else ids.push(id);this.renderChars();},
+  saveSettings(){const rules=document.getElementById('secretRules'),topics=document.getElementById('secretTopics');if(rules)this.cfg().rules=rules.value.trim();if(topics)this.cfg().topics=topics.value.trim();Store.save();if(nav.stack.at(-1)==='secretSettings')nav.back();UI.toast('论坛规则已保存');},
+  chars(){const ids=this.cfg().characterIds||[];return Store.data.characters.filter(ch=>!ids.length||ids.includes(ch.id));},
+  context(){return this.chars().map(ch=>'ID:'+ch.id+' 姓名:'+ch.name+' 人设:'+(ch.persona||'')).join('\n').slice(0,10000);},
+  parse(raw,key){let text=String(raw||'').trim().replace(/^```(?:json)?/i,'').replace(/```$/,'').trim();try{const a=text.indexOf('{'),b=text.lastIndexOf('}');if(a>=0&&b>a){const data=JSON.parse(text.slice(a,b+1));return Array.isArray(data[key])?data[key]:[];}}catch(_){}return [];},
+  async refreshPosts(){
+    if(this.busy)return;if(!API.getActive()){UI.toast('需要先配置聊天 API');return;}this.busy=true;UI.toast('正在接收新的匿名信号…');
+    const prompt='请为一个虚构匿名论坛生成4条互不重复的新帖子。帖子可以来自符合主题的路人NPC，也可以来自给出的角色。角色发言必须符合其人设，但绝不能在正文里自报姓名或身份。每条80至260字，像真人匿名发言，有具体细节和不同语气。严格返回JSON：{"posts":[{"content":"正文","topic":"短主题","authorType":"npc或char","charId":"角色ID，NPC留空"}]}。\n论坛规则：'+(this.cfg().rules||'尊重匿名，不暴露真实身份')+'\n发言主题：'+(this.cfg().topics||'没有说出口的事、关系、日常困惑')+'\n可参与角色：'+this.context();
+    try{const rows=this.parse(await API.chat([{role:'system',content:'你在生成虚构匿名论坛内容，只输出合法JSON。'},{role:'user',content:prompt}]),'posts');rows.slice(0,6).forEach((row,i)=>{const content=String(row.content||'').trim();if(!content)return;const char=this.chars().find(ch=>ch.id===row.charId);this.data().posts.push({id:Store.uid(),content,topic:String(row.topic||'秘密').slice(0,30),authorType:char?'char':'npc',charId:char?.id||'',anonId:this.anonId(content,String(Date.now()+i)),timestamp:Date.now()+i,comments:[],privateReplies:[]});});Store.save();this.render();}catch(e){UI.alert('刷新失败',String(e.message||e));}finally{this.busy=false;}
+  },
+  writePost(){UI.prompt('匿名写一条秘密','不会显示你的姓名','',value=>{const content=String(value||'').trim();if(!content)return;this.data().posts.push({id:Store.uid(),content,topic:'我的秘密',authorType:'user',anonId:this.anonId(content,String(Date.now())),timestamp:Date.now(),comments:[],privateReplies:[]});Store.save();this.render();});},
+  openPost(id){this.currentId=id;this.renderDetail();nav.go('secretDetail');},
+  current(){return this.data().posts.find(post=>post.id===this.currentId);},
+  renderDetail(){const post=this.current();if(!post)return;document.getElementById('secretDetailPost').innerHTML='<article class="secret-detail-post"><div class="secret-post-head"><span class="secret-anon">'+escapeHtml(post.anonId)+'</span><span class="secret-time">'+this.formatTime(post.timestamp)+'</span></div><span class="secret-topic"># '+escapeHtml(post.topic||'秘密')+'</span><div class="secret-content">'+escapeHtml(post.content)+'</div><button class="secret-share" onclick="SecretForum.chooseShare()">转发给角色，让他看看</button></article>';this.renderComments();},
+  renderComments(){const post=this.current(),box=document.getElementById('secretCommentList');if(!post)return;let html=(post.comments||[]).map(comment=>'<div class="secret-comment"><div class="secret-comment-meta"><span>'+escapeHtml(comment.anonId)+'</span><span>'+this.formatTime(comment.timestamp)+'</span></div><div class="secret-comment-text">'+escapeHtml(comment.content)+'</div></div>').join('');html+=(post.privateReplies||[]).map(reply=>'<div class="secret-private"><b>'+escapeHtml(reply.charName)+' · 私下回复</b><p>'+escapeHtml(reply.content)+'</p></div>').join('');box.innerHTML=html||'<div class="secret-empty" style="padding:35px">还没有匿名回应</div>';},
+  async refreshComments(){
+    const post=this.current();if(!post||this.busy)return;if(!API.getActive()){UI.toast('需要先配置聊天 API');return;}this.busy=true;UI.toast('正在刷新匿名回应…');
+    const existing=(post.comments||[]).slice(-8).map(c=>c.content).join('\n');
+    const prompt='请为下面匿名帖子生成3至6条新的评论，不要重复已有评论。评论来自不同背景的NPC，也可以来自给出的角色；无论是谁都不能暴露真实姓名。每条20至180字，观点可以赞同、质疑、开玩笑、共情或误解。严格返回JSON：{"comments":[{"content":"评论","authorType":"npc或char","charId":"角色ID，NPC留空"}]}。\n帖子：'+post.content+'\n已有评论：'+existing+'\n规则：'+(this.cfg().rules||'尊重匿名')+'\n角色：'+this.context();
+    try{const rows=this.parse(await API.chat([{role:'system',content:'生成自然的匿名论坛评论，只输出JSON。'},{role:'user',content:prompt}]),'comments');rows.slice(0,8).forEach((row,i)=>{const content=String(row.content||'').trim();if(!content)return;const char=this.chars().find(ch=>ch.id===row.charId);(post.comments||(post.comments=[])).push({id:Store.uid(),content,authorType:char?'char':'npc',charId:char?.id||'',anonId:this.anonId(content,post.id+i),timestamp:Date.now()+i});});Store.save();this.renderComments();this.render();}catch(e){UI.alert('评论生成失败',String(e.message||e));}finally{this.busy=false;}
+  },
+  writeComment(){const post=this.current();if(!post)return;UI.prompt('写匿名评论','同样不会显示你的姓名','',value=>{const content=String(value||'').trim();if(!content)return;(post.comments||(post.comments=[])).push({id:Store.uid(),content,authorType:'user',anonId:this.anonId(content,post.id+Date.now()),timestamp:Date.now()});Store.save();this.renderComments();this.render();});},
+  chooseShare(){const post=this.current();if(!post||!Store.data.characters.length)return;UI.sheet('<div class="sheet-title">转发给谁</div><div class="secret-char-grid">'+Store.data.characters.map(ch=>'<button class="secret-char" onclick="SecretForum.shareTo(\''+ch.id+'\');UI.closeSheet()">'+escapeHtml(ch.name)+'</button>').join('')+'</div>');},
+  async shareTo(charId){
+    const post=this.current(),ch=Store.data.characters.find(x=>x.id===charId);if(!post||!ch||this.busy)return;if(!API.getActive()){UI.toast('需要先配置聊天 API');return;}this.busy=true;UI.toast('已转发给'+ch.name);
+    const prompt='用户把一条匿名论坛秘密转发给你。你是'+ch.name+'，请根据自己的人设和与用户的关系私下回复用户。可以谈对秘密的判断，也可以追问用户为什么转给你。保持自然口语，不超过500字。\n你的人设：'+(ch.persona||'')+'\n秘密：'+post.content;
+    try{const reply=String(await API.chat([{role:'system',content:'保持角色身份，直接回复用户。'},{role:'user',content:prompt}])).slice(0,650);(post.privateReplies||(post.privateReplies=[])).push({id:Store.uid(),charId:ch.id,charName:ch.name,content:reply,timestamp:Date.now()});const chat=Store.data.chats[ch.id]||(Store.data.chats[ch.id]=[]);chat.push({role:'user',type:'text',content:'[转发了一条秘密]\n'+post.content,timestamp:Date.now()});chat.push({role:'assistant',type:'text',content:reply,timestamp:Date.now()+1});Memory.logEvent(ch.id,'user','[转发秘密] '+post.content);Memory.logEvent(ch.id,'assistant',reply);Store.save();this.renderComments();Msg.renderChats();UI.toast(ch.name+' 回复了你');}catch(e){UI.alert('转发失败',String(e.message||e));}finally{this.busy=false;}
   }
 };
 

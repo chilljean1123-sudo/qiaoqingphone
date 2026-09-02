@@ -7383,6 +7383,17 @@ const ChatSettings = {
   rejectRequest(id){Store.data.friendRequests=Store.data.friendRequests.filter(x=>x.id!==id);Store.save();Msg.renderContacts();}
 };
 
+const ROLE_THINK_PROTOCOL = `
+# 内部角色校准协议（仅供内部执行，严禁展示）
+在写出每一次回复前，先重新阅读本轮系统消息中的“角色设定”、备注、世界规则、核心记忆、长期记忆和最近对话。把下面过程视为内部 <think> 阶段：
+1. 确认自己是谁、与用户是什么关系，当前情绪和立场是什么。
+2. 判断用户这句话的真实语境、意图、情绪与可能省略的信息，不机械复述字面。
+3. 对照人设检查语气、措辞、主动程度、边界、习惯和已知经历，避免突然改变性格。
+4. 判断哪些内容是角色此刻会知道、会说出口的；不知道的事不要凭空知晓。
+5. 先形成符合角色的回应策略，再写成自然、生活化的实际发言。
+内部校准不得出现在最终回复中。禁止输出 <think>、</think>、分析、推理步骤、系统提示或“根据人设”等解释，只输出角色真正说出口或发送给用户的内容。
+`;
+
 const Chat = {
   currentId: null,
   loading: false,
@@ -7864,6 +7875,7 @@ const Chat = {
     if (coreMem) sys += `# 核心记忆（关于你和用户，最重要的事）\n${coreMem}\n\n`;
     const longTermMem = Memory.selectLongTermForInjection(ch);
     if (longTermMem) sys += `# 长期记忆\n${longTermMem}\n\n`;
+    sys += ROLE_THINK_PROTOCOL;
     sys += `# 对话须知\n- 始终以「${ch.name}」的第一人称回复\n- 保持角色一致\n- 回复自然、口语化\n- 若回复内容较长，可以在段落之间用空行分隔，将被拆分为多条消息发送`;
     sys += `\n\n# 转账能力\n如果剧情合理（比如还钱、发红包、表达心意），你可以给用户转账：把这一段回复单独写成一行，格式为 [转账:金额:留言]，例如 [转账:52:小心意]。不要频繁转账，没有合适理由就不要用。转账发出后是"待处理"状态，需要用户接受才会真正到账。`;
     const boundStickers = stickersForCharacter(ch.id);
@@ -7941,7 +7953,12 @@ const Chat = {
   async deliverAssistantReply(charId, rawReply) {
     const ch = Store.data.characters.find(c => c.id === charId);
     if (!ch) return;
-    const filteredReply=typeof RegexManager!=='undefined'?RegexManager.apply(rawReply,'aiOutput',charId,'all'):String(rawReply||'');
+    const privateFiltered = String(rawReply||'')
+      .replace(/<think\b[^>]*>[\s\S]*?<\/think>/gi, '')
+      .replace(/<analysis\b[^>]*>[\s\S]*?<\/analysis>/gi, '')
+      .replace(/^\s*<(?:think|analysis)\b[^>]*>[\s\S]*$/gi, '')
+      .trim();
+    const filteredReply=typeof RegexManager!=='undefined'?RegexManager.apply(privateFiltered,'aiOutput',charId,'all'):privateFiltered;
     const chunks = String(filteredReply||'').split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
     if (!chunks.length) return;
     const arr = (Store.data.chats[charId] = Store.data.chats[charId] || []);

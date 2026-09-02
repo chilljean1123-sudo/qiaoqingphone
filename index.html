@@ -2547,6 +2547,75 @@
   .secret-private p { margin-top:7px; color:#c9c3b9; white-space:pre-wrap; font:12px/1.7 "Songti SC",serif; }
   .secret-bottom { position:absolute; left:15px; right:15px; bottom:calc(14px + env(safe-area-inset-bottom,0px)); }
 
+  /* ============ 购物 ============ */
+  #shoppingHome,#shoppingDetail,#shoppingCheckout { background:#f4f5f7; color:#15191e; }
+  .shop-nav { background:rgba(255,255,255,.94)!important; border-bottom-color:rgba(15,23,42,.07)!important; }
+  .shop-nav .nav-title { font-weight:800; letter-spacing:-.02em; }
+  .shop-body { flex:1; overflow-y:auto; padding-bottom:92px; }
+  .shop-hero { padding:18px 16px 20px; color:white; background:linear-gradient(132deg,#17212b 0%,#263b4c 58%,#31586a 100%); }
+  .shop-brand { display:flex; align-items:center; justify-content:space-between; }
+  .shop-brand strong { font-size:24px; letter-spacing:-1px; }
+  .shop-brand span { color:#d8e5ea; font-size:10px; }
+  .shop-search { height:42px; margin-top:14px; padding:0 13px; display:flex; align-items:center; gap:8px; border-radius:9px; color:#64727b; background:white; box-shadow:0 3px 10px rgba(0,0,0,.15); }
+  .shop-search svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; }
+  .shop-search input { flex:1; min-width:0; border:0; outline:0; background:transparent; font-size:13px; }
+  .shop-address-strip { display:flex; align-items:center; gap:6px; padding:10px 16px; color:#edf4f6; background:#283e4b; font-size:10px; }
+  .shop-address-strip svg { width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:2; }
+  .shop-cats { display:flex; gap:8px; padding:14px 14px 5px; overflow-x:auto; scrollbar-width:none; }
+  .shop-cat { flex:none; min-width:65px; padding:9px 12px; border:1px solid #e3e6e8; border-radius:17px; color:#5b6268; background:white; font-size:10px; font-weight:650; }
+  .shop-cat.on { color:#111820; border-color:#f4b62e; background:#fff5da; box-shadow:inset 0 0 0 1px #f4b62e; }
+  .shop-section-head { display:flex; align-items:end; justify-content:space-between; padding:17px 16px 9px; }
+  .shop-section-head strong { font-size:18px; }
+  .shop-section-head span { color:#7b8288; font-size:9px; }
+  .shop-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:11px; padding:0 12px; }
+  .shop-card { overflow:hidden; border:0; border-radius:15px; text-align:left; background:white; box-shadow:0 5px 18px rgba(20,30,40,.06); }
+  .shop-card-media,.shop-detail-media { position:relative; display:grid; place-items:center; overflow:hidden; color:white; background:var(--product-bg,linear-gradient(145deg,#567,#234)); }
+  .shop-card-media { height:132px; }
+  .shop-detail-media { height:275px; }
+  .shop-card-media:before,.shop-detail-media:before { content:""; position:absolute; width:120px; height:120px; border-radius:40%; background:rgba(255,255,255,.17); transform:rotate(24deg); }
+  .shop-product-symbol { position:relative; z-index:1; font:800 32px/1 -apple-system,sans-serif; letter-spacing:-2px; text-shadow:0 3px 12px rgba(0,0,0,.18); }
+  .shop-detail-media .shop-product-symbol { font-size:58px; }
+  .shop-card-badge { position:absolute; left:8px; top:8px; z-index:2; padding:4px 7px; border-radius:6px; color:#29333b; background:rgba(255,255,255,.9); font-size:8px; font-weight:700; }
+  .shop-card-copy { padding:11px; }
+  .shop-card-name { min-height:34px; font-size:12px; line-height:1.4; font-weight:700; }
+  .shop-card-desc { margin-top:4px; color:#777f85; font-size:9px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .shop-card-foot { display:flex; align-items:end; justify-content:space-between; gap:6px; margin-top:10px; }
+  .shop-price { color:#b12704; font-size:17px; font-weight:800; }
+  .shop-price small { font-size:10px; }
+  .shop-delivery { color:#52616a; font-size:8px; text-align:right; }
+  .shop-refresh { position:absolute; right:16px; bottom:calc(17px + env(safe-area-inset-bottom,0px)); z-index:40; width:52px; height:52px; display:grid; place-items:center; border:0; border-radius:50%; color:#17212b; background:#f6c344; box-shadow:0 8px 24px rgba(28,38,45,.26); }
+  .shop-refresh svg { width:23px; height:23px; fill:none; stroke:currentColor; stroke-width:2; }
+  .shop-detail-copy { padding:20px 18px 110px; }
+  .shop-detail-category { color:#64737c; font-size:9px; letter-spacing:.12em; text-transform:uppercase; }
+  .shop-detail-name { margin-top:7px; font-size:24px; line-height:1.28; font-weight:800; letter-spacing:-.5px; }
+  .shop-detail-rating { margin-top:8px; color:#d28b00; font-size:11px; letter-spacing:1px; }
+  .shop-detail-price { margin-top:17px; color:#b12704; font-size:27px; font-weight:800; }
+  .shop-detail-delivery { margin-top:13px; padding:13px 14px; border-radius:11px; color:#284b3b; background:#e9f6ef; font-size:11px; font-weight:650; }
+  .shop-detail-description { margin-top:20px; color:#50585d; font-size:12px; line-height:1.8; white-space:pre-wrap; }
+  .shop-buybar { position:absolute; left:0; right:0; bottom:0; z-index:30; padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px)); display:flex; gap:10px; border-top:1px solid #e3e5e6; background:rgba(255,255,255,.96); }
+  .shop-buybar button { height:45px; border:0; border-radius:22px; font-size:12px; font-weight:750; }
+  .shop-buybar .shop-back-home { width:72px; color:#17212b; background:#e8ebed; }
+  .shop-buybar .shop-buy { flex:1; color:#171b1f; background:#f6c344; }
+  .shop-checkout-body { flex:1; overflow-y:auto; padding:14px 14px 120px; }
+  .shop-checkout-card { margin-bottom:12px; padding:16px; border-radius:16px; background:white; box-shadow:0 5px 18px rgba(20,30,40,.05); }
+  .shop-checkout-label { margin-bottom:8px; color:#667079; font-size:9px; font-weight:700; letter-spacing:.08em; }
+  .shop-checkout-product { display:flex; gap:12px; align-items:center; }
+  .shop-mini-media { width:68px; height:68px; display:grid; place-items:center; border-radius:12px; color:white; background:var(--product-bg); font-size:21px; font-weight:800; }
+  .shop-checkout-product strong { display:block; font-size:13px; line-height:1.4; }
+  .shop-checkout-product span { display:block; margin-top:6px; color:#b12704; font-size:16px; font-weight:800; }
+  .shop-checkout-card input,.shop-checkout-card select { width:100%; height:44px; padding:0 12px; border:1px solid #dfe3e5; border-radius:10px; outline:0; background:#f8f9fa; font-size:12px; }
+  .shop-checkout-card select { margin-top:8px; }
+  .shop-total-line { display:flex; align-items:center; justify-content:space-between; }
+  .shop-total-line strong { color:#b12704; font-size:23px; }
+  .shop-pay-btn { position:absolute; left:14px; right:14px; bottom:calc(14px + env(safe-area-inset-bottom,0px)); z-index:30; height:49px; border:0; border-radius:24px; color:#15191e; background:#f6c344; font-size:13px; font-weight:800; box-shadow:0 8px 24px rgba(28,38,45,.18); }
+  .msg-order-card { width:min(255px,72vw); overflow:hidden; border:1px solid rgba(0,0,0,.07); border-radius:16px; background:#fff; box-shadow:0 4px 13px rgba(0,0,0,.08); }
+  .msg-order-top { padding:10px 12px; display:flex; align-items:center; gap:8px; color:#17212b; background:#f6c344; font-size:11px; font-weight:800; }
+  .msg-order-top svg { width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:2; }
+  .msg-order-body { padding:12px; }
+  .msg-order-name { color:#1c1e20; font-size:12px; font-weight:750; line-height:1.45; }
+  .msg-order-meta { margin-top:6px; color:#7a7d80; font-size:9px; line-height:1.5; }
+  .msg-order-price { margin-top:9px; color:#b12704; font-size:15px; font-weight:800; }
+
   /* ============ 险境文字跑团 ============ */
   #dangerHome,#dangerGame { background:#171a17; color:#e8e2d5; }
   .danger-nav { background:rgba(23,26,23,.92)!important; border-bottom-color:rgba(209,183,125,.12)!important; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); }
@@ -2654,6 +2723,12 @@
         </div>
         <div class="app-label">险境</div>
       </div>
+      <div class="app-icon" data-theme-app="shopping" onclick="nav.go('shoppingHome');Shopping.open()">
+        <div class="app-icon-box" data-app-icon="shopping" style="background:linear-gradient(145deg,#263d4a,#17212b);color:#f6c344">
+          <svg viewBox="0 0 24 24"><path d="M3 5h2l2.2 10.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L20.5 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>
+        </div>
+        <div class="app-label">购物</div>
+      </div>
     </div>
     <div class="home-dock"></div>
   </div>
@@ -2734,6 +2809,31 @@
   <div class="screen hidden" id="dangerGame">
     <div class="nav-bar danger-nav"><div class="nav-back" onclick="Danger.exitGame()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>存档退出</span></div><div class="nav-title" id="dangerGameTitle">冒险</div><div class="nav-action" onclick="Danger.saveGame()">保存</div></div>
     <div class="danger-game-shell"><div class="danger-hud"><div class="danger-hud-top"><span id="dangerRound"></span><span id="dangerRoles"></span></div><div class="danger-hp-line"><div class="danger-hp-track"><div class="danger-hp-fill" id="dangerHpFill"></div></div><span class="danger-hp-value" id="dangerHpValue">100/100</span></div></div><div class="danger-log" id="dangerLog"></div><div class="danger-controls" id="dangerControls"></div></div>
+  </div>
+
+  <!-- ========== 购物 ========== -->
+  <div class="screen hidden" id="shoppingHome">
+    <div class="nav-bar shop-nav"><div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>主屏</span></div><div class="nav-title">购物</div></div>
+    <div class="shop-body">
+      <div class="shop-hero"><div class="shop-brand"><strong>market</strong><span id="shopBalance"></span></div><label class="shop-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="shopSearch" placeholder="搜索商品" oninput="Shopping.renderProducts()"></label></div>
+      <div class="shop-address-strip"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2"/></svg><span id="shopAddressStrip">配送地址未填写</span></div>
+      <div class="shop-cats" id="shopCategories"></div>
+      <div class="shop-section-head"><strong>为你推荐</strong><span>每次刷新都会换一批</span></div>
+      <div class="shop-grid" id="shopProductGrid"></div>
+    </div>
+    <button class="shop-refresh" onclick="Shopping.refresh()" aria-label="刷新商品"><svg viewBox="0 0 24 24"><path d="M20 6v5h-5"/><path d="M4 18v-5h5"/><path d="M18.5 9A7 7 0 0 0 6.2 6.2L4 8M5.5 15A7 7 0 0 0 17.8 17.8L20 16"/></svg></button>
+  </div>
+
+  <div class="screen hidden" id="shoppingDetail">
+    <div class="nav-bar shop-nav"><div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>购物</span></div><div class="nav-title">商品详情</div></div>
+    <div class="shop-body" id="shopDetailBody"></div>
+    <div class="shop-buybar"><button class="shop-back-home" onclick="nav.back()">返回</button><button class="shop-buy" onclick="Shopping.checkout()">立即购买</button></div>
+  </div>
+
+  <div class="screen hidden" id="shoppingCheckout">
+    <div class="nav-bar shop-nav"><div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>商品</span></div><div class="nav-title">确认订单</div></div>
+    <div class="shop-checkout-body" id="shopCheckoutBody"></div>
+    <button class="shop-pay-btn" onclick="Shopping.pay()">确认付款</button>
   </div>
 
   <!-- ========== 设置 ========== -->
@@ -3817,6 +3917,9 @@ const Store = {
     this.data.danger = { ...d.danger, ...(this.data.danger || {}) };
     if (!Array.isArray(this.data.danger.quests)) this.data.danger.quests = [];
     if (!Array.isArray(this.data.danger.saves)) this.data.danger.saves = [];
+    this.data.shopping = { ...d.shopping, ...(this.data.shopping || {}) };
+    if (!Array.isArray(this.data.shopping.products)) this.data.shopping.products = [];
+    if (!Array.isArray(this.data.shopping.orders)) this.data.shopping.orders = [];
     this.data.interactionSettings = { ...d.interactionSettings, ...(this.data.interactionSettings || {}) };
     if (!Array.isArray(this.data.interactionSettings.characterIds)) this.data.interactionSettings.characterIds = [];
     this.data.imgApi = { ...d.imgApi, ...(this.data.imgApi || {}) };
@@ -3862,6 +3965,7 @@ const Store = {
       moodDiary: { entries: [], settings: { enabled: false, startHour: 21, endHour: 23, characterIds: [], targetDate: '', targetHour: 21 } },
       secretForum: { posts: [], settings: { rules: '', topics: '', characterIds: [] } },
       danger: { quests: [], saves: [], selectedCharId: '', currentSaveId: '' },
+      shopping: { products: [], orders: [], address: '', category: '全部', currentProductId: '', seed: 0 },
       chats: {},        // { charId: [ {role,content,type,duration?,timestamp} ] }
       chatSettings: {},
       friendRequests: [],
@@ -4944,6 +5048,72 @@ const Theme = {
 /* ============================================================
    险境文字跑团
 ============================================================ */
+const Shopping = {
+  categories:['全部','外卖','奢侈品','服装','化妆品','电子产品'],
+  catalog:[
+    {name:'黑松露牛肉烩饭',category:'外卖',price:48.8,desc:'慢煨牛肉、黑松露菌菇与帕玛森芝士。',symbol:'FOOD',color:'linear-gradient(145deg,#9b4b32,#e59b57)',minutes:32},
+    {name:'炭烤鸡腿能量碗',category:'外卖',price:36,desc:'谷物、时蔬和炭烤鸡腿，酱汁单独包装。',symbol:'BOWL',color:'linear-gradient(145deg,#557a45,#a4b870)',minutes:26},
+    {name:'海盐焦糖巴斯克',category:'外卖',price:29.9,desc:'微焦表层与流心芝士，附冷萃咖啡。',symbol:'CAKE',color:'linear-gradient(145deg,#8a6846,#ddbd8c)',minutes:41},
+    {name:'手工粒面小牛皮托特包',category:'奢侈品',price:6890,desc:'粒面小牛皮、内置可拆卸收纳袋，低调金属件。',symbol:'LUX',color:'linear-gradient(145deg,#342e2b,#8a7666)'},
+    {name:'银色机械腕表 38mm',category:'奢侈品',price:12800,desc:'自动上链机芯，蓝宝石镜面，精钢表带。',symbol:'TIME',color:'linear-gradient(145deg,#39424c,#aeb8bf)'},
+    {name:'羊绒混纺长款大衣',category:'服装',price:1299,desc:'宽松落肩剪裁，羊绒混纺面料，适合叠穿。',symbol:'COAT',color:'linear-gradient(145deg,#6f665b,#b9aa96)'},
+    {name:'复古水洗直筒牛仔裤',category:'服装',price:329,desc:'中腰直筒版型，轻度水洗做旧，不挑鞋型。',symbol:'DENIM',color:'linear-gradient(145deg,#334c69,#7896b3)'},
+    {name:'丝缎光泽修护口红',category:'化妆品',price:268,desc:'轻薄显色，柔润不拔干，日常低饱和色系。',symbol:'LIP',color:'linear-gradient(145deg,#7f2637,#d57a87)'},
+    {name:'夜间屏障修护精华',category:'化妆品',price:459,desc:'神经酰胺复配，夜间舒缓干燥紧绷。',symbol:'SERUM',color:'linear-gradient(145deg,#5e637f,#a7a9c7)'},
+    {name:'降噪无线头戴耳机',category:'电子产品',price:1599,desc:'空间音频、通透模式与长续航，支持多设备切换。',symbol:'AUDIO',color:'linear-gradient(145deg,#222b35,#6e879b)'},
+    {name:'口袋云台相机',category:'电子产品',price:2499,desc:'三轴机械增稳，4K 影像，适合旅行与随手记录。',symbol:'CAM',color:'linear-gradient(145deg,#263238,#7a8b8f)'},
+    {name:'磁吸折叠充电底座',category:'电子产品',price:239,desc:'手机、耳机双位充电，可折叠收纳。',symbol:'CHARGE',color:'linear-gradient(145deg,#4c5661,#a9b5bf)'}
+  ],
+  data(){return Store.data.shopping;},
+  product(){return this.data().products.find(p=>p.id===this.data().currentProductId)||this.catalog[0];},
+  open(){if(!this.data().products.length)this.refresh(false);else this.render();},
+  refresh(toast=true){
+    const seed=Date.now();this.data().seed=seed;
+    const shuffled=this.catalog.map((p,i)=>({...p,id:'shop_'+seed+'_'+i,sort:Math.random()})).sort((a,b)=>a.sort-b.sort);
+    this.data().products=shuffled.slice(0,8);Store.save();this.render();if(toast)UI.toast('商品已刷新');
+  },
+  selectCategory(cat){this.data().category=cat;Store.save();this.render();},
+  render(){
+    const d=this.data();
+    document.getElementById('shopBalance').textContent='钱包 ¥'+Number(Store.data.wallet.balance||0).toFixed(2);
+    document.getElementById('shopAddressStrip').textContent=d.address||'配送地址未填写';
+    document.getElementById('shopCategories').innerHTML=this.categories.map(x=>'<button class="shop-cat '+(d.category===x?'on':'')+'" onclick="Shopping.selectCategory(\''+x+'\')">'+x+'</button>').join('');
+    this.renderProducts();
+  },
+  renderProducts(){
+    const d=this.data(),search=(document.getElementById('shopSearch')?.value||'').trim().toLowerCase();
+    const rows=d.products.filter(p=>(d.category==='全部'||p.category===d.category)&&(!search||(p.name+p.desc+p.category).toLowerCase().includes(search)));
+    document.getElementById('shopProductGrid').innerHTML=rows.map(p=>'<button class="shop-card" onclick="Shopping.openProduct(\''+p.id+'\')"><div class="shop-card-media" style="--product-bg:'+p.color+'"><span class="shop-card-badge">'+p.category+'</span><span class="shop-product-symbol">'+p.symbol+'</span></div><div class="shop-card-copy"><div class="shop-card-name">'+escapeHtml(p.name)+'</div><div class="shop-card-desc">'+escapeHtml(p.desc)+'</div><div class="shop-card-foot"><span class="shop-price"><small>¥</small>'+Number(p.price).toFixed(2)+'</span><span class="shop-delivery">'+this.delivery(p)+'</span></div></div></button>').join('')||'<div style="grid-column:1/-1;padding:60px 20px;text-align:center;color:#8a8f93;font-size:11px">没有找到相关商品</div>';
+  },
+  delivery(p){return p.category==='外卖'?(p.minutes||30)+' 分钟送达':'预计 2～3 天送达';},
+  openProduct(id){
+    this.data().currentProductId=id;Store.save();const p=this.product();
+    document.getElementById('shopDetailBody').innerHTML='<div class="shop-detail-media" style="--product-bg:'+p.color+'"><span class="shop-card-badge">'+p.category+'</span><span class="shop-product-symbol">'+p.symbol+'</span></div><div class="shop-detail-copy"><div class="shop-detail-category">'+p.category+' · 精选商品</div><div class="shop-detail-name">'+escapeHtml(p.name)+'</div><div class="shop-detail-rating">★★★★★ <span style="color:#7d8387;letter-spacing:0">4.'+(6+Math.floor(Math.random()*4))+'</span></div><div class="shop-detail-price">¥'+Number(p.price).toFixed(2)+'</div><div class="shop-detail-delivery">'+this.delivery(p)+'</div><div class="shop-detail-description">'+escapeHtml(p.desc)+'\n\n商品由平台合作商家提供。付款后会生成订单，并将购买卡片发送给你选择的角色。</div></div>';
+    nav.go('shoppingDetail');
+  },
+  checkout(){
+    const p=this.product(),d=this.data(),chars=Store.data.characters;
+    document.getElementById('shopCheckoutBody').innerHTML='<div class="shop-checkout-card"><div class="shop-checkout-label">ORDER</div><div class="shop-checkout-product"><div class="shop-mini-media" style="--product-bg:'+p.color+'">'+p.symbol+'</div><div><strong>'+escapeHtml(p.name)+'</strong><span>¥'+Number(p.price).toFixed(2)+'</span></div></div></div><div class="shop-checkout-card"><div class="shop-checkout-label">配送地址</div><input id="shopCheckoutAddress" value="'+escapeHtml(d.address||'')+'" placeholder="填写收货地址"></div><div class="shop-checkout-card"><div class="shop-checkout-label">发送订单卡片给</div><select id="shopCheckoutChar">'+(chars.map(ch=>'<option value="'+ch.id+'">'+escapeHtml(ch.name)+'</option>').join('')||'<option value="">暂无角色</option>')+'</select></div><div class="shop-checkout-card"><div class="shop-total-line"><span>钱包余额 ¥'+Number(Store.data.wallet.balance||0).toFixed(2)+'</span><strong>¥'+Number(p.price).toFixed(2)+'</strong></div></div>';
+    nav.go('shoppingCheckout');
+  },
+  pay(){
+    const p=this.product(),address=(document.getElementById('shopCheckoutAddress')?.value||'').trim(),charId=document.getElementById('shopCheckoutChar')?.value||'';
+    if(!address)return UI.toast('请填写配送地址');
+    if(!charId)return UI.toast('请先创建并选择角色');
+    if(Number(Store.data.wallet.balance||0)<Number(p.price))return UI.alert('余额不足','钱包余额不足，无法完成付款。');
+    const ch=Store.data.characters.find(x=>x.id===charId);if(!ch)return UI.toast('角色不存在');
+    this.data().address=address;
+    const order={id:'ord_'+Date.now(),productId:p.id,name:p.name,category:p.category,price:Number(p.price),delivery:this.delivery(p),address,charId,timestamp:Date.now(),status:'已付款'};
+    this.data().orders.unshift(order);
+    Wallet.record('expense',p.price,'购物消费',p.name,charId);
+    const arr=Store.data.chats[charId]=Store.data.chats[charId]||[];
+    arr.push({role:'user',type:'order',content:p.name,orderId:order.id,orderName:p.name,orderCategory:p.category,orderPrice:Number(p.price),orderDelivery:order.delivery,orderAddress:address,timestamp:Date.now()});
+    Store.save();
+    Msg.renderChats?.();
+    UI.alert('付款成功','已从钱包扣除 ¥'+Number(p.price).toFixed(2)+'，订单卡片已发送给'+ch.name+'。',()=>{nav.go('messaging');Msg.showTab('chats');});
+  }
+};
+
 const Danger = {
   busy:false,
   data(){return Store.data.danger;},
@@ -8093,6 +8263,9 @@ function formatDay(ts) {
 function renderMsgBubble(m, i) {
   const regexPlacement=m.role==='user'?'userInput':'aiOutput';
   const displayContent=typeof RegexManager!=='undefined'?RegexManager.apply(m.content||'',regexPlacement,Chat.currentId,'display'):String(m.content||'');
+  if (m.type === 'order') {
+    return '<div class="msg-order-card"><div class="msg-order-top"><svg viewBox="0 0 24 24"><path d="M3 5h2l2 10h12l2-7H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg><span>已购买 · '+escapeHtml(m.orderCategory||'商品')+'</span></div><div class="msg-order-body"><div class="msg-order-name">'+escapeHtml(m.orderName||m.content||'商品')+'</div><div class="msg-order-meta">'+escapeHtml(m.orderDelivery||'预计 2～3 天送达')+'<br>'+escapeHtml(m.orderAddress||'')+'</div><div class="msg-order-price">¥'+Number(m.orderPrice||0).toFixed(2)+'</div></div></div>';
+  }
   if (m.type === 'call') {
     const mm = String(Math.floor((m.duration||0)/60)).padStart(2,'0');
     const ss = String((m.duration||0)%60).padStart(2,'0');

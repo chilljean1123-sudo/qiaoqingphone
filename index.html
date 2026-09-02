@@ -2430,6 +2430,71 @@
   .regex-bottom button { height:49px; border:0; border-radius:17px; font-size:13px; font-weight:700; box-shadow:0 9px 22px rgba(45,41,35,.17); }
   .regex-save { flex:1; color:#fff; background:#302e29; }
   .regex-delete { width:49px; color:#d5534d; background:#fff; }
+
+  /* ============ 心绪一缕 ============ */
+  #moodDiary,#moodDiarySettings,#moodDiaryCompose,#moodDiaryDetail { background:#111827; color:#e8e6e1; }
+  .mood-nav { border-bottom-color:rgba(255,255,255,.07)!important; background:rgba(17,24,39,.88)!important; backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
+  .mood-nav .nav-back,.mood-nav .nav-action,.mood-nav .nav-title { color:#e8e6e1; }
+  .mood-diary-body { flex:1; overflow-y:auto; padding:20px 16px 40px; background:radial-gradient(circle at 80% 3%,rgba(116,126,164,.18),transparent 28%),linear-gradient(#111827,#151a29); }
+  .mood-intro { position:relative; padding:24px 20px; border:1px solid rgba(255,255,255,.08); border-radius:26px; background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.025)); overflow:hidden; }
+  .mood-intro:after { content:"✦"; position:absolute; right:23px; top:16px; color:#a8b1d1; font-size:24px; opacity:.75; }
+  .mood-kicker { color:#929bbd; font-size:10px; letter-spacing:.22em; }
+  .mood-title { margin-top:9px; font-family:"Songti SC","STSong",serif; font-size:27px; letter-spacing:.08em; }
+  .mood-sub { margin-top:8px; color:#858da8; font-size:11px; line-height:1.6; }
+  .mood-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  .mood-actions button { height:49px; border:1px solid rgba(255,255,255,.08); border-radius:17px; color:#e7e4dc; background:rgba(255,255,255,.06); font-size:12px; }
+  .mood-actions button:first-child { color:#172033; background:#d7dbea; }
+  .mood-section-head { display:flex; align-items:center; justify-content:space-between; margin:24px 3px 11px; }
+  .mood-section-head strong { font-family:"Songti SC","STSong",serif; font-size:17px; }
+  .mood-section-head span { color:#78809a; font-size:10px; }
+  .mood-entry { width:100%; margin-bottom:12px; padding:18px; border:1px solid rgba(255,255,255,.075); border-radius:23px; text-align:left; color:#e6e3dc; background:rgba(255,255,255,.048); box-shadow:0 14px 30px rgba(0,0,0,.12); }
+  .mood-entry-top { display:flex; align-items:center; gap:10px; }
+  .mood-entry .avatar { width:34px!important; height:34px!important; font-size:12px!important; }
+  .mood-entry-author { flex:1; min-width:0; }
+  .mood-entry-author b { display:block; font-size:12px; }
+  .mood-entry-author small { display:block; margin-top:2px; color:#737c98; font-size:9px; }
+  .mood-entry-moon { color:#919bbb; font-size:15px; }
+  .mood-entry-title { margin-top:15px; font-family:"Songti SC","STSong",serif; font-size:18px; line-height:1.45; }
+  .mood-entry-preview { display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; margin-top:8px; color:#a9adbb; font:12px/1.8 "Songti SC","STSong",serif; }
+  .mood-entry-foot { display:flex; justify-content:space-between; margin-top:14px; color:#737b95; font-size:9px; }
+  .mood-empty { padding:65px 20px; color:#707993; text-align:center; font-family:"Songti SC","STSong",serif; line-height:1.9; }
+  .mood-settings-body,.mood-compose-body,.mood-detail-body { flex:1; overflow-y:auto; padding:17px 15px 100px; }
+  .mood-card { margin-bottom:12px; padding:17px; border:1px solid rgba(255,255,255,.075); border-radius:22px; background:rgba(255,255,255,.05); }
+  .mood-card-title { margin-bottom:13px; color:#8790ad; font-size:10px; letter-spacing:.12em; }
+  .mood-switch-row { display:flex; align-items:center; gap:12px; }
+  .mood-switch-copy { flex:1; }
+  .mood-switch-copy b { display:block; font-size:13px; }
+  .mood-switch-copy small { display:block; margin-top:3px; color:#747d98; font-size:9px; }
+  .mood-switch { width:44px; height:25px; padding:3px; border-radius:14px; background:#3f4658; }
+  .mood-switch:after { content:""; display:block; width:19px; height:19px; border-radius:50%; background:#d7d9df; transition:.2s; }
+  .mood-switch.on { background:#8995bd; }
+  .mood-switch.on:after { transform:translateX(19px); background:#fff; }
+  .mood-time-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .mood-field { display:block; margin-bottom:13px; }
+  .mood-field:last-child { margin-bottom:0; }
+  .mood-field span { display:block; margin-bottom:7px; color:#8991aa; font-size:10px; }
+  .mood-field input,.mood-field textarea,.mood-field select { width:100%; border:1px solid rgba(255,255,255,.07); outline:0; border-radius:15px; padding:12px; color:#e7e4dc; background:#202737; font-size:12px; }
+  .mood-field textarea { min-height:110px; resize:vertical; font-family:"Songti SC","STSong",serif; line-height:1.8; }
+  .mood-field textarea.mood-compose-text { min-height:360px; }
+  .mood-char-grid { display:flex; gap:8px; flex-wrap:wrap; }
+  .mood-char { display:flex; align-items:center; gap:6px; height:36px; padding:0 11px 0 6px; border:1px solid rgba(255,255,255,.1); border-radius:19px; color:#9ca3b9; background:transparent; font-size:10px; }
+  .mood-char.on { color:#192033; background:#ccd2e6; }
+  .mood-char .avatar { width:24px!important; height:24px!important; font-size:9px!important; }
+  .mood-primary { width:100%; height:49px; border:0; border-radius:17px; color:#172033; background:#d7dbea; font-size:13px; font-weight:700; }
+  .mood-primary:disabled { opacity:.4; }
+  .mood-paper { padding:23px 20px; border-radius:24px; color:#34363d; background:#e7e4dc; box-shadow:0 17px 35px rgba(0,0,0,.18); }
+  .mood-paper-meta { color:#85838a; font-size:10px; }
+  .mood-paper-title { margin-top:12px; font:700 23px/1.45 "Songti SC","STSong",serif; }
+  .mood-paper-content { margin-top:18px; white-space:pre-wrap; font:14px/2 "Songti SC","STSong",serif; }
+  .mood-thought-head { display:flex; justify-content:space-between; align-items:center; margin:22px 3px 10px; }
+  .mood-thought-head strong { font-size:15px; }
+  .mood-thought-head button { border:0; color:#aab2cf; background:none; font-size:11px; }
+  .mood-thought { margin-bottom:10px; padding:15px; border:1px solid rgba(255,255,255,.07); border-radius:19px; background:rgba(255,255,255,.045); }
+  .mood-thought-top { display:flex; align-items:center; gap:8px; }
+  .mood-thought-top .avatar { width:28px!important; height:28px!important; font-size:10px!important; }
+  .mood-thought-top b { font-size:11px; }
+  .mood-thought-text { margin-top:10px; color:#b9bdca; white-space:pre-wrap; font:12px/1.75 "Songti SC","STSong",serif; }
+  .mood-bottom { position:absolute; z-index:4; left:15px; right:15px; bottom:calc(15px + env(safe-area-inset-bottom,0px)); }
 </style>
 </head>
 <body>
@@ -2460,8 +2525,61 @@
         </div>
         <div class="app-label">世界书</div>
       </div>
+      <div class="app-icon" data-theme-app="moodDiary" onclick="nav.go('moodDiary');MoodDiary.render()">
+        <div class="app-icon-box" data-app-icon="moodDiary" style="background:linear-gradient(145deg,#273149,#111827);color:#dce1f3">
+          <svg viewBox="0 0 24 24"><path d="M4 19c4-1 7-4 8-8 2 2 5 3 8 2-1 5-5 8-10 8H4Z"/><path d="M16 3v3M14.5 4.5h3"/><path d="M5 5h5"/></svg>
+        </div>
+        <div class="app-label">心绪一缕</div>
+      </div>
     </div>
     <div class="home-dock"></div>
+  </div>
+
+  <!-- ========== 心绪一缕 ========== -->
+  <div class="screen hidden" id="moodDiary">
+    <div class="nav-bar mood-nav">
+      <div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>主屏</span></div>
+      <div class="nav-title">心绪一缕</div>
+      <div class="nav-action" onclick="MoodDiary.openSettings()" aria-label="设置"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1A7 7 0 0 0 14.8 6L14.5 3h-5L9.2 6a7 7 0 0 0-1.7 1.1l-2.4-1-2 3.4L5.1 11a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1A7 7 0 0 0 9.2 18l.3 3h5l.3-3a7 7 0 0 0 1.7-1.1l2.4 1 2-3.4-2-1.5a7 7 0 0 0 .1-1Z"/></svg></div>
+    </div>
+    <div class="mood-diary-body">
+      <div class="mood-intro"><div class="mood-kicker">A THREAD OF THOUGHT</div><div class="mood-title">把没有说出口的，写下来</div><div class="mood-sub">日记会记住今天，也会记住人与人之间没有明说的部分。</div></div>
+      <div class="mood-actions"><button onclick="MoodDiary.chooseWriteNow()">让角色现在写</button><button onclick="MoodDiary.openCompose()">写我的日记</button></div>
+      <div class="mood-section-head"><strong>日记簿</strong><span id="moodDiaryCount"></span></div>
+      <div id="moodDiaryList"></div>
+    </div>
+  </div>
+
+  <div class="screen hidden" id="moodDiarySettings">
+    <div class="nav-bar mood-nav">
+      <div class="nav-back" onclick="MoodDiary.saveSettings(true)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>日记</span></div>
+      <div class="nav-title">写作设置</div><span></span>
+    </div>
+    <div class="mood-settings-body">
+      <div class="mood-card"><div class="mood-switch-row" onclick="MoodDiary.toggleAuto()"><div class="mood-switch-copy"><b>自主写日记</b><small>每天在设定时间内写下一篇</small></div><div class="mood-switch" id="moodAutoSwitch"></div></div></div>
+      <div class="mood-card"><div class="mood-card-title">写作时间段</div><div class="mood-time-grid"><label class="mood-field"><span>开始</span><select id="moodStartHour"></select></label><label class="mood-field"><span>结束</span><select id="moodEndHour"></select></label></div></div>
+      <div class="mood-card"><div class="mood-card-title">允许写日记的角色</div><div class="mood-char-grid" id="moodAutoCharacters"></div></div>
+      <button class="mood-primary" onclick="MoodDiary.chooseWriteNow()">让角色现在写一篇</button>
+    </div>
+  </div>
+
+  <div class="screen hidden" id="moodDiaryCompose">
+    <div class="nav-bar mood-nav">
+      <div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>日记</span></div>
+      <div class="nav-title">我的日记</div>
+      <div class="nav-action" onclick="MoodDiary.publishMine()">发布</div>
+    </div>
+    <div class="mood-compose-body">
+      <div class="mood-card"><label class="mood-field"><span>标题</span><input id="moodMineTitle" maxlength="80" placeholder="给今天留一个标题"></label><label class="mood-field"><span>正文</span><textarea class="mood-compose-text" id="moodMineContent" maxlength="8000" placeholder="慢慢写，不必急着把一切说清楚。"></textarea></label></div>
+    </div>
+  </div>
+
+  <div class="screen hidden" id="moodDiaryDetail">
+    <div class="nav-bar mood-nav">
+      <div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>日记</span></div>
+      <div class="nav-title">日记</div><span></span>
+    </div>
+    <div class="mood-detail-body"><div id="moodDiaryPaper"></div><div class="mood-thought-head"><strong>读后心绪</strong><button onclick="MoodDiary.chooseThought()">＋ 选择角色发表想法</button></div><div id="moodThoughtList"></div></div>
   </div>
 
   <!-- ========== 设置 ========== -->
@@ -3536,6 +3654,9 @@ const Store = {
     if (!Array.isArray(this.data.friendRequests)) this.data.friendRequests = [];
     if (!Array.isArray(this.data.favoriteMessages)) this.data.favoriteMessages = [];
     if (!Array.isArray(this.data.stickerGroups)) this.data.stickerGroups = [];
+    this.data.moodDiary = { ...d.moodDiary, ...(this.data.moodDiary || {}), settings: { ...d.moodDiary.settings, ...((this.data.moodDiary || {}).settings || {}) } };
+    if (!Array.isArray(this.data.moodDiary.entries)) this.data.moodDiary.entries = [];
+    if (!Array.isArray(this.data.moodDiary.settings.characterIds)) this.data.moodDiary.settings.characterIds = [];
     this.data.interactionSettings = { ...d.interactionSettings, ...(this.data.interactionSettings || {}) };
     if (!Array.isArray(this.data.interactionSettings.characterIds)) this.data.interactionSettings.characterIds = [];
     this.data.imgApi = { ...d.imgApi, ...(this.data.imgApi || {}) };
@@ -3578,6 +3699,7 @@ const Store = {
       characters: [],
       worldBooks: [],
       regexRules: [],
+      moodDiary: { entries: [], settings: { enabled: false, startHour: 21, endHour: 23, characterIds: [], targetDate: '', targetHour: 21 } },
       chats: {},        // { charId: [ {role,content,type,duration?,timestamp} ] }
       chatSettings: {},
       friendRequests: [],
@@ -4654,6 +4776,113 @@ const Theme = {
       this.saveAndApply();
       UI.toast('外观已恢复默认');
     }, { danger: true, okText: '恢复' });
+  }
+};
+
+/* ============================================================
+   心绪一缕
+============================================================ */
+const MoodDiary = {
+  currentId:null,busy:false,timer:null,
+  data(){return Store.data.moodDiary;},
+  cfg(){return this.data().settings;},
+  dateKey(time=Date.now()){const d=new Date(time);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');},
+  formatDate(time){const d=new Date(time);return (d.getMonth()+1)+'月'+d.getDate()+'日 · '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');},
+  author(entry){return entry.authorType==='user'?{id:'user',name:Store.data.userName||'我',avatar:Store.data.userAvatar||''}:Store.data.characters.find(ch=>ch.id===entry.charId);},
+  render(){
+    const entries=[...this.data().entries].sort((a,b)=>b.timestamp-a.timestamp);
+    document.getElementById('moodDiaryCount').textContent=entries.length+' 篇';
+    const box=document.getElementById('moodDiaryList');
+    if(!entries.length){box.innerHTML='<div class="mood-empty">夜色还没有落下第一行字<br>这里会收留角色和你的日记</div>';return;}
+    box.innerHTML=entries.map(entry=>{
+      const author=this.author(entry)||{name:'未知',avatar:''},thoughts=entry.thoughts?.length||0;
+      return '<button class="mood-entry" onclick="MoodDiary.openDetail(\''+entry.id+'\')"><div class="mood-entry-top">'+(entry.authorType==='user'?renderAvatar({name:author.name,avatar:author.avatar}):renderAvatar(author))+'<span class="mood-entry-author"><b>'+escapeHtml(author.name||'未署名')+'</b><small>'+this.formatDate(entry.timestamp)+'</small></span><span class="mood-entry-moon">☾</span></div><div class="mood-entry-title">'+escapeHtml(entry.title||'无题')+'</div><div class="mood-entry-preview">'+escapeHtml(entry.content||'')+'</div><div class="mood-entry-foot"><span>'+(entry.authorType==='user'?'我的记录':'角色日记')+'</span><span>'+thoughts+' 条想法</span></div></button>';
+    }).join('');
+  },
+  openSettings(){
+    const c=this.cfg(),hours=Array.from({length:24},(_,i)=>'<option value="'+i+'">'+String(i).padStart(2,'0')+':00</option>').join('');
+    document.getElementById('moodStartHour').innerHTML=hours;document.getElementById('moodEndHour').innerHTML=hours;
+    document.getElementById('moodStartHour').value=c.startHour??21;document.getElementById('moodEndHour').value=c.endHour??23;
+    document.getElementById('moodAutoSwitch').classList.toggle('on',!!c.enabled);
+    this.renderSettingsChars();nav.go('moodDiarySettings');
+  },
+  renderSettingsChars(){
+    const ids=this.cfg().characterIds||[],box=document.getElementById('moodAutoCharacters');
+    box.innerHTML=Store.data.characters.map(ch=>'<button class="mood-char '+(ids.includes(ch.id)?'on':'')+'" onclick="MoodDiary.toggleChar(\''+ch.id+'\')">'+renderAvatar(ch)+'<span>'+escapeHtml(ch.name)+'</span></button>').join('')||'<span style="color:#78809a;font-size:10px">还没有角色</span>';
+  },
+  toggleAuto(){this.cfg().enabled=!this.cfg().enabled;document.getElementById('moodAutoSwitch').classList.toggle('on',this.cfg().enabled);this.saveSettings(false);},
+  toggleChar(id){const ids=this.cfg().characterIds||(this.cfg().characterIds=[]),i=ids.indexOf(id);if(i>=0)ids.splice(i,1);else ids.push(id);this.renderSettingsChars();this.saveSettings(false);},
+  saveSettings(back){
+    const start=document.getElementById('moodStartHour'),end=document.getElementById('moodEndHour');
+    if(start)this.cfg().startHour=Number(start.value);if(end)this.cfg().endHour=Number(end.value);
+    this.planTarget(true);Store.save();if(back){nav.back();this.render();}
+  },
+  planTarget(force=false){
+    const c=this.cfg(),today=this.dateKey();
+    if(!force&&c.targetDate===today)return;
+    const start=Math.max(0,Math.min(23,Number(c.startHour)||0)),end=Math.max(start,Math.min(23,Number(c.endHour)||start));
+    c.targetDate=today;c.targetHour=start+Math.floor(Math.random()*(end-start+1));
+  },
+  init(){clearInterval(this.timer);this.planTarget();Store.save();setTimeout(()=>this.tick(),3500);this.timer=setInterval(()=>this.tick(),60000);},
+  async tick(){
+    const c=this.cfg();if(!c.enabled||this.busy)return;this.planTarget();
+    if(new Date().getHours()<Number(c.targetHour||0))return;
+    const today=this.dateKey(),ids=(c.characterIds||[]).filter(id=>Store.data.characters.some(ch=>ch.id===id));
+    const pending=ids.find(id=>!this.data().entries.some(e=>e.authorType==='char'&&e.charId===id&&this.dateKey(e.timestamp)===today));
+    if(pending)await this.generateChar(pending,true);
+  },
+  chooseWriteNow(){
+    if(!Store.data.characters.length){UI.toast('还没有角色');return;}
+    UI.sheet('<div class="sheet-title">让谁写下此刻</div><div class="mood-char-grid">'+Store.data.characters.map(ch=>'<button class="mood-char" onclick="MoodDiary.generateChar(\''+ch.id+'\');UI.closeSheet()">'+renderAvatar(ch)+'<span>'+escapeHtml(ch.name)+'</span></button>').join('')+'</div>');
+  },
+  recentFor(ch){
+    const chats=(Store.data.chats[ch.id]||[]).slice(-40).map(m=>(m.role==='user'?(Store.data.userName||'用户'):ch.name)+'：'+(m.content||'')).join('\n');
+    const todayMoments=(Store.data.momentsProfile?.posts||[]).filter(p=>this.dateKey(p.timestamp)===this.dateKey()).map(p=>'朋友圈：'+(p.text||'')).join('\n');
+    return (chats+'\n'+todayMoments).slice(-12000);
+  },
+  parseDiary(raw){
+    let text=String(raw||'').trim().replace(/^```(?:json)?/i,'').replace(/```$/,'').trim();
+    try{const a=text.indexOf('{'),b=text.lastIndexOf('}');if(a>=0&&b>a)return JSON.parse(text.slice(a,b+1));}catch(_){}
+    const lines=text.split('\n'),title=(lines.shift()||'今日随记').replace(/^#+\s*/,'').slice(0,80);
+    return {title,content:lines.join('\n').trim()||text};
+  },
+  async generateChar(charId,manual=false){
+    if(this.busy)return;const ch=Store.data.characters.find(x=>x.id===charId),api=API.getActive();if(!ch||!api){UI.toast('需要先配置聊天 API');return;}
+    this.busy=true;UI.toast(ch.name+' 正在写日记…',2500);
+    const books=WB.getApplicableForCharacter(ch).map(b=>b.name+'：'+b.content).join('\n');
+    const prompt='你正在扮演'+ch.name+'。请以这个角色本人真实写日记的口吻，写一篇中文日记。文风必须由角色性格、经历、年龄和说话习惯自然决定，不要使用通用文艺腔。可以记录今天发生的事情，也可以结合聊天写对用户未说出口的感受、误解、依赖、戒备或期待。正文1000至1500个汉字，不解释任务，不写“作为AI”。严格返回JSON：{"title":"日记标题","content":"正文"}。\n角色设定：'+(ch.persona||'')+'\n角色备注：'+(ch.notes||'')+'\n世界书：'+books+'\n今天与近期内容：'+this.recentFor(ch);
+    try{
+      const raw=await API.chat([{role:'system',content:'你是私人日记写作者，保持角色一致，只输出合法JSON。'},{role:'user',content:prompt}]);
+      const out=this.parseDiary(raw),content=String(out.content||'').slice(0,1700);
+      this.data().entries.push({id:Store.uid(),authorType:'char',charId:ch.id,title:String(out.title||'今日随记').slice(0,80),content,timestamp:Date.now(),thoughts:[]});
+      Store.save();this.render();UI.toast(ch.name+' 写完了');
+    }catch(e){if(manual)UI.alert('写作失败',String(e.message||e));}
+    finally{this.busy=false;}
+  },
+  openCompose(){document.getElementById('moodMineTitle').value='';document.getElementById('moodMineContent').value='';nav.go('moodDiaryCompose');},
+  publishMine(){
+    const title=document.getElementById('moodMineTitle').value.trim(),content=document.getElementById('moodMineContent').value.trim();
+    if(!content){UI.toast('先写下日记内容');return;}
+    this.data().entries.push({id:Store.uid(),authorType:'user',title:title||'无题',content,timestamp:Date.now(),thoughts:[]});
+    Store.save();this.render();nav.back();UI.toast('日记已收好');
+  },
+  openDetail(id){this.currentId=id;const entry=this.data().entries.find(e=>e.id===id);if(!entry)return;const author=this.author(entry)||{name:'未知'};
+    document.getElementById('moodDiaryPaper').innerHTML='<article class="mood-paper"><div class="mood-paper-meta">'+escapeHtml(author.name||'未署名')+' · '+this.formatDate(entry.timestamp)+'</div><div class="mood-paper-title">'+escapeHtml(entry.title||'无题')+'</div><div class="mood-paper-content">'+escapeHtml(entry.content||'')+'</div></article>';
+    this.renderThoughts();nav.go('moodDiaryDetail');
+  },
+  renderThoughts(){
+    const entry=this.data().entries.find(e=>e.id===this.currentId),box=document.getElementById('moodThoughtList');if(!entry)return;
+    box.innerHTML=(entry.thoughts||[]).map(t=>{const ch=Store.data.characters.find(x=>x.id===t.charId);return '<div class="mood-thought"><div class="mood-thought-top">'+(ch?renderAvatar(ch):'')+'<b>'+escapeHtml(ch?.name||t.charName||'角色')+'</b></div><div class="mood-thought-text">'+escapeHtml(t.content||'')+'</div></div>';}).join('')||'<div class="mood-empty" style="padding:25px">还没有人读过这篇日记</div>';
+  },
+  chooseThought(){
+    const entry=this.data().entries.find(e=>e.id===this.currentId);if(!entry||!Store.data.characters.length)return;
+    UI.sheet('<div class="sheet-title">让谁读完后留下想法</div><div class="mood-char-grid">'+Store.data.characters.map(ch=>'<button class="mood-char" onclick="MoodDiary.addThought(\''+ch.id+'\');UI.closeSheet()">'+renderAvatar(ch)+'<span>'+escapeHtml(ch.name)+'</span></button>').join('')+'</div>');
+  },
+  async addThought(charId){
+    if(this.busy)return;const entry=this.data().entries.find(e=>e.id===this.currentId),ch=Store.data.characters.find(x=>x.id===charId);if(!entry||!ch||!API.getActive())return;
+    this.busy=true;UI.toast(ch.name+' 正在读…');
+    const prompt='你是'+ch.name+'。读完下面这篇日记后，以你的性格和与作者的关系写一段500字以内的真实感想。可以赞同、误解、心疼、吃醋、质疑或沉默，不要概括全文，不要解释任务。\n你的设定：'+(ch.persona||'')+'\n作者：'+(this.author(entry)?.name||'用户')+'\n日记：'+entry.title+'\n'+entry.content;
+    try{const content=String(await API.chat([{role:'system',content:'保持角色身份，只输出读后感想正文。'},{role:'user',content:prompt}])).slice(0,600);(entry.thoughts||(entry.thoughts=[])).push({id:Store.uid(),charId:ch.id,charName:ch.name,content,timestamp:Date.now()});Store.save();this.renderThoughts();UI.toast(ch.name+' 留下了想法');}catch(e){UI.alert('生成失败',String(e.message||e));}finally{this.busy=false;}
   }
 };
 
@@ -7637,6 +7866,7 @@ document.addEventListener('DOMContentLoaded', () => {
   Theme.init();
   Push.init();
   Interactions.init();
+  MoodDiary.init();
   updateHomeTime();
   setInterval(updateHomeTime, 1000 * 30);
 

@@ -1559,9 +1559,11 @@
   #tab-moments { background:#fff; color:#1c2738; overflow-y:auto; }
   .moments-hero { position:relative; min-height:330px; background:linear-gradient(145deg,#4b5563,#c7cbd2); background-size:cover; background-position:center; color:#fff; overflow:hidden; }
   .moments-hero::after { content:""; position:absolute; inset:38% 0 0; background:linear-gradient(transparent,rgba(0,0,0,.64)); pointer-events:none; }
-  .moments-camera,.moments-cover-edit { position:absolute; z-index:2; border:0; color:#fff; background:rgba(20,25,34,.28); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
-  .moments-camera { right:17px; top:17px; width:46px; height:46px; border-radius:50%; display:grid; place-items:center; }
-  .moments-camera svg { width:25px; fill:none; stroke:currentColor; stroke-width:1.8; }
+  .moments-camera,.moments-cover-edit,.moments-back { position:absolute; z-index:2; border:0; color:#fff; background:rgba(20,25,34,.28); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+  .moments-camera,.moments-back { right:17px; top:17px; width:46px; height:46px; border-radius:50%; display:grid; place-items:center; }
+  .moments-back { right:auto; left:17px; }
+  .moments-camera svg,.moments-back svg { width:25px; fill:none; stroke:currentColor; stroke-width:1.8; }
+  #messaging.messaging-moments-view #messagingNav { display:none; }
   .moments-cover-edit { right:17px; bottom:20px; padding:8px 12px; border-radius:18px; font-size:12px; }
   .moments-profile { position:absolute; z-index:2; left:22px; right:22px; bottom:18px; padding-right:92px; }
   .moments-profile-avatar { width:70px; height:70px; border:3px solid #fff; box-shadow:0 4px 18px rgba(0,0,0,.18); font-size:27px; }
@@ -5316,6 +5318,7 @@ const Msg = {
     document.getElementById('messagingTitle').textContent = titles[tab];
     document.getElementById('messaging').classList.toggle('messaging-chats-view', tab === 'chats');
     document.getElementById('messaging').classList.toggle('messaging-contacts-view', tab === 'contacts');
+    document.getElementById('messaging').classList.toggle('messaging-moments-view', tab === 'moments');
     const action = document.getElementById('messagingAction');
     action.style.display = (tab === 'contacts' || tab === 'chats') ? 'flex' : 'none';
     action.title = tab === 'chats' ? '新信息' : '新建联系人';
@@ -5467,6 +5470,7 @@ const Msg = {
     }).join('');
     c.innerHTML =
       '<section class="moments-hero" style="'+cover+'">'+
+        '<button class="moments-back" onclick="nav.back()" aria-label="返回"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>'+
         '<button class="moments-camera" onclick="Moments.openComposer()" aria-label="发朋友圈"><svg viewBox="0 0 24 24"><path d="M14.5 5 13 3h-2L9.5 5H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z"/><circle cx="12" cy="12" r="4"/></svg></button>'+
         '<div class="moments-profile"><div class="avatar moments-profile-avatar">'+initials(Store.data.userName)+'</div><div class="moments-profile-name">'+escapeHtml(Store.data.userName)+'</div><div class="moments-profile-signature" onclick="Moments.editSignature()">'+escapeHtml(p.signature || '点击编辑签名')+'</div></div>'+
         '<button class="moments-cover-edit" onclick="Moments.chooseCover()">更换背景</button>'+

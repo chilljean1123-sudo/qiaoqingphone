@@ -557,6 +557,8 @@
   /* ============ 聊天界面 ============ */
   .chat-screen {
     background: #FFFFFF;
+    background-size: cover;
+    background-position: center;
   }
   .chat-header-info {
     position: absolute;
@@ -5814,6 +5816,8 @@ const Chat = {
     try { localStorage.setItem(Store.KEY, JSON.stringify(Store.data)); } catch (_) {}
     const ch = Store.data.characters.find(c => c.id === id);
     if (!ch) return;
+    const wp = Store.data.theme?.wallpaper;
+    document.getElementById('chat').style.backgroundImage = wp ? 'url(' + wp + ')' : '';
     document.getElementById('chatHeaderInfo').innerHTML = `
       ${renderAvatar(ch)}
       <span class="name">${escapeHtml(ch.name)}</span>
@@ -6582,17 +6586,21 @@ const Call = {
   onInputKeydown(event) {
     if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
       event.preventDefault();
-      this.send();
+      this.pushInputText();
     }
   },
-  send() {
-    if (this.loading) return;
+  pushInputText() {
     const t = document.getElementById('callInput');
     const text = t.value.trim();
-    if (!text) return;
+    if (!text) return false;
     t.value = '';
     this.messages.push({ role: 'user', content: text, timestamp: Date.now() });
     this.renderMessages();
+    return true;
+  },
+  send() {
+    if (this.loading) return;
+    this.pushInputText();
     this.requestReply(null);
   },
   retryLast() {

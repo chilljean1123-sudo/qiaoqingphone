@@ -2171,6 +2171,11 @@
   .call-bottom { position: relative; z-index: 1; padding: 6px 16px calc(14px + env(safe-area-inset-bottom,0px)); display: flex; flex-direction: column; align-items: center; gap: 14px; }
   .call-hangup-btn { width: 58px; height: 58px; border-radius: 50%; border: 0; background: #FF3B30; color: #fff; display: grid; place-items: center; box-shadow: 0 8px 20px rgba(255,59,48,.4); transform: rotate(135deg); }
   .call-hangup-btn svg { width: 26px; height: 26px; }
+  .call-ring-actions { display: none; align-items: center; justify-content: center; gap: 64px; }
+  .call-decline-btn, .call-answer-btn { width: 58px; height: 58px; border-radius: 50%; border: 0; display: grid; place-items: center; }
+  .call-decline-btn { background: #FF3B30; color: #fff; box-shadow: 0 8px 20px rgba(255,59,48,.4); transform: rotate(135deg); }
+  .call-answer-btn { background: #34C759; color: #fff; box-shadow: 0 8px 20px rgba(52,199,89,.4); }
+  .call-decline-btn svg, .call-answer-btn svg { width: 26px; height: 26px; }
   .call-input-bar { width: 100%; display: flex; align-items: center; gap: 8px; }
   .call-retry-btn, .call-send-btn { width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgba(255,255,255,.18); color: #fff; display: grid; place-items: center; flex: none; }
   .call-retry-btn svg, .call-send-btn svg { width: 17px; height: 17px; }
@@ -2810,7 +2815,7 @@
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
       </div>
     </div>
-    <div class="content" id="chatContent">
+    <div class="content" id="chatContent" onclick="Chat.dismissPlus()">
       <div class="chat-messages" id="chatMessages"></div>
     </div>
     <div class="input-bar-wrap" id="inputBarWrap">
@@ -2922,9 +2927,17 @@
       <div class="call-messages" id="callMessages"></div>
     </div>
     <div class="call-bottom">
-      <button class="call-hangup-btn" onclick="Call.end()" aria-label="挂断">
+      <button class="call-hangup-btn" id="callHangupBtn" onclick="Call.end()" aria-label="挂断">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
       </button>
+      <div class="call-ring-actions" id="callRingActions" style="display:none">
+        <button class="call-decline-btn" onclick="Call.declineIncoming()" aria-label="拒绝">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+        </button>
+        <button class="call-answer-btn" onclick="Call.answerIncoming()" aria-label="接听">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+        </button>
+      </div>
       <div class="call-input-bar" id="callInputBar" style="display:none">
         <button class="call-retry-btn" onclick="Call.retryLast()" aria-label="重回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
         <div class="call-input-wrap"><textarea id="callInput" placeholder="信息" rows="1" onkeydown="Call.onInputKeydown(event)"></textarea></div>
@@ -5888,6 +5901,9 @@ const Chat = {
     t.style.height = 'auto';
     t.style.height = Math.min(t.scrollHeight, 100) + 'px';
   },
+  dismissPlus() {
+    document.getElementById('plusPanel')?.classList.remove('show');
+  },
   togglePlus() {
     const p = document.getElementById('plusPanel');
     const isShow = p.classList.contains('show');
@@ -5931,10 +5947,51 @@ const Chat = {
     if (!(amt > 0)) { UI.toast('请输入有效金额'); return; }
     const w = Wallet.cfg();
     if (amt > w.balance) { UI.toast('余额不足'); return; }
-    const ch = Store.data.characters.find(c => c.id === this.currentId);
-    Wallet.record('expense', amt, '转账给'+(ch?.name||'对方'), note, this.currentId);
     UI.closeSheet();
-    this._sendMessage({ role: 'user', type: 'transfer', content: note, amount: Math.round(amt*100)/100 });
+    this._sendMessage({ role: 'user', type: 'transfer', content: note, amount: Math.round(amt*100)/100, status: 'pending' });
+  },
+  openTransferDetail(index) {
+    const arr = Store.data.chats[this.currentId] || [];
+    const m = arr[index];
+    const ch = Store.data.characters.find(c => c.id === this.currentId);
+    if (!m || m.type !== 'transfer' || !ch) return;
+    const status = m.status || 'accepted';
+    const isMine = m.role === 'user';
+    const statusText = status === 'accepted' ? '已接受' : status === 'declined' ? '已拒绝' : '待处理';
+    let body = '<div class="sheet-title">转账详情</div>' +
+      '<div style="text-align:center;padding:6px 0 18px">' +
+        '<div style="font-size:32px;font-weight:700">¥' + m.amount.toFixed(2) + '</div>' +
+        (m.content ? '<div style="margin-top:6px;color:#8E8E93;font-size:13px">' + escapeHtml(m.content) + '</div>' : '') +
+        '<div style="margin-top:10px;font-size:12px;color:#8E8E93">' + (isMine ? '你转给 ' + escapeHtml(ch.name) : escapeHtml(ch.name) + ' 转给你') + ' · ' + statusText + '</div>' +
+        (m.replyNote ? '<div style="margin-top:6px;font-size:12px;color:#8E8E93">备注：' + escapeHtml(m.replyNote) + '</div>' : '') +
+      '</div>';
+    if (status === 'pending' && !isMine) {
+      body += '<div class="transfer-field"><label>备注（可选）</label><input id="transferReplyNote" maxlength="30" placeholder="写点什么"></div>' +
+        '<div class="memory-btn-row" style="margin-top:14px">' +
+          '<button class="ghost" onclick="Chat.respondTransfer(' + index + ',\'declined\')">拒收</button>' +
+          '<button onclick="Chat.respondTransfer(' + index + ',\'accepted\')">接受</button>' +
+        '</div>';
+    } else if (status === 'pending' && isMine) {
+      body += '<div class="memory-card-note" style="text-align:center">等待对方处理中…</div>';
+    }
+    UI.sheet(body);
+  },
+  respondTransfer(index, decision) {
+    const arr = Store.data.chats[this.currentId] || [];
+    const m = arr[index];
+    const ch = Store.data.characters.find(c => c.id === this.currentId);
+    if (!m || m.status !== 'pending' || !ch) return;
+    const note = String(document.getElementById('transferReplyNote')?.value || '').trim();
+    if (decision === 'accepted') {
+      Wallet.record('income', m.amount, ch.name + ' 的转账', m.content, this.currentId);
+      m.status = 'accepted';
+    } else {
+      m.status = 'declined';
+    }
+    m.replyNote = note;
+    Store.save();
+    UI.closeSheet();
+    this.render();
   },
   openPhoto() {
     document.getElementById('plusPanel').classList.remove('show');
@@ -6018,7 +6075,7 @@ const Chat = {
     if (m.type === 'image') return '[照片]';
     if (m.type === 'photo-desc') return '[照片] ' + (m.content||'');
     if (m.type === 'location') return '[位置] ' + (m.content||'');
-    if (m.type === 'call') return '[' + (m.mode==='video'?'视频通话':'语音通话') + ']';
+    if (m.type === 'call') return m.missed ? '[未接' + (m.mode==='video'?'视频通话':'语音通话') + ']' : '[' + (m.mode==='video'?'视频通话':'语音通话') + ']';
     return m.content || '';
   },
   openMessageMenu(index, ev) {
@@ -6127,7 +6184,10 @@ const Chat = {
     }, { danger: true, okText: '删除' });
   },
   rowClick(index) {
-    if (this.multiSelectMode) this.toggleSelect(index);
+    if (this.multiSelectMode) { this.toggleSelect(index); return; }
+    const arr = Store.data.chats[this.currentId] || [];
+    const m = arr[index];
+    if (m && m.type === 'transfer') this.openTransferDetail(index);
   },
   enterMultiSelect(index) {
     this.multiSelectMode = true;
@@ -6219,11 +6279,17 @@ const Chat = {
     const longTermMem = Memory.selectLongTermForInjection(ch);
     if (longTermMem) sys += `# 长期记忆\n${longTermMem}\n\n`;
     sys += `# 对话须知\n- 始终以「${ch.name}」的第一人称回复\n- 保持角色一致\n- 回复自然、口语化\n- 若回复内容较长，可以在段落之间用空行分隔，将被拆分为多条消息发送`;
-    sys += `\n\n# 转账能力\n如果剧情合理（比如还钱、发红包、表达心意），你可以给用户转账：把这一段回复单独写成一行，格式为 [转账:金额:留言]，例如 [转账:52:小心意]。不要频繁转账，没有合适理由就不要用。`;
+    sys += `\n\n# 转账能力\n如果剧情合理（比如还钱、发红包、表达心意），你可以给用户转账：把这一段回复单独写成一行，格式为 [转账:金额:留言]，例如 [转账:52:小心意]。不要频繁转账，没有合适理由就不要用。转账发出后是"待处理"状态，需要用户接受才会真正到账。`;
     const boundStickers = stickersForCharacter(ch.id);
     if (boundStickers.length) {
       sys += `\n\n# 表情包能力\n你可以发送以下属于你的表情包，把这一段回复单独写成一行，格式为 [表情:表情名]，名字必须和下面列表完全一致：\n` + boundStickers.map(s=>'- '+s.name).join('\n') + `\n只在合适、自然的时候用，不要每条回复都发。`;
     }
+    const lastMsg = (Store.data.chats[this.currentId]||[])[(Store.data.chats[this.currentId]||[]).length-1];
+    if (lastMsg && lastMsg.type === 'transfer' && lastMsg.role === 'user' && (lastMsg.status||'pending') === 'pending') {
+      sys += `\n\n# 待处理的转账\n用户刚给你转账 ¥${Number(lastMsg.amount||0).toFixed(2)}${lastMsg.content?'，留言："'+lastMsg.content+'"':''}。你必须在这轮回复里做出决定：接受就单独一行输出 [收款:接受:留言]，拒绝就单独一行输出 [收款:拒绝:留言]，留言部分可以是你的真实反应，也可以留空，例如 [收款:接受:谢谢你]。`;
+    }
+    sys += `\n\n# 撤回能力\n如果你想撤回自己刚发的一条消息（说错话了、想收回），单独一行输出 [撤回]，会撤回你最近一条尚未撤回的消息，不要滥用。`;
+    sys += `\n\n# 主动来电\n如果剧情合理，你可以主动给用户打电话或视频通话：单独一行输出 [来电:语音] 或 [来电:视频]。不要频繁使用，没有合适理由就不要用。`;
 
     // 组装历史（把语音/表情转成可理解格式）
     const fullHistory = (Store.data.chats[this.currentId] || []).map(m => {
@@ -6233,7 +6299,9 @@ const Chat = {
         const s = Store.data.stickers.find(x => x.id === m.content);
         content = `[发送了表情包：${s?.name || '未知'}]`;
       } else if (m.type === 'transfer') {
-        content = `[转账 ¥${Number(m.amount||0).toFixed(2)}] ${m.content||''}`;
+        const st = m.status || 'accepted';
+        const stLabel = st === 'accepted' ? '已接受' : st === 'declined' ? '已拒绝' : '待处理，需要你决定接受或拒绝';
+        content = `[转账 ¥${Number(m.amount||0).toFixed(2)}，${stLabel}] ${m.content||''}`;
       } else if (m.type === 'image') {
         content = `[发送了一张照片]`;
       } else if (m.type === 'photo-desc') {
@@ -6241,7 +6309,7 @@ const Chat = {
       } else if (m.type === 'location') {
         content = `[发送了位置：${m.content||''}]`;
       } else if (m.type === 'call') {
-        content = `[进行了一次${m.mode==='video'?'视频':'语音'}通话，时长 ${m.duration||0} 秒]`;
+        content = m.missed ? `[一次未接${m.mode==='video'?'视频':'语音'}通话]` : `[进行了一次${m.mode==='video'?'视频':'语音'}通话，时长 ${m.duration||0} 秒]`;
       }
       if (m.quote) content = `[引用 ${m.quote.author}: ${m.quote.text}]\n${content}`;
       return { role: m.role, content };
@@ -6279,16 +6347,37 @@ const Chat = {
       const c = chunks[i];
       const tm = c.match(/^\[转账[:：]\s*([\d.]+)\s*[:：]?\s*(.*?)\]$/);
       const sm = c.match(/^\[表情[:：]\s*(.+?)\]$/);
+      const rm = c.match(/^\[撤回\]$/);
+      const cm = c.match(/^\[来电[:：]\s*(语音|视频)\]$/);
+      const pm = c.match(/^\[收款[:：]\s*(接受|拒绝)\s*[:：]?\s*(.*?)\]$/);
       const sticker = sm ? stickersForCharacter(charId).find(s => s.name === sm[1].trim()) : null;
       if (tm) {
         const amt = Math.max(0.01, Number(tm[1])||0);
         const note = tm[2] || '';
-        Wallet.record('income', amt, ch.name+' 的转账', note, ch.id);
-        arr.push({ role: 'assistant', type: 'transfer', content: note, amount: Math.round(amt*100)/100, timestamp: Date.now() });
+        arr.push({ role: 'assistant', type: 'transfer', content: note, amount: Math.round(amt*100)/100, status: 'pending', timestamp: Date.now() });
         memoryTexts.push('[转账 ¥'+amt.toFixed(2)+'] '+note);
       } else if (sticker) {
         arr.push({ role: 'assistant', type: 'sticker', content: sticker.id, timestamp: Date.now() });
         memoryTexts.push('[表情包：'+sticker.name+']');
+      } else if (rm) {
+        let idx = arr.length - 1;
+        while (idx >= 0 && (arr[idx].role !== 'assistant' || arr[idx].type === 'call' || arr[idx].recalled)) idx--;
+        if (idx >= 0) {
+          arr[idx].recalled = true;
+          memoryTexts.push('[撤回了一条消息]');
+        }
+      } else if (cm) {
+        if (this.currentId === charId && typeof Call !== 'undefined') Call.incoming(charId, cm[1] === '视频' ? 'video' : 'voice');
+      } else if (pm) {
+        let idx = arr.length - 1;
+        while (idx >= 0 && !(arr[idx].type === 'transfer' && arr[idx].role === 'user' && (arr[idx].status||'pending') === 'pending')) idx--;
+        if (idx >= 0) {
+          const decision = pm[1] === '接受' ? 'accepted' : 'declined';
+          if (decision === 'accepted') Wallet.record('expense', arr[idx].amount, '转账给'+ch.name, arr[idx].content, charId);
+          arr[idx].status = decision;
+          arr[idx].replyNote = pm[2] || '';
+          memoryTexts.push('[' + (decision === 'accepted' ? '接受了转账' : '拒绝了转账') + '] ' + (pm[2]||''));
+        }
       } else {
         arr.push({ role: 'assistant', type: 'text', content: c, timestamp: Date.now() });
         memoryTexts.push(c);
@@ -6336,6 +6425,7 @@ const Chat = {
 const Call = {
   charId: null,
   mode: 'voice',
+  direction: 'outgoing',
   state: 'idle',
   startedAt: 0,
   timer: null,
@@ -6350,6 +6440,7 @@ const Call = {
     document.getElementById('plusPanel')?.classList.remove('show');
     this.charId = charId;
     this.mode = mode;
+    this.direction = 'outgoing';
     this.state = 'calling';
     this.messages = [];
     this.loading = false;
@@ -6361,9 +6452,60 @@ const Call = {
     document.getElementById('callCenterCalling').style.display = 'flex';
     document.getElementById('callCenterConnected').style.display = 'none';
     document.getElementById('callInputBar').style.display = 'none';
+    document.getElementById('callHangupBtn').style.display = '';
+    document.getElementById('callRingActions').style.display = 'none';
     document.getElementById('callScreen').classList.add('show');
     const delay = 1800 + Math.random() * 2800;
     this.ringTimeout = setTimeout(() => { if (this.state === 'calling') this.connect(); }, delay);
+  },
+  incoming(charId, mode) {
+    const ch = Store.data.characters.find(c => c.id === charId);
+    if (!ch || this.state !== 'idle') return;
+    document.getElementById('plusPanel')?.classList.remove('show');
+    this.charId = charId;
+    this.mode = mode;
+    this.direction = 'incoming';
+    this.state = 'ringing';
+    this.messages = [];
+    this.loading = false;
+    document.getElementById('callName').textContent = ch.name;
+    document.getElementById('callSub').textContent = mode === 'video' ? '邀请你视频通话...' : '邀请你语音通话...';
+    document.getElementById('callAvatarBig').innerHTML = renderAvatar(ch);
+    const wp = Store.data.theme?.wallpaper;
+    document.getElementById('callBg').style.backgroundImage = wp ? 'url(' + wp + ')' : '';
+    document.getElementById('callCenterCalling').style.display = 'flex';
+    document.getElementById('callCenterConnected').style.display = 'none';
+    document.getElementById('callInputBar').style.display = 'none';
+    document.getElementById('callHangupBtn').style.display = 'none';
+    document.getElementById('callRingActions').style.display = 'flex';
+    document.getElementById('callScreen').classList.add('show');
+    clearTimeout(this.ringTimeout);
+    this.ringTimeout = setTimeout(() => { if (this.state === 'ringing') this.declineIncoming(); }, 20000);
+  },
+  answerIncoming() {
+    if (this.state !== 'ringing') return;
+    clearTimeout(this.ringTimeout);
+    document.getElementById('callHangupBtn').style.display = '';
+    document.getElementById('callRingActions').style.display = 'none';
+    this.connect();
+  },
+  declineIncoming() {
+    if (this.state !== 'ringing') return;
+    clearTimeout(this.ringTimeout);
+    const charId = this.charId;
+    const mode = this.mode;
+    this.state = 'idle';
+    document.getElementById('callScreen').classList.remove('show');
+    document.getElementById('callHangupBtn').style.display = '';
+    document.getElementById('callRingActions').style.display = 'none';
+    this.messages = [];
+    if (charId) {
+      const arr = (Store.data.chats[charId] = Store.data.chats[charId] || []);
+      arr.push({ role: 'assistant', type: 'call', mode, duration: 0, missed: true, timestamp: Date.now() });
+      Store.save();
+      if (Chat.currentId === charId) Chat.render();
+      if (typeof Msg !== 'undefined') Msg.renderChats?.();
+    }
   },
   connect() {
     this.state = 'connected';
@@ -6494,6 +6636,7 @@ const Call = {
     const duration = wasConnected ? Math.floor((Date.now() - this.startedAt) / 1000) : 0;
     const transcript = this.messages.slice();
     this.state = 'idle';
+    this.direction = 'outgoing';
     document.getElementById('callScreen').classList.remove('show');
     this.messages = [];
     if (wasConnected && charId) {
@@ -6737,11 +6880,12 @@ function renderMsgBubble(m, i) {
   if (m.type === 'call') {
     const mm = String(Math.floor((m.duration||0)/60)).padStart(2,'0');
     const ss = String((m.duration||0)%60).padStart(2,'0');
+    const subText = m.missed ? '未接' + (m.mode==='video'?'视频通话':'语音通话') : '通话时长 ' + mm + ':' + ss;
     return `<div class="msg-call-card">
       <span class="msg-call-card-icon">${m.mode==='video'
         ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="m22 8-6 4 6 4Z"/></svg>'
         : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>'}</span>
-      <span><div class="msg-call-card-title">${m.mode==='video'?'视频通话':'语音通话'}</div><div class="msg-call-card-sub">通话时长 ${mm}:${ss}</div></span>
+      <span><div class="msg-call-card-title">${m.mode==='video'?'视频通话':'语音通话'}</div><div class="msg-call-card-sub">${subText}</div></span>
     </div>`;
   }
   if (m.type === 'image') {
@@ -6760,9 +6904,11 @@ function renderMsgBubble(m, i) {
     </div>`;
   }
   if (m.type === 'transfer') {
+    const status = m.status || 'accepted';
+    const statusText = status === 'accepted' ? '已接受' : status === 'declined' ? '已拒绝' : '待处理';
     return `<div class="msg-transfer" data-favorite="${Favorite.isSaved(Chat.currentId,i)}">
       <span class="msg-transfer-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
-      <span class="msg-transfer-copy"><div class="msg-transfer-amt">¥${Number(m.amount||0).toFixed(2)}</div><div class="msg-transfer-note">${escapeHtml(m.content||'转账')}</div></span>
+      <span class="msg-transfer-copy"><div class="msg-transfer-amt">¥${Number(m.amount||0).toFixed(2)}</div><div class="msg-transfer-note">${escapeHtml(m.content||'转账')} · ${statusText}</div></span>
     </div>`;
   }
   if (m.type === 'voice') {

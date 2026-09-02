@@ -476,52 +476,79 @@
   .avatar.large { width: 82px; height: 82px; font-size: 30px; }
   .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-  /* ============ 聊天列表 / 联系人 ============ */
+  /* ============ iOS 信息列表 / 联系人 ============ */
+  #messaging { background: #FFFFFF; }
+  #messaging .content { background: #FFFFFF; }
+  #messaging.messaging-chats-view #messagingNav {
+    background: rgba(255,255,255,.9);
+    border-bottom-color: transparent;
+  }
+  #messaging.messaging-chats-view #messagingTitle { display: none; }
+  #tab-chats { min-height: 100%; background: #FFFFFF; }
+  .ios-messages-head { padding: 12px 20px 8px; }
+  .ios-messages-title {
+    color: #000; font-size: 34px; line-height: 1.08; font-weight: 760;
+    letter-spacing: -.8px;
+  }
+  .ios-search {
+    margin-top: 14px; height: 36px; border-radius: 11px; background: #E9E9EB;
+    display: flex; align-items: center; gap: 7px; padding: 0 11px; color: #8E8E93;
+  }
+  .ios-search svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .ios-search input {
+    flex: 1; min-width: 0; border: 0; outline: 0; background: transparent;
+    color: #1C1C1E; font-size: 16px;
+  }
+  .ios-search input::placeholder { color: #8E8E93; }
+  .ios-chat-list { padding-left: 14px; }
   .chat-row {
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #FFFFFF;
-    cursor: pointer;
-    position: relative;
+    min-height: 82px; padding: 10px 12px 10px 0;
+    display: flex; align-items: center; background: #FFFFFF;
+    cursor: pointer; position: relative;
   }
-  .chat-row:active { background: #E5E5EA; }
+  .chat-row:active { background: #F2F2F7; }
   .chat-row + .chat-row::before {
-    content: '';
-    position: absolute;
-    left: 74px;
-    right: 0;
-    top: 0;
-    height: 0.5px;
-    background: #E5E5EA;
+    content: ''; position: absolute; left: 76px; right: 0; top: 0;
+    height: .5px; background: #DADADD;
   }
-  .chat-info {
-    flex: 1;
-    min-width: 0;
+  .ios-avatar-slot {
+    width: 76px; flex: 0 0 76px; display: flex; align-items: center;
+    justify-content: center; position: relative;
   }
+  .ios-avatar-slot .avatar {
+    width: 56px; height: 56px; border-radius: 50%; font-size: 20px;
+    border: .5px solid rgba(0,0,0,.06);
+  }
+  .ios-unread-dot {
+    position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    width: 11px; height: 11px; border-radius: 50%; background: #0A84FF;
+  }
+  .chat-info { flex: 1; min-width: 0; padding-right: 2px; }
+  .chat-name-line { display: flex; align-items: center; min-width: 0; }
   .chat-name {
-    font-size: 16px;
-    font-weight: 500;
-    color: #1C1C1E;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex: 1; min-width: 0; color: #000; font-size: 16px; font-weight: 650;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .chat-time {
-    font-size: 12px;
-    color: #8E8E93;
-    font-weight: 400;
-    flex-shrink: 0;
+    color: #8E8E93; font-size: 13px; font-weight: 400; flex-shrink: 0;
     margin-left: 8px;
   }
+  .chat-chevron {
+    color: #C7C7CC; font-size: 25px; line-height: 18px; margin-left: 5px;
+    transform: translateY(-1px);
+  }
   .chat-preview {
-    font-size: 14px;
-    color: #8E8E93;
-    margin-top: 3px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    color: #8E8E93; font-size: 14px; line-height: 1.32; margin-top: 3px;
+    overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; word-break: break-word;
+  }
+  .chat-row.unread .chat-name { font-weight: 730; }
+  .ios-chat-empty { padding-top: 96px; }
+  .ios-chat-empty .empty-title { color: #3A3A3C; }
+  @media (max-width: 360px) {
+    .ios-avatar-slot { width: 68px; flex-basis: 68px; }
+    .ios-avatar-slot .avatar { width: 52px; height: 52px; }
+    .chat-row + .chat-row::before { left: 68px; }
   }
 
   /* ============ 聊天界面 ============ */
@@ -2260,6 +2287,7 @@ const Store = {
     // 补齐默认字段
     const d = this.defaults();
     for (const k in d) if (!(k in this.data)) this.data[k] = d[k];
+    this.data.chatReadAt = { ...d.chatReadAt, ...(this.data.chatReadAt || {}) };
     this.data.imgApi = { ...d.imgApi, ...(this.data.imgApi || {}) };
     this.data.notificationSettings = { ...d.notificationSettings, ...(this.data.notificationSettings || {}) };
     this.data.theme = {
@@ -2291,6 +2319,7 @@ const Store = {
       characters: [],
       worldBooks: [],
       chats: {},        // { charId: [ {role,content,type,duration?,timestamp} ] }
+      chatReadAt: {},   // { charId: lastOpenedTimestamp }
       stickers: [],     // [ {id, name, dataUrl} ]
       userName: '用户',
       imgApi: {
@@ -3809,10 +3838,12 @@ const Msg = {
     document.querySelectorAll('#messaging .tab-content').forEach(c => {
       c.classList.toggle('active', c.id === 'tab-' + tab);
     });
-    const titles = { chats: '聊天', contacts: '联系人', moments: '动态', me: '我' };
+    const titles = { chats: '信息', contacts: '联系人', moments: '动态', me: '我' };
     document.getElementById('messagingTitle').textContent = titles[tab];
+    document.getElementById('messaging').classList.toggle('messaging-chats-view', tab === 'chats');
     const action = document.getElementById('messagingAction');
-    action.style.display = tab === 'contacts' ? 'flex' : 'none';
+    action.style.display = (tab === 'contacts' || tab === 'chats') ? 'flex' : 'none';
+    action.title = tab === 'chats' ? '新信息' : '新建联系人';
     // 渲染
     if (tab === 'chats') this.renderChats();
     else if (tab === 'contacts') this.renderContacts();
@@ -3821,6 +3852,13 @@ const Msg = {
   },
   onActionClick() {
     if (this.currentTab === 'contacts') Char.openEditor();
+    else if (this.currentTab === 'chats') this.showTab('contacts');
+  },
+  filterChats(value) {
+    const query = String(value || '').trim().toLowerCase();
+    document.querySelectorAll('#tab-chats .chat-row').forEach(row => {
+      row.style.display = !query || row.dataset.search.includes(query) ? 'flex' : 'none';
+    });
   },
   renderChats() {
     const c = document.getElementById('tab-chats');
@@ -3839,28 +3877,45 @@ const Msg = {
       })
       .sort((a, b) => b.last.timestamp - a.last.timestamp);
 
+    const head = `
+      <div class="ios-messages-head">
+        <div class="ios-messages-title">信息</div>
+        <label class="ios-search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+          <input type="search" placeholder="搜索" oninput="Msg.filterChats(this.value)">
+        </label>
+      </div>`;
     if (!rows.length) {
-      c.innerHTML = `
-        <div class="empty">
+      c.innerHTML = head + `
+        <div class="empty ios-chat-empty">
           <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
           </svg>
-          <div class="empty-title">没有聊天</div>
+          <div class="empty-title">没有信息</div>
           <div class="empty-sub">去联系人页面选一个人开始聊吧</div>
         </div>`;
       return;
     }
-    c.innerHTML = rows.map(r => `
-      <div class="chat-row" onclick="Chat.open('${r.ch.id}')">
-        ${renderAvatar(r.ch)}
+    c.innerHTML = head + '<div class="ios-chat-list">' + rows.map(r => {
+      const readAt = Number(Store.data.chatReadAt?.[r.ch.id]) || 0;
+      const unread = r.last.role === 'assistant' && Number(r.last.timestamp) > readAt;
+      const search = escapeHtml((r.ch.name + ' ' + r.preview).toLowerCase());
+      return `
+      <div class="chat-row ${unread ? 'unread' : ''}" data-search="${search}" onclick="Chat.open('${r.ch.id}')">
+        <div class="ios-avatar-slot">
+          ${unread ? '<span class="ios-unread-dot"></span>' : ''}
+          ${renderAvatar(r.ch)}
+        </div>
         <div class="chat-info">
-          <div class="chat-name">
-            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(r.ch.name)}</span>
+          <div class="chat-name-line">
+            <div class="chat-name">${escapeHtml(r.ch.name)}</div>
             <span class="chat-time">${formatTime(r.last.timestamp)}</span>
+            <span class="chat-chevron">›</span>
           </div>
           <div class="chat-preview">${escapeHtml(r.preview)}</div>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('') + '</div>';
   },
   renderContacts() {
     const c = document.getElementById('tab-contacts');
@@ -4049,6 +4104,9 @@ const Chat = {
   loading: false,
   open(id) {
     this.currentId = id;
+    Store.data.chatReadAt = Store.data.chatReadAt || {};
+    Store.data.chatReadAt[id] = Date.now();
+    try { localStorage.setItem(Store.KEY, JSON.stringify(Store.data)); } catch (_) {}
     const ch = Store.data.characters.find(c => c.id === id);
     if (!ch) return;
     document.getElementById('chatHeaderInfo').innerHTML = `
@@ -4066,6 +4124,12 @@ const Chat = {
   render() {
     const box = document.getElementById('chatMessages');
     const msgs = Store.data.chats[this.currentId] || [];
+    const chatScreen = document.getElementById('chat');
+    if (this.currentId && chatScreen && !chatScreen.classList.contains('hidden')) {
+      Store.data.chatReadAt = Store.data.chatReadAt || {};
+      Store.data.chatReadAt[this.currentId] = Date.now();
+      try { localStorage.setItem(Store.KEY, JSON.stringify(Store.data)); } catch (_) {}
+    }
     const ch = Store.data.characters.find(c => c.id === this.currentId);
     if (!msgs.length) {
       box.innerHTML = `

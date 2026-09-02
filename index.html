@@ -1836,6 +1836,47 @@
   .sticker-create-actions button { height:47px; border:0; border-radius:15px; background:#ece8e3; font-size:13px; }
   .sticker-create-actions .primary { background:#393632; color:#fff; }
 
+
+  /* ============ 动态互动设置 ============ */
+  .interaction-screen { position:absolute; z-index:204; inset:0; display:none; flex-direction:column; background:#f3efe8; color:#302e2b; }
+  .interaction-screen.show { display:flex; }
+  .interaction-head { height:66px; flex:0 0 auto; display:grid; grid-template-columns:58px 1fr 58px; align-items:center; }
+  .interaction-head strong { text-align:center; font-size:17px; }
+  .interaction-head button { width:44px; height:44px; margin:auto; border:0; background:transparent; display:grid; place-items:center; }
+  .interaction-head svg { width:24px; fill:none; stroke:currentColor; stroke-width:1.8; }
+  .interaction-body { flex:1; overflow-y:auto; padding:10px 16px 34px; }
+  .interaction-hero { padding:22px; border-radius:25px; background:#3d3934; color:#fff; box-shadow:0 13px 30px rgba(53,47,40,.16); }
+  .interaction-hero-kicker { color:#c0b8ae; font-size:9px; letter-spacing:.16em; }
+  .interaction-hero-title { margin-top:8px; font-size:24px; font-weight:760; }
+  .interaction-hero-row { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:17px; }
+  .interaction-hero-state { color:#d8d2ca; font-size:11px; }
+  .interaction-toggle { width:49px; height:29px; padding:3px; border:0; border-radius:16px; background:#716b64; }
+  .interaction-toggle::after { content:""; display:block; width:23px; height:23px; border-radius:50%; background:#fff; transition:.2s; }
+  .interaction-toggle.on { background:#b7d1a8; }
+  .interaction-toggle.on::after { transform:translateX(20px); }
+  .interaction-card { margin-top:13px; padding:19px; border-radius:22px; background:rgba(255,255,255,.84); box-shadow:0 8px 21px rgba(61,52,43,.05); }
+  .interaction-card-title { font-size:15px; font-weight:700; }
+  .interaction-card-note { margin-top:5px; color:#9e968d; font-size:10px; line-height:1.45; }
+  .interaction-intervals { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .interaction-interval { padding:8px 12px; border:0; border-radius:15px; background:#ece8e2; color:#7d766e; font-size:10px; }
+  .interaction-interval.active { background:#3e3a35; color:#fff; }
+  .interaction-char-list { display:flex; flex-direction:column; gap:8px; margin-top:14px; }
+  .interaction-char { width:100%; min-height:56px; padding:8px 10px; border:1px solid transparent; border-radius:17px; display:flex; align-items:center; gap:10px; background:#f4f1ed; text-align:left; }
+  .interaction-char.active { border-color:#7f9274; background:#edf2e9; }
+  .interaction-char .avatar { width:38px; height:38px; font-size:14px; flex:0 0 auto; }
+  .interaction-char-copy { flex:1; min-width:0; }
+  .interaction-char-name { font-size:12px; font-weight:650; }
+  .interaction-char-role { margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#9c958d; font-size:9px; }
+  .interaction-check { width:20px; height:20px; border:1px solid #c7c1b9; border-radius:50%; display:grid; place-items:center; color:transparent; font-size:11px; }
+  .interaction-char.active .interaction-check { background:#52614c; border-color:#52614c; color:#fff; }
+  .interaction-manual { display:grid; grid-template-columns:1fr auto; gap:9px; margin-top:14px; }
+  .interaction-manual select { min-width:0; height:48px; padding:0 13px; border:0; border-radius:15px; background:#f1eee9; font:inherit; font-size:11px; }
+  .interaction-manual button { height:48px; padding:0 16px; border:0; border-radius:15px; background:#3e3a35; color:#fff; font-size:11px; }
+  .interaction-manual button:disabled { opacity:.45; }
+  .moment-comments { margin:12px 0 0 51px; padding:9px 11px; border-radius:11px; background:#f4f5f6; font-size:11px; line-height:1.55; }
+  .moment-comment + .moment-comment { margin-top:4px; }
+  .moment-comment b { color:#526985; font-weight:650; margin-right:5px; }
+
 </style>
 </head>
 <body>
@@ -2576,6 +2617,15 @@
 
 
 
+
+  <div class="interaction-screen" id="interactionScreen">
+    <header class="interaction-head">
+      <button onclick="Interactions.close()" aria-label="返回"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+      <strong>动态互动</strong><span></span>
+    </header>
+    <div class="interaction-body" id="interactionBody"></div>
+  </div>
+
   <div class="sticker-screen" id="stickerGroupScreen">
     <header class="sticker-screen-head">
       <button onclick="StickerGroups.closeManager()" aria-label="返回"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
@@ -2696,6 +2746,8 @@ const Store = {
     this.data.chatReadAt = { ...d.chatReadAt, ...(this.data.chatReadAt || {}) };
     if (!Array.isArray(this.data.favoriteMessages)) this.data.favoriteMessages = [];
     if (!Array.isArray(this.data.stickerGroups)) this.data.stickerGroups = [];
+    this.data.interactionSettings = { ...d.interactionSettings, ...(this.data.interactionSettings || {}) };
+    if (!Array.isArray(this.data.interactionSettings.characterIds)) this.data.interactionSettings.characterIds = [];
     this.data.imgApi = { ...d.imgApi, ...(this.data.imgApi || {}) };
     this.data.notificationSettings = { ...d.notificationSettings, ...(this.data.notificationSettings || {}) };
     this.data.theme = {
@@ -2735,6 +2787,7 @@ const Store = {
       stickers: [],     // [ {id, name, dataUrl} ]
       favoriteMessages: [],
       stickerGroups: [],
+      interactionSettings: { enabled: false, minMinutes: 120, characterIds: [], lastPostAt: 0, nextPostAt: 0 },
       userName: '用户',
       userAvatar: '',
       userProfile: { gender: '', age: '', occupation: '', bio: '', custom: '' },
@@ -4341,10 +4394,89 @@ const Me = {
   feature(type) {
     if(type==='favorites'){ Favorite.open(); return; }
     if(type==='memory'){ nav.go('worldbook'); WB.renderList(); return; }
-    if(type==='interaction'){ nav.go('pushSettings'); Push.render(); return; }
+    if(type==='interaction'){ Interactions.open(); return; }
     StickerGroups.open();
   },
   wallet(){ UI.alert('钱包','这里预留关系积分与虚拟物品功能入口。'); }
+};
+
+const Interactions = {
+  timer:null, busy:false,
+  cfg(){ return Store.data.interactionSettings; },
+  open(){ this.render(); document.getElementById('interactionScreen').classList.add('show'); },
+  close(){ document.getElementById('interactionScreen').classList.remove('show'); },
+  toggle(){
+    const c=this.cfg(); c.enabled=!c.enabled;
+    if(c.enabled && !c.nextPostAt) this.scheduleNext();
+    Store.save(); this.render();
+  },
+  setInterval(minutes){ const c=this.cfg();c.minMinutes=minutes;this.scheduleNext();Store.save();this.render(); },
+  toggleChar(id){
+    const ids=this.cfg().characterIds, i=ids.indexOf(id); if(i>=0)ids.splice(i,1);else ids.push(id);
+    Store.save();this.render();
+  },
+  scheduleNext(){
+    const c=this.cfg(), min=Math.max(1,Number(c.minMinutes)||120);
+    c.nextPostAt=Date.now()+Math.round(min*(1+Math.random())*60000);
+  },
+  nextText(){
+    const c=this.cfg(); if(!c.enabled)return '自动发布已关闭';
+    if(!c.characterIds.length)return '请选择可以发布的角色';
+    const left=Math.max(0,c.nextPostAt-Date.now()), mins=Math.ceil(left/60000);
+    if(mins<60)return '预计 '+mins+' 分钟后尝试发布';
+    return '预计 '+Math.ceil(mins/60)+' 小时后尝试发布';
+  },
+  render(){
+    const box=document.getElementById('interactionBody');if(!box)return;
+    const c=this.cfg(), intervals=[[30,'30分钟'],[60,'1小时'],[120,'2小时'],[240,'4小时'],[480,'8小时'],[720,'12小时'],[1440,'24小时']];
+    const chars=Store.data.characters.map(ch=>'<button class="interaction-char '+(c.characterIds.includes(ch.id)?'active':'')+'" onclick="Interactions.toggleChar(\''+ch.id+'\')">'+renderAvatar(ch)+'<span class="interaction-char-copy"><span class="interaction-char-name">'+escapeHtml(ch.name)+'</span><span class="interaction-char-role">'+escapeHtml(ch.notes||ch.persona||'角色设定')+'</span></span><span class="interaction-check">✓</span></button>').join('');
+    const options=Store.data.characters.map(ch=>'<option value="'+ch.id+'">'+escapeHtml(ch.name)+'</option>').join('');
+    box.innerHTML='<section class="interaction-hero"><div class="interaction-hero-kicker">AUTONOMOUS MOMENTS</div><div class="interaction-hero-title">让角色拥有自己的生活</div><div class="interaction-hero-row"><span class="interaction-hero-state">'+this.nextText()+'</span><button class="interaction-toggle '+(c.enabled?'on':'')+'" onclick="Interactions.toggle()"></button></div></section>'+
+      '<section class="interaction-card"><div class="interaction-card-title">最短发帖间隔</div><div class="interaction-card-note">实际发布时间会在最短间隔后随机浮动，避免角色同时刷屏。</div><div class="interaction-intervals">'+intervals.map(x=>'<button class="interaction-interval '+(Number(c.minMinutes)===x[0]?'active':'')+'" onclick="Interactions.setInterval('+x[0]+')">'+x[1]+'</button>').join('')+'</div></section>'+
+      '<section class="interaction-card"><div class="interaction-card-title">谁可以发布朋友圈</div><div class="interaction-card-note">角色会根据自身设定、聊天记忆和世界书生成内容。</div><div class="interaction-char-list">'+(chars||'<div style="padding:20px;text-align:center;color:#999;font-size:10px">还没有角色</div>')+'</div></section>'+
+      '<section class="interaction-card"><div class="interaction-card-title">立即发布一条</div><div class="interaction-card-note">手动指定角色生成动态，并自动补充 2–5 条生活圈评论。</div><div class="interaction-manual"><select id="interactionManualChar">'+options+'</select><button id="interactionNowBtn" onclick="Interactions.publishNow()" '+(!options||this.busy?'disabled':'')+'>'+(this.busy?'生成中…':'现在发布')+'</button></div></section>';
+  },
+  async publishNow(){
+    const id=document.getElementById('interactionManualChar')?.value;if(!id)return;
+    await this.generate(id,true);
+  },
+  async tick(){
+    const c=this.cfg();
+    if(this.busy||!c.enabled||!c.characterIds.length)return;
+    if(!c.nextPostAt){this.scheduleNext();Store.save();return;}
+    if(Date.now()<c.nextPostAt)return;
+    const valid=c.characterIds.filter(id=>Store.data.characters.some(ch=>ch.id===id));
+    if(!valid.length)return;
+    await this.generate(valid[Math.floor(Math.random()*valid.length)],false);
+  },
+  async generate(charId,manual){
+    if(this.busy)return;
+    const ch=Store.data.characters.find(x=>x.id===charId);if(!ch)return;
+    if(!API.getActive())return UI.alert('未配置 API','请先在设置中配置并选择聊天 API。');
+    this.busy=true;this.render();
+    const books=WB.getApplicableForCharacter(ch).map(w=>w.name+'：'+w.content).join('\n');
+    const recent=(Store.data.chats[ch.id]||[]).slice(-12).map(m=>(m.role==='user'?Store.data.userName:ch.name)+'：'+m.content).join('\n');
+    const prompt='你要为虚拟社交软件生成一条朋友圈和评论。\n角色姓名：'+ch.name+'\n角色设定：'+(ch.persona||'')+'\n备注：'+(ch.notes||'')+'\n世界书：'+books+'\n近期聊天：'+recent+'\n请严格返回 JSON，不要代码块：{"text":"朋友圈正文","location":"可为空","comments":[{"name":"NPC姓名","content":"评论"}]}。评论必须有2到5条，NPC要像角色真实生活圈里的人，身份和说话方式符合角色背景，姓名不要与已有角色重复。正文自然、像真人随手发的，不解释设定。';
+    try{
+      const raw=await API.chat([{role:'system',content:'你是社交动态生成器，只输出合法JSON。'},{role:'user',content:prompt}]);
+      const data=this.parse(raw);
+      const comments=Array.isArray(data.comments)?data.comments.slice(0,5).map(x=>({name:String(x.name||'路人'),content:String(x.content||'')})).filter(x=>x.content):[];
+      while(comments.length<2)comments.push({name:comments.length?'同事':'朋友',content:comments.length?'哈哈，确实很像你':'看到啦'});
+      Moments.profile().posts.unshift({id:'moment_'+Date.now(),authorType:'char',charId:ch.id,authorName:ch.name,text:String(data.text||'今天也算有点收获。'),images:[],location:String(data.location||''),visibility:'公开',comments,timestamp:Date.now()});
+      const c=this.cfg();c.lastPostAt=Date.now();this.scheduleNext();Store.save();Msg.renderMoments();UI.toast(ch.name+' 发布了一条朋友圈');
+    }catch(e){UI.alert('生成失败',String(e.message||e));if(!manual){this.scheduleNext();Store.save();}}
+    finally{this.busy=false;this.render();}
+  },
+  parse(raw){
+    let text=String(raw||'').trim().replace(/^\`\`\`(?:json)?/i,'').replace(/\`\`\`$/,'').trim();
+    const a=text.indexOf('{'),b=text.lastIndexOf('}');if(a>=0&&b>a)text=text.slice(a,b+1);
+    return JSON.parse(text);
+  },
+  init(){
+    if(this.timer)clearInterval(this.timer);
+    this.timer=setInterval(()=>this.tick().catch(()=>{}),60000);
+    setTimeout(()=>this.tick().catch(()=>{}),2500);
+  }
 };
 
 const Moments = {
@@ -4577,13 +4709,17 @@ const Msg = {
     const cover = p.cover ? "background-image:url('" + p.cover + "')" : '';
     const posts = p.posts.map(post => {
       const imgs = (post.images || []).map(src => '<img src="'+src+'" alt="动态图片">').join('');
+      const ch = post.authorType === 'char' ? Store.data.characters.find(x => x.id === post.charId) : null;
+      const authorName = ch?.name || post.authorName || Store.data.userName;
+      const authorAvatar = ch ? renderAvatar(ch) : (Store.data.userAvatar ? '<div class="avatar"><img src="'+Store.data.userAvatar+'" alt=""></div>' : '<div class="avatar">'+initials(Store.data.userName)+'</div>');
+      const comments = (post.comments || []).map(x => '<div class="moment-comment"><b>'+escapeHtml(x.name)+'</b>'+escapeHtml(x.content)+'</div>').join('');
       const meta = [Moments.relative(post.timestamp), post.visibility || '公开'];
       if (post.mention) meta.push('@ '+escapeHtml(post.mention));
       return '<article class="moment-post">'+
-        '<div class="moment-post-head"><div class="avatar">'+initials(Store.data.userName)+'</div><div class="moment-post-author">'+escapeHtml(Store.data.userName)+'</div><button class="moment-post-more" onclick="Moments.deletePost(\''+post.id+'\')" aria-label="删除动态">···</button></div>'+
+        '<div class="moment-post-head">'+authorAvatar+'<div class="moment-post-author">'+escapeHtml(authorName)+'</div><button class="moment-post-more" onclick="Moments.deletePost(\''+post.id+'\')" aria-label="删除动态">···</button></div>'+
         (post.text ? '<div class="moment-post-text">'+escapeHtml(post.text)+'</div>' : '')+
         (imgs ? '<div class="moment-post-images '+((post.images||[]).length===1?'one':'')+'">'+imgs+'</div>' : '')+
-        '<div class="moment-post-meta">'+(post.location?'<span class="moment-post-location">'+escapeHtml(post.location)+'</span>':'')+meta.map(x=>'<span>'+x+'</span>').join('')+'</div></article>';
+        '<div class="moment-post-meta">'+(post.location?'<span class="moment-post-location">'+escapeHtml(post.location)+'</span>':'')+meta.map(x=>'<span>'+x+'</span>').join('')+'</div>'+(comments?'<div class="moment-comments">'+comments+'</div>':'')+'</article>';
     }).join('');
     c.innerHTML =
       '<section class="moments-hero" style="'+cover+'">'+
@@ -4605,7 +4741,7 @@ const Msg = {
         '<nav class="me-p2-orbits" aria-label="个人功能">'+
           '<button class="me-p2-orbit" onclick="Me.feature(\'emoji\')"><span class="me-p2-orbit-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="10" r=".8" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r=".8" fill="currentColor" stroke="none"/></svg></span><span class="me-p2-orbit-label">表情包</span></button>'+
           '<button class="me-p2-orbit" onclick="Me.feature(\'interaction\')"><span class="me-p2-orbit-icon"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10 20h4"/></svg></span><span class="me-p2-orbit-label">互动设置</span></button>'+
-          '<button class="me-p2-orbit" onclick="Me.feature(\'moments\')"><span class="me-p2-orbit-icon"><svg viewBox="0 0 24 24"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z"/><path d="m8 10 2.5 2.5L16 7"/></svg></span><span class="me-p2-orbit-label">喜欢的消息</span></button>'+
+          '<button class="me-p2-orbit" onclick="Me.feature(\'favorites\')"><span class="me-p2-orbit-icon"><svg viewBox="0 0 24 24"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z"/><path d="m8 10 2.5 2.5L16 7"/></svg></span><span class="me-p2-orbit-label">喜欢的消息</span></button>'+
           '<button class="me-p2-orbit" onclick="Me.feature(\'memory\')"><span class="me-p2-orbit-icon"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5Z"/><path d="M8 3v17M12 8h4M12 12h4"/></svg></span><span class="me-p2-orbit-label">记忆</span></button>'+
         '</nav>'+
         '<button class="me-p2-card" onclick="Me.wallet()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><path d="M3 7h16a2 2 0 0 1 2 2v10H5a2 2 0 0 1-2-2Z"/><path d="M3 7V5a2 2 0 0 1 2-2h13v4"/><path d="M16 12h5v4h-5a2 2 0 0 1 0-4Z"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">钱包</span></span><svg class="me-p2-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>'+
@@ -5092,6 +5228,7 @@ document.addEventListener('DOMContentLoaded', () => {
   Settings.refresh();
   Theme.init();
   Push.init();
+  Interactions.init();
   updateHomeTime();
   setInterval(updateHomeTime, 1000 * 30);
 

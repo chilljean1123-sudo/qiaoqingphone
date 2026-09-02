@@ -1602,6 +1602,39 @@
   .moments-option input,.moments-option select { min-width:0; border:0; outline:0; background:transparent; text-align:right; color:#8d929a; font:inherit; font-size:13px; }
   .moments-option select { max-width:105px; }
 
+
+  /* ============ 我的主页 ============ */
+  #tab-me { background:#f7f7f9; overflow-y:auto; color:#202938; }
+  .my-profile-shell { min-height:100%; padding-bottom:28px; }
+  .my-profile-hero { position:relative; height:270px; padding:24px 20px; background:linear-gradient(145deg,#d8dce5,#8993a5); background-size:cover; background-position:center; overflow:hidden; color:#fff; }
+  .my-profile-hero::after { content:""; position:absolute; inset:25% 0 0; background:linear-gradient(transparent,rgba(20,27,39,.68)); pointer-events:none; }
+  .my-profile-edit { position:absolute; z-index:2; right:18px; top:17px; width:44px; height:44px; border:1px solid rgba(255,255,255,.5); border-radius:50%; display:grid; place-items:center; background:rgba(255,255,255,.16); color:#fff; backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+  .my-profile-edit svg { width:21px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .my-profile-info { position:absolute; z-index:2; left:20px; right:20px; bottom:22px; display:grid; grid-template-columns:74px 1fr; column-gap:14px; align-items:center; }
+  .my-profile-avatar { width:74px; height:74px; border:3px solid #fff; box-shadow:0 7px 24px rgba(0,0,0,.2); font-size:27px; grid-row:1/4; }
+  .my-profile-name { font-size:24px; line-height:1.2; font-weight:750; text-shadow:0 2px 8px rgba(0,0,0,.2); }
+  .my-profile-id { margin-top:5px; font-size:11px; color:rgba(255,255,255,.65); letter-spacing:.04em; }
+  .my-profile-signature { margin-top:5px; font-size:13px; color:rgba(255,255,255,.82); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+  .my-shortcuts { position:relative; z-index:3; margin:-1px 0 0; padding:24px 14px 21px; display:grid; grid-template-columns:repeat(4,1fr); gap:6px; background:#fff; border-radius:0 0 25px 25px; box-shadow:0 12px 30px rgba(38,46,60,.06); }
+  .my-shortcut { border:0; background:transparent; display:flex; flex-direction:column; align-items:center; gap:9px; min-width:0; }
+  .my-shortcut-circle { width:58px; height:58px; border-radius:50%; display:grid; place-items:center; color:#293545; background:#f5f6f8; border:1px solid #eceef2; box-shadow:0 7px 18px rgba(34,43,57,.07); transition:transform .16s ease,background .16s ease; }
+  .my-shortcut:active .my-shortcut-circle { transform:scale(.94); background:#e9edf3; }
+  .my-shortcut-circle svg { width:25px; height:25px; fill:none; stroke:currentColor; stroke-width:1.65; stroke-linecap:round; stroke-linejoin:round; }
+  .my-shortcut-label { font-size:12px; color:#4d5664; white-space:nowrap; }
+  .my-overview { margin:18px 14px 0; padding:19px; background:#fff; border-radius:22px; box-shadow:0 8px 24px rgba(38,46,60,.045); }
+  .my-overview-title { font-size:17px; font-weight:700; }
+  .my-overview-sub { margin-top:5px; color:#9a9fa8; font-size:12px; line-height:1.5; }
+  .my-overview-stats { display:grid; grid-template-columns:repeat(3,1fr); margin-top:18px; }
+  .my-overview-stat { text-align:center; border-right:1px solid #eceef2; }
+  .my-overview-stat:last-child { border-right:0; }
+  .my-overview-stat b { display:block; font-size:21px; line-height:1.2; }
+  .my-overview-stat span { display:block; margin-top:5px; color:#a2a6ad; font-size:11px; }
+  .my-tip-card { margin:12px 14px 0; min-height:84px; padding:18px 18px 18px 62px; position:relative; background:#fff; border-radius:22px; }
+  .my-tip-icon { position:absolute; left:17px; top:18px; width:32px; height:32px; display:grid; place-items:center; border-radius:50%; background:#f1f3f6; color:#556171; }
+  .my-tip-icon svg { width:17px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+  .my-tip-title { font-size:14px; font-weight:650; }
+  .my-tip-text { margin-top:5px; color:#9a9fa7; font-size:12px; line-height:1.5; }
+
 </style>
 </head>
 <body>
@@ -4174,42 +4207,37 @@ const Msg = {
   },
   renderMe() {
     const c = document.getElementById('tab-me');
-    const api = API.getActive();
-    c.innerHTML = `
-      <div class="me-header" onclick="Settings.editUserName()">
-        <div class="avatar large">${initials(Store.data.userName)}</div>
-        <div>
-          <div class="name">${escapeHtml(Store.data.userName)}</div>
-          <div class="sub">点击修改昵称</div>
-        </div>
-      </div>
-      <div class="section">
-        <div class="list">
-          <div class="list-item" onclick="nav.go('settings');Settings.refresh()">
-            <div class="item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
-            <span class="list-item-label">设置</span>
-            <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
-          </div>
-          <div class="list-item">
-            <div class="item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-            <span class="list-item-label">当前 API</span>
-            <span class="list-item-value">${api ? escapeHtml(api.name) : '未配置'}</span>
-          </div>
-          <div class="list-item">
-            <div class="item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-            <span class="list-item-label">联系人</span>
-            <span class="list-item-value">${Store.data.characters.length}</span>
-          </div>
-          <div class="list-item" onclick="nav.go('worldbook');WB.renderList()">
-            <div class="item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
-            <span class="list-item-label">世界书</span>
-            <span class="list-item-value">${Store.data.worldBooks.length}</span>
-            <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
-          </div>
-        </div>
-      </div>`;
-  }
-};
+    const profile = Moments.profile();
+    const cover = profile.cover ? "background-image:url('" + profile.cover + "')" : '';
+    c.innerHTML =
+      '<div class="my-profile-shell">'+
+        '<section class="my-profile-hero" style="'+cover+'">'+
+          '<button class="my-profile-edit" onclick="Settings.editUserName()" aria-label="编辑昵称"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button>'+
+          '<div class="my-profile-info">'+
+            '<div class="avatar my-profile-avatar">'+initials(Store.data.userName)+'</div>'+
+            '<div class="my-profile-name">'+escapeHtml(Store.data.userName)+'</div>'+
+            '<div class="my-profile-id">QIAOQING · PERSONAL SPACE</div>'+
+            '<div class="my-profile-signature" onclick="Moments.editSignature()">'+escapeHtml(profile.signature || '点击编辑签名')+'</div>'+
+          '</div>'+
+        '</section>'+
+        '<nav class="my-shortcuts" aria-label="主页功能">'+
+          '<button class="my-shortcut" onclick="Settings.editUserName()"><span class="my-shortcut-circle"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span class="my-shortcut-label">个人资料</span></button>'+
+          '<button class="my-shortcut" onclick="nav.go(\'apiList\');API.renderList()"><span class="my-shortcut-circle"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/><path d="M7 7h.01M7 17h.01M11 7h7M11 17h7"/></svg></span><span class="my-shortcut-label">接口</span></button>'+
+          '<button class="my-shortcut" onclick="nav.go(\'themeSettings\')"><span class="my-shortcut-circle"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18h1.5a1.5 1.5 0 0 0 0-3H12a2 2 0 0 1 0-4h3a6 6 0 0 0 0-12Z"/><circle cx="7.5" cy="10" r=".8"/><circle cx="9.5" cy="6.8" r=".8"/><circle cx="14" cy="6.5" r=".8"/></svg></span><span class="my-shortcut-label">外观</span></button>'+
+          '<button class="my-shortcut" onclick="nav.go(\'backupSettings\');Backup.render()"><span class="my-shortcut-circle"><svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 8.4 4.8 4.8 0 0 0 7 18Z"/><path d="m9 14 3-3 3 3M12 11v8"/></svg></span><span class="my-shortcut-label">备份</span></button>'+
+        '</nav>'+
+        '<section class="my-overview">'+
+          '<div class="my-overview-title">我的小世界</div>'+
+          '<div class="my-overview-sub">这里记录你与角色共同留下的内容</div>'+
+          '<div class="my-overview-stats">'+
+            '<div class="my-overview-stat"><b>'+Store.data.characters.length+'</b><span>角色</span></div>'+
+            '<div class="my-overview-stat"><b>'+Object.values(Store.data.chats||{}).reduce((n,a)=>n+(a?.length||0),0)+'</b><span>消息</span></div>'+
+            '<div class="my-overview-stat"><b>'+profile.posts.length+'</b><span>动态</span></div>'+
+          '</div>'+
+        '</section>'+
+        '<section class="my-tip-card"><span class="my-tip-icon"><svg viewBox="0 0 24 24"><path d="M12 3a7 7 0 0 0-4 12.7V20l4-2 4 2v-4.3A7 7 0 0 0 12 3Z"/></svg></span><div class="my-tip-title">保持属于你的样子</div><div class="my-tip-text">头像、封面与签名会和动态主页同步显示。</div></section>'+
+      '</div>';
+  }};
 
 /* ============================================================
    角色

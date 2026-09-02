@@ -6043,6 +6043,7 @@ const Chat = {
       <span class="name">${escapeHtml(ChatSettings.name(ch))}</span>
       <span class="chat-header-status" id="chatHeaderStatus"></span>
     `;
+    ChatSettings.apply();
     this.cancelQuote();
     this.closeMessageMenu();
     this.multiSelectMode = false;

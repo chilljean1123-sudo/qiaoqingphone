@@ -1877,6 +1877,52 @@
   .moment-comment + .moment-comment { margin-top:4px; }
   .moment-comment b { color:#526985; font-weight:650; margin-right:5px; }
 
+  /* ============ 角色记忆 ============ */
+  .memory-screen { position:absolute; z-index:204; inset:0; display:none; flex-direction:column; background:#f3efe8; color:#302e2b; }
+  .memory-screen.show { display:flex; }
+  .memory-head { height:66px; flex:0 0 auto; display:grid; grid-template-columns:58px 1fr 58px; align-items:center; }
+  .memory-head strong { text-align:center; font-size:16px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:0 4px; }
+  .memory-head button { width:44px; height:44px; margin:auto; border:0; background:transparent; display:grid; place-items:center; color:inherit; }
+  .memory-head svg { width:24px; fill:none; stroke:currentColor; stroke-width:1.8; }
+  .memory-body { flex:1; overflow-y:auto; padding:10px 16px 34px; }
+  .memory-hero { padding:22px; border-radius:25px; background:#3d3934; color:#fff; box-shadow:0 13px 30px rgba(53,47,40,.16); }
+  .memory-hero-kicker { color:#c0b8ae; font-size:9px; letter-spacing:.16em; }
+  .memory-hero-title { margin-top:8px; font-size:20px; font-weight:760; }
+  .memory-hero-sub { margin-top:8px; color:#d8d2ca; font-size:11px; line-height:1.55; }
+  .memory-char-list { display:flex; flex-direction:column; gap:8px; margin-top:14px; }
+  .memory-char { width:100%; min-height:64px; padding:9px 12px; border:0; border-radius:18px; display:flex; align-items:center; gap:11px; background:rgba(255,255,255,.84); text-align:left; }
+  .memory-char .avatar { width:42px; height:42px; font-size:15px; flex:0 0 auto; }
+  .memory-char-copy { flex:1; min-width:0; }
+  .memory-char-name { font-size:13px; font-weight:650; }
+  .memory-char-stat { margin-top:4px; color:#9c958d; font-size:9.5px; }
+  .memory-char-arrow { color:#bcb4a9; flex:0 0 auto; display:grid; place-items:center; }
+  .memory-section-title { margin:22px 2px 4px; font-size:10.5px; letter-spacing:.07em; color:#8f877c; text-transform:uppercase; }
+  .memory-card { margin-top:10px; padding:18px; border-radius:20px; background:rgba(255,255,255,.86); box-shadow:0 8px 21px rgba(61,52,43,.05); }
+  .memory-card-title { font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .memory-card-note { margin-top:5px; color:#9e968d; font-size:10px; line-height:1.5; }
+  .memory-card-time { margin-top:8px; color:#a79f93; font-size:9px; }
+  .memory-card-text { margin-top:9px; font-size:12.5px; line-height:1.65; white-space:pre-wrap; }
+  .memory-empty { padding:22px 8px; text-align:center; color:#a29a8e; font-size:11px; }
+  .memory-entry { padding:14px 15px; border-radius:16px; background:rgba(255,255,255,.86); margin-top:8px; }
+  .memory-entry-time { color:#a79f93; font-size:9px; }
+  .memory-entry-text { margin-top:6px; font-size:12.5px; line-height:1.6; white-space:pre-wrap; }
+  .memory-set-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; border-top:1px solid rgba(46,40,33,.07); }
+  .memory-set-row:first-child { border-top:0; padding-top:2px; }
+  .memory-set-copy { flex:1; min-width:0; }
+  .memory-set-label { font-size:12.5px; font-weight:600; }
+  .memory-set-sub { margin-top:3px; color:#9e968d; font-size:9.5px; line-height:1.42; }
+  .memory-slider-row { margin-top:14px; }
+  .memory-slider-row:first-child { margin-top:12px; }
+  .memory-slider-row input[type=range] { width:100%; margin-top:9px; accent-color:#3e3a35; }
+  .memory-slider-value { display:flex; justify-content:space-between; font-size:9.5px; color:#9e968d; margin-top:2px; }
+  .memory-slider-value span:nth-child(2) { color:#3e3a35; font-weight:700; }
+  .memory-btn-row { display:flex; gap:10px; margin-top:14px; }
+  .memory-btn-row button { flex:1; height:44px; border:0; border-radius:14px; background:#3e3a35; color:#fff; font-size:11px; }
+  .memory-btn-row button.ghost { background:#ece8e2; color:#7d766e; }
+  .memory-btn-row button:disabled { opacity:.5; }
+  .memory-prompt-vars { margin-top:9px; color:#a79f93; font-size:9px; line-height:1.5; }
+  .memory-prompt-textarea { width:100%; box-sizing:border-box; margin-top:9px; min-height:150px; border:0; border-radius:14px; background:#f4f1ec; padding:12px 13px; font:inherit; font-size:11.5px; line-height:1.6; resize:vertical; color:inherit; }
+
 </style>
 </head>
 <body>
@@ -2624,6 +2670,31 @@
       <strong>动态互动</strong><span></span>
     </header>
     <div class="interaction-body" id="interactionBody"></div>
+  </div>
+
+  <div class="memory-screen" id="memoryScreen">
+    <header class="memory-head">
+      <button onclick="Memory.close()" aria-label="返回"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+      <strong>记忆</strong><span></span>
+    </header>
+    <div class="memory-body" id="memoryListBody"></div>
+  </div>
+
+  <div class="memory-screen" id="memoryDetailScreen">
+    <header class="memory-head">
+      <button onclick="Memory.closeDetail()" aria-label="返回"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+      <strong id="memoryDetailTitle">记忆</strong>
+      <button onclick="Memory.openSettings()" aria-label="记忆设置"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+    </header>
+    <div class="memory-body" id="memoryDetailBody"></div>
+  </div>
+
+  <div class="memory-screen" id="memorySettingsScreen">
+    <header class="memory-head">
+      <button onclick="Memory.closeSettings()" aria-label="返回"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+      <strong id="memorySettingsTitle">记忆设置</strong><span></span>
+    </header>
+    <div class="memory-body" id="memorySettingsBody"></div>
   </div>
 
   <div class="sticker-screen" id="stickerGroupScreen">
@@ -4393,7 +4464,7 @@ const Me = {
   setRingtone(v){ this.profile().ringtone=v; Store.save(); UI.closeSheet(); Msg.renderMe(); UI.toast('已设为'+v); },
   feature(type) {
     if(type==='favorites'){ Favorite.open(); return; }
-    if(type==='memory'){ nav.go('worldbook'); WB.renderList(); return; }
+    if(type==='memory'){ Memory.openList(); return; }
     if(type==='interaction'){ Interactions.open(); return; }
     StickerGroups.open();
   },
@@ -4462,8 +4533,10 @@ const Interactions = {
       const data=this.parse(raw);
       const comments=Array.isArray(data.comments)?data.comments.slice(0,5).map(x=>({name:String(x.name||'路人'),content:String(x.content||'')})).filter(x=>x.content):[];
       while(comments.length<2)comments.push({name:comments.length?'同事':'朋友',content:comments.length?'哈哈，确实很像你':'看到啦'});
-      Moments.profile().posts.unshift({id:'moment_'+Date.now(),authorType:'char',charId:ch.id,authorName:ch.name,text:String(data.text||'今天也算有点收获。'),images:[],location:String(data.location||''),visibility:'公开',comments,timestamp:Date.now()});
+      const postText=String(data.text||'今天也算有点收获。');
+      Moments.profile().posts.unshift({id:'moment_'+Date.now(),authorType:'char',charId:ch.id,authorName:ch.name,text:postText,images:[],location:String(data.location||''),visibility:'公开',comments,timestamp:Date.now()});
       const c=this.cfg();c.lastPostAt=Date.now();this.scheduleNext();Store.save();Msg.renderMoments();UI.toast(ch.name+' 发布了一条朋友圈');
+      Memory.logEvent(ch.id,'assistant','[朋友圈] '+postText,'moments');
     }catch(e){UI.alert('生成失败',String(e.message||e));if(!manual){this.scheduleNext();Store.save();}}
     finally{this.busy=false;this.render();}
   },
@@ -4476,6 +4549,275 @@ const Interactions = {
     if(this.timer)clearInterval(this.timer);
     this.timer=setInterval(()=>this.tick().catch(()=>{}),60000);
     setTimeout(()=>this.tick().catch(()=>{}),2500);
+  }
+};
+
+const MEMORY_DEFAULT_LT_PROMPT = '你是一个记忆整理助手。根据以下事件记录，创建一段简洁的事实性总结。\n\n角色：{{char}}\n时间跨度：{{earliest}} 至 {{latest}}\n\n事件记录：\n{{events}}\n\n要求：\n用第三人称描述{{char}}和用户之间的互动，只保留关键事实、稳定的人物关系变化和承诺，不要加入推测或评价，不要使用markdown格式，直接输出一段纯文本。';
+const MEMORY_DEFAULT_CORE_PROMPT = '你是一个核心记忆整理助手。请根据以下长期记忆记录，为{{char}}整理一段"核心记忆"总结。\n\n角色：{{char}}\n时间跨度：{{earliest}} 至 {{latest}}\n\n长期记忆记录：\n{{events}}\n\n要求：\n突出最关键、最稳定、最影响关系判断的事实（例如重要承诺、关系里程碑、无法改变的设定或创伤），忽略已经过时或不再重要的细节，用简洁的条目式语言输出，每条一行，不要使用markdown标题。';
+
+const Memory = {
+  currentCharId: null,
+  busyLT: false,
+  busyCore: false,
+  defaults() {
+    return {
+      enabled: true,
+      coreEnabled: true,
+      vectorRecall: true,
+      sources: { chat: true, moments: true },
+      shortTermBudget: 6000,
+      longTermBudget: 3000,
+      coreBudget: 1500,
+      summaryInterval: 10,
+      coreInterval: 3,
+      longTermPrompt: MEMORY_DEFAULT_LT_PROMPT,
+      corePrompt: MEMORY_DEFAULT_CORE_PROMPT,
+      pendingEvents: [],
+      eventsSinceSummary: 0,
+      longTermSinceCore: 0,
+      longTerm: [],
+      core: '',
+      coreUpdatedAt: 0
+    };
+  },
+  cfg(ch) {
+    if (!ch) return this.defaults();
+    const d = this.defaults();
+    if (!ch.memory) { ch.memory = d; return ch.memory; }
+    ch.memory = { ...d, ...ch.memory };
+    ch.memory.sources = { ...d.sources, ...(ch.memory.sources || {}) };
+    if (!Array.isArray(ch.memory.pendingEvents)) ch.memory.pendingEvents = [];
+    if (!Array.isArray(ch.memory.longTerm)) ch.memory.longTerm = [];
+    return ch.memory;
+  },
+  char(id) { return Store.data.characters.find(c => c.id === id); },
+
+  openList() { this.renderList(); document.getElementById('memoryScreen').classList.add('show'); },
+  close() { document.getElementById('memoryScreen').classList.remove('show'); },
+  renderList() {
+    const box = document.getElementById('memoryListBody');
+    if (!box) return;
+    const chars = Store.data.characters;
+    const hero = '<div class="memory-hero"><div class="memory-hero-kicker">MEMORY</div><div class="memory-hero-title">角色的记忆中心</div><div class="memory-hero-sub">聊天和朋友圈会自动整理成长期记忆，再提炼成核心记忆，一起决定角色记得什么。</div></div>';
+    if (!chars.length) { box.innerHTML = hero + '<div class="memory-empty">还没有角色，先在联系人里创建一个吧</div>'; return; }
+    const list = chars.map(ch => {
+      const cfg = this.cfg(ch);
+      const stat = cfg.longTerm.length + ' 条长期记忆 · ' + (cfg.core ? '已有核心记忆' : '核心记忆待生成');
+      return '<button class="memory-char" onclick="Memory.openDetail(\''+ch.id+'\')">'+renderAvatar(ch)+
+        '<span class="memory-char-copy"><span class="memory-char-name">'+escapeHtml(ch.name)+'</span><span class="memory-char-stat">'+stat+'</span></span>'+
+        '<span class="memory-char-arrow"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></button>';
+    }).join('');
+    box.innerHTML = hero + '<div class="memory-char-list">' + list + '</div>';
+  },
+
+  openDetail(id) {
+    this.currentCharId = id;
+    this.renderDetail();
+    document.getElementById('memoryDetailScreen').classList.add('show');
+  },
+  closeDetail() { document.getElementById('memoryDetailScreen').classList.remove('show'); this.renderList(); },
+  renderDetail() {
+    const ch = this.char(this.currentCharId); if (!ch) return;
+    const cfg = this.cfg(ch);
+    document.getElementById('memoryDetailTitle').textContent = ch.name + ' 的记忆';
+    const core = cfg.core
+      ? '<div class="memory-card-text">'+escapeHtml(cfg.core)+'</div><div class="memory-card-time">更新于 '+new Date(cfg.coreUpdatedAt).toLocaleString()+'</div>'
+      : '<div class="memory-empty">核心记忆还没有生成，进入记忆设置手动重建，或等待自动整理</div>';
+    const entries = cfg.longTerm.slice().reverse().map(e =>
+      '<div class="memory-entry"><div class="memory-entry-time">'+new Date(e.earliest).toLocaleString()+' ~ '+new Date(e.latest).toLocaleString()+'</div><div class="memory-entry-text">'+escapeHtml(e.text)+'</div></div>'
+    ).join('') || '<div class="memory-empty">还没有长期记忆，继续聊天或等待自动总结</div>';
+    document.getElementById('memoryDetailBody').innerHTML =
+      '<section class="memory-card"><div class="memory-card-title">核心记忆（重大事项）</div>'+core+'</section>'+
+      '<div class="memory-section-title">长期记忆 · 共 '+cfg.longTerm.length+' 条，'+cfg.pendingEvents.length+' 条待整理</div>'+
+      entries;
+  },
+
+  openSettings(id) {
+    if (id) this.currentCharId = id;
+    this.renderSettings();
+    document.getElementById('memorySettingsScreen').classList.add('show');
+  },
+  closeSettings() { document.getElementById('memorySettingsScreen').classList.remove('show'); this.renderDetail(); },
+
+  toggleSource(kind) { const cfg=this.cfg(this.char(this.currentCharId)); cfg.sources[kind]=!cfg.sources[kind]; Store.save(); this.renderSettings(); },
+  toggleAuto() { const cfg=this.cfg(this.char(this.currentCharId)); cfg.enabled=!cfg.enabled; Store.save(); this.renderSettings(); },
+  toggleCoreAuto() { const cfg=this.cfg(this.char(this.currentCharId)); cfg.coreEnabled=!cfg.coreEnabled; Store.save(); this.renderSettings(); },
+  toggleVector() { const cfg=this.cfg(this.char(this.currentCharId)); cfg.vectorRecall=!cfg.vectorRecall; Store.save(); this.renderSettings(); },
+  liveSlider(el, key) { const out=document.getElementById('memorySliderVal-'+key); if (out) out.textContent = el.value; },
+  setNumber(key, value) { const cfg=this.cfg(this.char(this.currentCharId)); cfg[key]=Math.max(1,Number(value)||0); Store.save(); },
+  savePrompt(key) {
+    const cfg = this.cfg(this.char(this.currentCharId));
+    const el = document.getElementById(key === 'longTermPrompt' ? 'memoryLtPrompt' : 'memoryCorePrompt');
+    if (!el) return;
+    cfg[key] = el.value;
+    Store.save();
+  },
+  resetPrompt(key) {
+    const cfg = this.cfg(this.char(this.currentCharId));
+    cfg[key] = key === 'longTermPrompt' ? MEMORY_DEFAULT_LT_PROMPT : MEMORY_DEFAULT_CORE_PROMPT;
+    Store.save(); this.renderSettings();
+  },
+  sliderRow(key, label, sub, value, min, max, step) {
+    return '<div class="memory-slider-row"><div class="memory-set-label">'+label+'</div>'+(sub?'<div class="memory-set-sub">'+sub+'</div>':'')+
+      '<input type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+value+'" oninput="Memory.liveSlider(this,\''+key+'\')" onchange="Memory.setNumber(\''+key+'\', this.value)">'+
+      '<div class="memory-slider-value"><span>'+min+'</span><span id="memorySliderVal-'+key+'">'+value+'</span><span>'+max+'</span></div></div>';
+  },
+  renderSettings() {
+    const ch = this.char(this.currentCharId); if (!ch) return;
+    const cfg = this.cfg(ch);
+    document.getElementById('memorySettingsTitle').textContent = ch.name + ' · 记忆设置';
+    document.getElementById('memorySettingsBody').innerHTML =
+      '<section class="memory-card"><div class="memory-card-title">手动操作</div><div class="memory-card-note">立即整理，不必等待自动触发</div>'+
+        '<div class="memory-btn-row">'+
+          '<button '+(this.busyLT?'disabled':'')+' onclick="Memory.manualSummarize()">'+(this.busyLT?'总结中…':'⚡ 总结（'+cfg.pendingEvents.length+' 条待整理）')+'</button>'+
+          '<button class="ghost" '+(this.busyCore?'disabled':'')+' onclick="Memory.manualRebuildCore()">'+(this.busyCore?'整理中…':'🗂 重建核心记忆')+'</button>'+
+        '</div></section>'+
+      '<section class="memory-card"><div class="memory-card-title">记忆来源</div><div class="memory-card-note">选择哪些内容参与记忆总结</div>'+
+        '<div class="interaction-intervals" style="margin-top:12px">'+
+          '<button class="interaction-interval '+(cfg.sources.chat?'active':'')+'" onclick="Memory.toggleSource(\'chat\')">聊天记录</button>'+
+          '<button class="interaction-interval '+(cfg.sources.moments?'active':'')+'" onclick="Memory.toggleSource(\'moments\')">朋友圈动态</button>'+
+        '</div></section>'+
+      '<section class="memory-card"><div class="memory-card-title">自动化</div>'+
+        '<div class="memory-set-row"><div class="memory-set-copy"><div class="memory-set-label">长期记忆自动总结</div><div class="memory-set-sub">达到间隔后自动把新事件整理为长期记忆</div></div><button class="interaction-toggle '+(cfg.enabled?'on':'')+'" onclick="Memory.toggleAuto()"></button></div>'+
+        '<div class="memory-set-row"><div class="memory-set-copy"><div class="memory-set-label">核心记忆自动总结</div><div class="memory-set-sub">长期记忆积累到间隔后自动重建核心记忆</div></div><button class="interaction-toggle '+(cfg.coreEnabled?'on':'')+'" onclick="Memory.toggleCoreAuto()"></button></div>'+
+        '<div class="memory-set-row"><div class="memory-set-copy"><div class="memory-set-label">相关性检索</div><div class="memory-set-sub">长期记忆超出注入预算时，按当前聊天的关键词相关性挑选，而不是只取最近几条</div></div><button class="interaction-toggle '+(cfg.vectorRecall?'on':'')+'" onclick="Memory.toggleVector()"></button></div>'+
+      '</section>'+
+      '<section class="memory-card"><div class="memory-card-title">控制注入量（字符数）</div>'+
+        this.sliderRow('shortTermBudget','短期记忆 + 最近上下文','聊天历史截断量',cfg.shortTermBudget,1000,20000,500)+
+        this.sliderRow('longTermBudget','长期记忆注入量','',cfg.longTermBudget,500,8000,250)+
+        this.sliderRow('coreBudget','核心记忆注入量','',cfg.coreBudget,300,4000,100)+
+      '</section>'+
+      '<section class="memory-card"><div class="memory-card-title">自动总结间隔</div>'+
+        this.sliderRow('summaryInterval','每 N 条事件自动触发长期记忆总结','',cfg.summaryInterval,3,50,1)+
+        this.sliderRow('coreInterval','每 N 条长期记忆自动触发核心记忆重建','',cfg.coreInterval,1,20,1)+
+      '</section>'+
+      '<section class="memory-card"><div class="memory-card-title">长期记忆总结提示词</div>'+
+        '<div class="memory-prompt-vars">变量：{{char}} 角色、{{earliest}} 起始时间、{{latest}} 结束时间、{{events}} 事件记录</div>'+
+        '<textarea class="memory-prompt-textarea" id="memoryLtPrompt" onchange="Memory.savePrompt(\'longTermPrompt\')">'+escapeHtml(cfg.longTermPrompt)+'</textarea>'+
+        '<div class="memory-btn-row"><button class="ghost" onclick="Memory.resetPrompt(\'longTermPrompt\')">恢复默认</button></div>'+
+      '</section>'+
+      '<section class="memory-card"><div class="memory-card-title">核心记忆总结提示词</div>'+
+        '<div class="memory-prompt-vars">变量：{{char}} 角色、{{earliest}} 起始时间、{{latest}} 结束时间、{{events}} 长期记忆集合</div>'+
+        '<textarea class="memory-prompt-textarea" id="memoryCorePrompt" onchange="Memory.savePrompt(\'corePrompt\')">'+escapeHtml(cfg.corePrompt)+'</textarea>'+
+        '<div class="memory-btn-row"><button class="ghost" onclick="Memory.resetPrompt(\'corePrompt\')">恢复默认</button></div>'+
+      '</section>';
+  },
+
+  fillTemplate(tpl, ch, earliest, latest, events) {
+    return String(tpl||'')
+      .split('{{char}}').join(ch.name)
+      .split('{{earliest}}').join(earliest ? new Date(earliest).toLocaleString() : '')
+      .split('{{latest}}').join(latest ? new Date(latest).toLocaleString() : '')
+      .split('{{events}}').join(events);
+  },
+  async manualSummarize() { const ch=this.char(this.currentCharId); if (ch) await this.summarizeLongTerm(ch, true); },
+  async manualRebuildCore() { const ch=this.char(this.currentCharId); if (ch) await this.rebuildCore(ch, true); },
+  async summarizeLongTerm(ch, manual) {
+    const cfg = this.cfg(ch);
+    if (this.busyLT) return;
+    if (!cfg.pendingEvents.length) { if (manual) UI.toast('还没有新事件可以总结'); return; }
+    if (!API.getActive()) { if (manual) UI.alert('未配置 API','请先在设置中配置并选择聊天 API。'); return; }
+    this.busyLT = true; if (manual) this.renderSettings();
+    const events = cfg.pendingEvents.map(e => (e.role==='user'?Store.data.userName:ch.name)+'：'+e.text).join('\n');
+    const earliest = cfg.pendingEvents[0].timestamp, latest = cfg.pendingEvents[cfg.pendingEvents.length-1].timestamp;
+    const prompt = this.fillTemplate(cfg.longTermPrompt, ch, earliest, latest, events);
+    try {
+      const raw = await API.chat([{role:'system',content:'你是记忆整理助手，只输出总结正文，不要解释、不要使用markdown标题。'},{role:'user',content:prompt}]);
+      cfg.longTerm.push({ id:'ltm_'+Date.now(), text:String(raw||'').trim(), earliest, latest, createdAt: Date.now() });
+      cfg.pendingEvents = []; cfg.eventsSinceSummary = 0; cfg.longTermSinceCore++;
+      Store.save();
+      if (manual) UI.toast('长期记忆已更新');
+      await this.maybeAutoRebuildCore(ch);
+    } catch (e) {
+      if (manual) UI.alert('总结失败', String(e.message||e));
+    } finally {
+      this.busyLT = false;
+      if (this.currentCharId === ch.id) { this.renderSettings(); this.renderDetail(); }
+    }
+  },
+  async maybeAutoSummarize(ch) {
+    const cfg = this.cfg(ch);
+    if (!cfg.enabled) return;
+    if (cfg.eventsSinceSummary < Math.max(1, Number(cfg.summaryInterval)||10)) return;
+    await this.summarizeLongTerm(ch, false);
+  },
+  async rebuildCore(ch, manual) {
+    const cfg = this.cfg(ch);
+    if (this.busyCore) return;
+    if (!cfg.longTerm.length) { if (manual) UI.toast('还没有长期记忆可以整理'); return; }
+    if (!API.getActive()) { if (manual) UI.alert('未配置 API','请先在设置中配置并选择聊天 API。'); return; }
+    this.busyCore = true; if (manual) this.renderSettings();
+    const events = cfg.longTerm.map(e=>'- '+e.text).join('\n');
+    const earliest = cfg.longTerm[0].earliest, latest = cfg.longTerm[cfg.longTerm.length-1].latest;
+    const prompt = this.fillTemplate(cfg.corePrompt, ch, earliest, latest, events);
+    try {
+      const raw = await API.chat([{role:'system',content:'你是核心记忆整理助手，只输出总结正文，不要解释、不要使用markdown标题。'},{role:'user',content:prompt}]);
+      cfg.core = String(raw||'').trim(); cfg.coreUpdatedAt = Date.now(); cfg.longTermSinceCore = 0;
+      Store.save();
+      if (manual) UI.toast('核心记忆已重建');
+    } catch (e) {
+      if (manual) UI.alert('整理失败', String(e.message||e));
+    } finally {
+      this.busyCore = false;
+      if (this.currentCharId === ch.id) { this.renderSettings(); this.renderDetail(); }
+    }
+  },
+  async maybeAutoRebuildCore(ch) {
+    const cfg = this.cfg(ch);
+    if (!cfg.coreEnabled) return;
+    if (cfg.longTermSinceCore < Math.max(1, Number(cfg.coreInterval)||3)) return;
+    await this.rebuildCore(ch, false);
+  },
+
+  logEvent(charId, role, text, kind) {
+    kind = kind || 'chat';
+    const ch = this.char(charId); if (!ch) return;
+    const cfg = this.cfg(ch);
+    if (!cfg.sources[kind]) return;
+    cfg.pendingEvents.push({ role, text: String(text||'').slice(0,500), timestamp: Date.now(), kind });
+    cfg.eventsSinceSummary++;
+    Store.save();
+    this.maybeAutoSummarize(ch).catch(()=>{});
+  },
+  selectRecentHistory(ch, history) {
+    const cfg = this.cfg(ch);
+    const budget = Math.max(500, Number(cfg.shortTermBudget)||6000);
+    let used = 0, out = [];
+    for (let i = history.length - 1; i >= 0; i--) {
+      const len = (history[i].content||'').length;
+      if (used + len > budget && out.length) break;
+      out.unshift(history[i]); used += len;
+    }
+    return out;
+  },
+  selectLongTermForInjection(ch) {
+    const cfg = this.cfg(ch);
+    if (!cfg.longTerm.length) return '';
+    const budget = Math.max(200, Number(cfg.longTermBudget)||3000);
+    let ordered = cfg.longTerm.slice().reverse();
+    if (cfg.vectorRecall && cfg.longTerm.length > 3) {
+      const recentChat = (Store.data.chats[ch.id]||[]).slice(-6).map(m=>m.content||'').join(' ');
+      const words = Array.from(new Set(recentChat.match(/[一-龥]{2,}|[a-zA-Z]{3,}/g) || []));
+      if (words.length) {
+        ordered = cfg.longTerm.map(e => ({ e, score: words.reduce((s,w)=>s+(e.text.includes(w)?1:0),0) }))
+          .sort((a,b)=> b.score - a.score || b.e.createdAt - a.e.createdAt)
+          .map(x=>x.e);
+      }
+    }
+    let used = 0, picked = [];
+    for (const e of ordered) {
+      if (used + e.text.length > budget && picked.length) continue;
+      picked.push(e); used += e.text.length;
+      if (used >= budget) break;
+    }
+    picked.sort((a,b)=>a.createdAt-b.createdAt);
+    return picked.map(e=>'- '+e.text).join('\n');
+  },
+  coreTextForInjection(ch) {
+    const cfg = this.cfg(ch);
+    if (!cfg.core) return '';
+    const budget = Math.max(100, Number(cfg.coreBudget)||1500);
+    return cfg.core.length > budget ? cfg.core.slice(0, budget) : cfg.core;
   }
 };
 
@@ -4876,6 +5218,10 @@ const Chat = {
     arr.push(msg);
     Store.save();
     this.render();
+    if (msg.role === 'user') {
+      const text = msg.type === 'text' ? msg.content : ('['+(msg.type==='voice'?'语音':'表情')+'] '+(msg.type==='voice'?msg.content:''));
+      Memory.logEvent(this.currentId, 'user', text);
+    }
     // 触发 AI 回复
     this.askAI();
   },
@@ -4903,10 +5249,14 @@ const Chat = {
         sys += `## ${w.name}\n${w.content}\n\n`;
       });
     }
+    const coreMem = Memory.coreTextForInjection(ch);
+    if (coreMem) sys += `# 核心记忆（关于你和用户，最重要的事）\n${coreMem}\n\n`;
+    const longTermMem = Memory.selectLongTermForInjection(ch);
+    if (longTermMem) sys += `# 长期记忆\n${longTermMem}\n\n`;
     sys += `# 对话须知\n- 始终以「${ch.name}」的第一人称回复\n- 保持角色一致\n- 回复自然、口语化\n- 若回复内容较长，可以在段落之间用空行分隔，将被拆分为多条消息发送`;
 
     // 组装历史（把语音/表情转成可理解格式）
-    const history = (Store.data.chats[this.currentId] || []).map(m => {
+    const fullHistory = (Store.data.chats[this.currentId] || []).map(m => {
       let content = m.content;
       if (m.type === 'voice') content = `[语音消息] ${m.content}`;
       else if (m.type === 'sticker') {
@@ -4915,6 +5265,7 @@ const Chat = {
       }
       return { role: m.role, content };
     });
+    const history = Memory.selectRecentHistory(ch, fullHistory);
 
     const messages = [{ role: 'system', content: sys }, ...history];
     this.loading = true;
@@ -4929,6 +5280,7 @@ const Chat = {
         arr.push({ role: 'assistant', type: 'text', content: c, timestamp: now + i });
       });
       Store.save();
+      chunks.forEach(c => Memory.logEvent(this.currentId, 'assistant', c));
     } catch (e) {
       const arr = Store.data.chats[this.currentId];
       arr.push({ role: 'assistant', type: 'text', content: '[出错] ' + (e.message || e), timestamp: Date.now(), isError: true });

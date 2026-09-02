@@ -569,13 +569,28 @@
     z-index: 1;
   }
   .chat-header-info .name {
-    font-size: 12px;
+    font-size: 15px;
+    font-weight: 650;
     color: #1C1C1E;
-    margin-top: 2px;
-    max-width: 140px;
+    margin-top: 6px;
+    max-width: 220px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+  .chat-header-status {
+    margin-top: 2px;
+    font-size: 11px;
+    color: #007AFF;
+    height: 14px;
+    line-height: 14px;
+  }
+  .chat-screen .nav-bar {
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border-bottom: 0;
+    min-height: 94px;
   }
   .chat-messages {
     padding: 12px;
@@ -5517,8 +5532,9 @@ const Chat = {
     const ch = Store.data.characters.find(c => c.id === id);
     if (!ch) return;
     document.getElementById('chatHeaderInfo').innerHTML = `
-      ${renderAvatar(ch, 'small')}
+      ${renderAvatar(ch)}
       <span class="name">${escapeHtml(ch.name)}</span>
+      <span class="chat-header-status" id="chatHeaderStatus"></span>
     `;
     this.render();
     document.getElementById('chatInput').value = '';
@@ -5538,6 +5554,8 @@ const Chat = {
       try { localStorage.setItem(Store.KEY, JSON.stringify(Store.data)); } catch (_) {}
     }
     const ch = Store.data.characters.find(c => c.id === this.currentId);
+    const statusEl = document.getElementById('chatHeaderStatus');
+    if (statusEl) statusEl.textContent = this.loading ? '对方正在回复...' : '';
     if (!msgs.length) {
       box.innerHTML = `
         <div class="empty" style="padding:80px 24px">

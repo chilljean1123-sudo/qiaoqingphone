@@ -2414,8 +2414,6 @@
   </div>
   <input type="file" id="momentsCoverInput" accept="image/*" hidden onchange="Moments.importCover(event)">
 
-  <input type="file" id="meAvatarInput" accept="image/*" hidden onchange="Me.importAvatar(event)">
-
   <!-- ========== 通用弹窗 / 抽屉 / Toast ========== -->
   <div class="modal" id="modal">
     <div class="modal-box">
@@ -2494,8 +2492,9 @@ const Store = {
       chatReadAt: {},   // { charId: lastOpenedTimestamp }
       stickers: [],     // [ {id, name, dataUrl} ]
       userName: '用户',
+      userAvatar: '',
       momentsProfile: { cover: '', signature: '点击编辑签名', posts: [] },
-      meProfile: { avatar: '', status: '今天也要认真生活', enterToSend: true, ringtone: '默认铃声' },
+      meProfile: { status: '今天也要认真生活', enterToSend: true, ringtone: '默认铃声' },
       imgApi: {
         enabled: false,
         url: '',
@@ -4006,20 +4005,15 @@ const WB = {
 
 const Me = {
   profile() {
-    if (!Store.data.meProfile) Store.data.meProfile={avatar:'',status:'今天也要认真生活',enterToSend:true,ringtone:'默认铃声'};
+    if (!Store.data.meProfile) Store.data.meProfile={status:'今天也要认真生活',enterToSend:true,ringtone:'默认铃声'};
     return Store.data.meProfile;
   },
   edit() {
     UI.sheet('<div class="sheet-title">编辑主页</div>'+
-      '<button class="sheet-action" onclick="UI.closeSheet();document.getElementById(\'meAvatarInput\').click()">更换头像</button>'+
+
       '<button class="sheet-action" onclick="UI.closeSheet();Settings.editUserName()">修改昵称</button>'+
       '<button class="sheet-action" onclick="UI.closeSheet();Me.editStatus()">修改今日状态</button>'+
       '<button class="sheet-action" onclick="UI.closeSheet();Moments.editSignature()">修改签名</button>');
-  },
-  async importAvatar(event) {
-    const file=event.target.files[0]; event.target.value=''; if(!file)return;
-    try { this.profile().avatar=await Theme.resizeImage(file,900,900,.88); Store.save(); Msg.renderMe(); UI.toast('头像已更换'); }
-    catch(_){ UI.toast('头像读取失败'); }
   },
   editStatus() {
     UI.prompt('今日状态','写下此刻的心情',this.profile().status||'',v=>{
@@ -4292,7 +4286,7 @@ const Msg = {
   renderMe() {
     const c=document.getElementById('tab-me');
     const p=Me.profile(), mp=Moments.profile();
-    const avatar=p.avatar?'<img src="'+p.avatar+'" alt="我的头像">':initials(Store.data.userName);
+    const avatar=Store.data.userAvatar?'<img src="'+Store.data.userAvatar+'" alt="我的头像">':initials(Store.data.userName);
     c.innerHTML =
       '<div class="me-p2">'+
         '<header class="me-p2-top"><button class="me-p2-back" onclick="nav.home()" aria-label="返回主屏"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button><button class="me-p2-edit" onclick="Me.edit()">编辑</button></header>'+

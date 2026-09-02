@@ -2289,6 +2289,15 @@
   .chat-beauty-size { width:38px; text-align:right; color:#888d94; font-size:11px; }
   .chat-beauty-reset { width:100%; height:54px; margin-top:13px; border:0; border-radius:18px; background:#fff; color:#e04c47; font-size:13px; }
 
+
+  /* API 模型区域防拥挤 */
+  #apiEdit .api-model-fetch-row { min-height:64px; align-items:flex-start; flex-direction:column; justify-content:center; gap:5px; }
+  #apiEdit .api-model-fetch-row label { display:block; width:100%; }
+  #apiEdit .api-model-fetch-row #apiFetchStatus { display:block; width:100%; max-width:100%; color:#8e8e93; font-size:11px; line-height:1.35; white-space:normal; overflow-wrap:anywhere; }
+  #apiEdit .api-model-value-row { min-height:68px; display:grid; grid-template-columns:92px minmax(0,1fr); align-items:center; gap:10px; }
+  #apiEdit .api-model-value-row label { min-width:0; }
+  #apiEdit .api-model-value-row select,#apiEdit .api-model-value-row input { width:100%; min-width:0; max-width:100%; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
 </style>
 </head>
 <body>
@@ -2789,17 +2798,17 @@
       <div class="section">
         <div class="section-title">模型</div>
         <div class="form">
-          <div class="form-field" onclick="API.fetchModels()">
+          <div class="form-field api-model-fetch-row" onclick="API.fetchModels()">
             <label style="color:#007AFF">拉取模型</label>
             <span class="list-item-value" id="apiFetchStatus"></span>
           </div>
-          <div class="form-field">
+          <div class="form-field api-model-value-row">
             <label>当前模型</label>
             <select id="apiModel">
               <option value="">未选择</option>
             </select>
           </div>
-          <div class="form-field">
+          <div class="form-field api-model-value-row">
             <label>或手动填写</label>
             <input id="apiModelManual" placeholder="gpt-4o-mini">
           </div>
@@ -3398,6 +3407,7 @@ const Store = {
         wallpaper: '',
         fontFamily: 'system',
         customFontData: '',
+        customFontStored: false,
         customFontName: '',
         fontScale: 100,
         displayMode: 'auto',
@@ -4172,6 +4182,28 @@ const Backup = {
 /* ============================================================
    美化
 ============================================================ */
+const FontVault = {
+  dbName:'qiaoqingphone-assets',
+  open(){
+    return new Promise((resolve,reject)=>{
+      const req=indexedDB.open(this.dbName,1);
+      req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('assets'))req.result.createObjectStore('assets');};
+      req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+    });
+  },
+  async put(blob){
+    const db=await this.open();
+    await new Promise((resolve,reject)=>{const tx=db.transaction('assets','readwrite');tx.objectStore('assets').put(blob,'custom-font');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});
+    db.close();
+  },
+  async get(){
+    try{const db=await this.open();const value=await new Promise((resolve,reject)=>{const tx=db.transaction('assets','readonly');const req=tx.objectStore('assets').get('custom-font');req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error);});db.close();return value;}catch(_){return null;}
+  },
+  async remove(){
+    try{const db=await this.open();await new Promise((resolve,reject)=>{const tx=db.transaction('assets','readwrite');tx.objectStore('assets').delete('custom-font');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});db.close();}catch(_){}
+  }
+};
+
 const Theme = {
   pendingDisplay: 'auto',
   iconTarget: '',
@@ -4188,14 +4220,22 @@ const Theme = {
   },
   async apply() {
     const t = this.cfg();
-    if (t.customFontData) {
+    let fontSource=t.customFontData||'';
+    if(!fontSource && t.customFontStored){
+      const blob=await FontVault.get();
+      if(blob){
+        if(this.fontObjectUrl)URL.revokeObjectURL(this.fontObjectUrl);
+        this.fontObjectUrl=URL.createObjectURL(blob);fontSource=this.fontObjectUrl;
+      }
+    }
+    if (fontSource) {
       try {
-        const face = new FontFace('PhoneCustomFont', 'url(' + t.customFontData + ')');
+        const face = new FontFace('PhoneCustomFont', 'url(' + fontSource + ')');
         await face.load();
         document.fonts.add(face);
       } catch (error) { console.warn('custom font load failed', error); }
     }
-    const family = t.fontFamily === 'custom' && t.customFontData
+    const family = t.fontFamily === 'custom' && fontSource
       ? '"PhoneCustomFont", sans-serif'
       : (this.fonts[t.fontFamily] || this.fonts.system);
     document.documentElement.style.setProperty('--theme-font-family', family);
@@ -4231,7 +4271,7 @@ const Theme = {
     if (!Store.data?.theme) return;
     const t = this.cfg();
     const family = document.getElementById('themeFontFamily');
-    if (family) family.value = t.fontFamily === 'custom' && !t.customFontData ? 'system' : t.fontFamily;
+    if (family) family.value = t.fontFamily === 'custom' && !t.customFontData && !t.customFontStored ? 'system' : t.fontFamily;
     const size = document.getElementById('themeFontSize');
     if (size) size.value = Number(t.fontScale) || 100;
     const sizeValue = document.getElementById('themeFontSizeValue');
@@ -4261,7 +4301,7 @@ const Theme = {
     this.render();
   },
   setFontFamily(value) {
-    if (value === 'custom' && !this.cfg().customFontData) {
+    if (value === 'custom' && !this.cfg().customFontData && !this.cfg().customFontStored) {
       document.getElementById('themeFontInput').click();
       document.getElementById('themeFontFamily').value = this.cfg().fontFamily || 'system';
       return;
@@ -4317,22 +4357,22 @@ const Theme = {
     const file = event.target.files?.[0];
     event.target.value = '';
     if (!file) return;
-    if (file.size > 3 * 1024 * 1024) return UI.toast('字体文件请控制在 3MB 以内', 3200);
+    const ext=(file.name.split('.').pop()||'').toLowerCase();
+    if(!['ttf','otf','woff','woff2'].includes(ext))return UI.toast('请选择 TTF、OTF、WOFF 或 WOFF2 字体');
     try {
-      const data = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-      this.cfg().customFontData = data;
+      await FontVault.put(file);
+      this.cfg().customFontData = '';
+      this.cfg().customFontStored = true;
       this.cfg().customFontName = file.name;
       this.cfg().fontFamily = 'custom';
-      await this.apply();
       Store.save();
+      await this.apply();
       this.render();
       UI.toast('自定义字体已应用');
-    } catch (_) { UI.toast('字体读取失败'); }
+    } catch (error) {
+      console.warn('font storage failed',error);
+      UI.toast('字体保存失败，请确认浏览器存储空间充足',3200);
+    }
   },
   pickIcon(key) {
     this.iconTarget = key;

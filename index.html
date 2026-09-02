@@ -1554,6 +1554,54 @@
   .ios-contact-empty { padding-top:105px; }
   @media (max-height:700px) { .ios-contact-index { top:54px;font-size:9px;line-height:10.5px;margin-top:54px; } }
 
+
+  /* ============ 动态 / 朋友圈 ============ */
+  #tab-moments { background:#fff; color:#1c2738; overflow-y:auto; }
+  .moments-hero { position:relative; min-height:330px; background:linear-gradient(145deg,#4b5563,#c7cbd2); background-size:cover; background-position:center; color:#fff; overflow:hidden; }
+  .moments-hero::after { content:""; position:absolute; inset:38% 0 0; background:linear-gradient(transparent,rgba(0,0,0,.64)); pointer-events:none; }
+  .moments-camera,.moments-cover-edit { position:absolute; z-index:2; border:0; color:#fff; background:rgba(20,25,34,.28); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+  .moments-camera { right:17px; top:17px; width:46px; height:46px; border-radius:50%; display:grid; place-items:center; }
+  .moments-camera svg { width:25px; fill:none; stroke:currentColor; stroke-width:1.8; }
+  .moments-cover-edit { right:17px; bottom:20px; padding:8px 12px; border-radius:18px; font-size:12px; }
+  .moments-profile { position:absolute; z-index:2; left:22px; right:22px; bottom:18px; padding-right:92px; }
+  .moments-profile-avatar { width:70px; height:70px; border:3px solid #fff; box-shadow:0 4px 18px rgba(0,0,0,.18); font-size:27px; }
+  .moments-profile-name { margin-top:10px; font-size:24px; font-weight:750; text-shadow:0 1px 5px rgba(0,0,0,.22); }
+  .moments-profile-signature { margin-top:7px; min-height:22px; font-size:14px; color:rgba(255,255,255,.82); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+  .moments-stats { display:flex; gap:25px; padding:15px 22px 17px; border-bottom:8px solid #f5f5f7; background:#fff; }
+  .moments-stat b { display:block; font-size:18px; color:#202938; }
+  .moments-stat span { font-size:11px; color:#9a9da5; }
+  .moments-feed { padding-bottom:28px; background:#fff; }
+  .moments-empty { padding:70px 24px; text-align:center; color:#a1a4aa; font-size:14px; }
+  .moment-post { padding:20px 18px 16px; border-bottom:1px solid #eef0f2; }
+  .moment-post-head { display:flex; align-items:center; gap:11px; }
+  .moment-post-head .avatar { width:40px; height:40px; font-size:16px; flex:0 0 auto; }
+  .moment-post-author { flex:1; font-weight:650; font-size:15px; }
+  .moment-post-more { border:0; background:transparent; color:#a5a8ae; font-size:22px; padding:8px; }
+  .moment-post-text { margin:14px 0 12px 51px; font-size:15px; line-height:1.65; white-space:pre-wrap; word-break:break-word; }
+  .moment-post-images { margin-left:51px; display:grid; grid-template-columns:repeat(3,1fr); gap:5px; }
+  .moment-post-images.one { grid-template-columns:minmax(0,230px); }
+  .moment-post-images img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:9px; background:#eee; }
+  .moment-post-images.one img { aspect-ratio:auto; max-height:310px; }
+  .moment-post-meta { margin:11px 0 0 51px; display:flex; flex-wrap:wrap; gap:7px 12px; color:#91959d; font-size:11px; }
+  .moment-post-location { color:#4c6b9b; }
+  .moments-compose-overlay { position:absolute; z-index:210; inset:0; display:none; align-items:center; justify-content:center; padding:18px; background:rgba(18,22,28,.48); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); }
+  .moments-compose-overlay.show { display:flex; }
+  .moments-compose-card { width:min(100%,370px); max-height:calc(100% - 28px); overflow:auto; background:#fff; border-radius:24px; box-shadow:0 24px 70px rgba(0,0,0,.25); }
+  .moments-compose-head { height:62px; display:grid; grid-template-columns:56px 1fr 56px; align-items:center; border-bottom:1px solid #eceef1; }
+  .moments-compose-head strong { text-align:center; font-size:17px; }
+  .moments-compose-head button { width:44px; height:44px; margin:auto; border:0; background:transparent; color:#273242; font-size:29px; }
+  .moments-send svg { width:25px; fill:none; stroke:currentColor; stroke-width:1.8; }
+  #momentsText { width:100%; min-height:145px; padding:20px; resize:none; border:0; outline:0; font:inherit; font-size:16px; line-height:1.55; color:#202938; }
+  .moments-photo-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:0 20px 20px; }
+  .moments-photo,.moments-photo-add { position:relative; aspect-ratio:1; border-radius:12px; overflow:hidden; background:#f0f0f2; }
+  .moments-photo img { width:100%; height:100%; object-fit:cover; }
+  .moments-photo button { position:absolute; top:5px; right:5px; width:23px; height:23px; border:0; border-radius:50%; background:rgba(0,0,0,.58); color:#fff; }
+  .moments-photo-add { border:0; display:grid; place-items:center; color:#a2a6ad; font-size:34px; }
+  .moments-option { min-height:58px; display:grid; grid-template-columns:31px 1fr auto; align-items:center; gap:8px; padding:0 20px; border-top:1px solid #eceef1; color:#263142; font-size:15px; }
+  .moments-option svg { width:22px; fill:none; stroke:currentColor; stroke-width:1.8; }
+  .moments-option input,.moments-option select { min-width:0; border:0; outline:0; background:transparent; text-align:right; color:#8d929a; font:inherit; font-size:13px; }
+  .moments-option select { max-width:105px; }
+
 </style>
 </head>
 <body>
@@ -2274,6 +2322,24 @@
     </div>
   </div>
 
+
+  <div class="moments-compose-overlay" id="momentsComposer" onclick="if(event.target===this)Moments.closeComposer()">
+    <div class="moments-compose-card">
+      <div class="moments-compose-head">
+        <button onclick="Moments.closeComposer()" aria-label="关闭">×</button>
+        <strong>发朋友圈</strong>
+        <button class="moments-send" onclick="Moments.publish()" aria-label="发布"><svg viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4Z"/></svg></button>
+      </div>
+      <textarea id="momentsText" maxlength="1000" placeholder="这一刻的想法…"></textarea>
+      <div class="moments-photo-grid" id="momentsPhotoGrid"></div>
+      <input type="file" id="momentsPostImagesInput" accept="image/*" multiple hidden onchange="Moments.importImages(event)">
+      <div class="moments-option"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>所在位置</span><input id="momentsLocation" maxlength="40" placeholder="添加位置"></div>
+      <div class="moments-option"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M16 8v5a2 2 0 0 0 4 0v-1a8 8 0 1 0-3 6"/><circle cx="12" cy="12" r="3"/></svg><span>提醒谁看</span><input id="momentsMention" maxlength="50" placeholder="添加联系人"></div>
+      <div class="moments-option"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg><span>谁可以看</span><select id="momentsVisibility"><option>公开</option><option>仅联系人</option><option>仅自己</option></select></div>
+    </div>
+  </div>
+  <input type="file" id="momentsCoverInput" accept="image/*" hidden onchange="Moments.importCover(event)">
+
   <!-- ========== 通用弹窗 / 抽屉 / Toast ========== -->
   <div class="modal" id="modal">
     <div class="modal-box">
@@ -2323,6 +2389,8 @@ const Store = {
       icons: { ...d.theme.icons, ...((this.data.theme || {}).icons || {}) }
     };
     this.data.backup = { ...d.backup, ...(this.data.backup || {}) };
+    this.data.momentsProfile = { ...d.momentsProfile, ...(this.data.momentsProfile || {}) };
+    if (!Array.isArray(this.data.momentsProfile.posts)) this.data.momentsProfile.posts = [];
     // 后台项目升级时只迁移一次，保留设备身份、开关和消息间隔。
     if (this.data.notificationSettings.backendProject !== d.notificationSettings.backendProject) {
       Object.assign(this.data.notificationSettings, {
@@ -2349,6 +2417,7 @@ const Store = {
       chatReadAt: {},   // { charId: lastOpenedTimestamp }
       stickers: [],     // [ {id, name, dataUrl} ]
       userName: '用户',
+      momentsProfile: { cover: '', signature: '点击编辑签名', posts: [] },
       imgApi: {
         enabled: false,
         url: '',
@@ -3855,6 +3924,86 @@ const WB = {
 /* ============================================================
    送信（Messaging）
 ============================================================ */
+
+const Moments = {
+  draftImages: [],
+  profile() {
+    if (!Store.data.momentsProfile) Store.data.momentsProfile = { cover:'', signature:'点击编辑签名', posts:[] };
+    if (!Array.isArray(Store.data.momentsProfile.posts)) Store.data.momentsProfile.posts = [];
+    return Store.data.momentsProfile;
+  },
+  openComposer() {
+    this.draftImages = [];
+    document.getElementById('momentsText').value = '';
+    document.getElementById('momentsLocation').value = '';
+    document.getElementById('momentsMention').value = '';
+    document.getElementById('momentsVisibility').value = '公开';
+    this.renderDraftImages();
+    document.getElementById('momentsComposer').classList.add('show');
+    setTimeout(() => document.getElementById('momentsText').focus(), 120);
+  },
+  closeComposer() { document.getElementById('momentsComposer').classList.remove('show'); },
+  chooseImages() { document.getElementById('momentsPostImagesInput').click(); },
+  async importImages(event) {
+    const files = [...event.target.files].slice(0, Math.max(0, 9 - this.draftImages.length));
+    for (const file of files) {
+      try { this.draftImages.push(await Theme.resizeImage(file, 1400, 1400, .84)); }
+      catch (_) { UI.toast('有一张图片读取失败'); }
+    }
+    event.target.value = '';
+    this.renderDraftImages();
+  },
+  renderDraftImages() {
+    const grid = document.getElementById('momentsPhotoGrid');
+    if (!grid) return;
+    grid.innerHTML = this.draftImages.map((src,i) =>
+      '<div class="moments-photo"><img src="'+src+'" alt=""><button onclick="Moments.removeImage('+i+')" aria-label="移除">×</button></div>'
+    ).join('') + (this.draftImages.length < 9 ? '<button class="moments-photo-add" onclick="Moments.chooseImages()" aria-label="添加图片">＋</button>' : '');
+  },
+  removeImage(i) { this.draftImages.splice(i,1); this.renderDraftImages(); },
+  chooseCover() { document.getElementById('momentsCoverInput').click(); },
+  async importCover(event) {
+    const file = event.target.files[0];
+    event.target.value = '';
+    if (!file) return;
+    try {
+      this.profile().cover = await Theme.resizeImage(file, 1800, 1200, .86);
+      Store.save(); Msg.renderMoments(); UI.toast('动态背景已更换');
+    } catch (_) { UI.toast('背景图片读取失败'); }
+  },
+  editSignature() {
+    UI.prompt('修改签名','显示在头像和昵称下方',this.profile().signature || '', value => {
+      this.profile().signature = String(value || '').trim() || '点击编辑签名';
+      Store.save(); Msg.renderMoments();
+    });
+  },
+  publish() {
+    const text = document.getElementById('momentsText').value.trim();
+    if (!text && !this.draftImages.length) return UI.toast('写点内容或添加图片吧');
+    this.profile().posts.unshift({
+      id: 'moment_' + Date.now(), text, images:[...this.draftImages],
+      location:document.getElementById('momentsLocation').value.trim(),
+      mention:document.getElementById('momentsMention').value.trim(),
+      visibility:document.getElementById('momentsVisibility').value,
+      timestamp:Date.now()
+    });
+    Store.save(); this.closeComposer(); Msg.renderMoments(); UI.toast('朋友圈已发布');
+  },
+  deletePost(id) {
+    UI.confirm('删除这条动态？','删除后无法恢复',() => {
+      const p=this.profile(); p.posts=p.posts.filter(x=>x.id!==id);
+      Store.save(); Msg.renderMoments(); UI.toast('已删除');
+    });
+  },
+  relative(ts) {
+    const d=Date.now()-ts, m=Math.floor(d/60000);
+    if (m<1) return '刚刚'; if (m<60) return m+'分钟前';
+    const h=Math.floor(m/60); if (h<24) return h+'小时前';
+    const day=Math.floor(h/24); if (day<7) return day+'天前';
+    return new Date(ts).toLocaleDateString('zh-CN',{month:'numeric',day:'numeric'});
+  }
+};
+
 const Msg = {
   currentTab: 'chats',
   showTab(tab) {
@@ -4002,22 +4151,26 @@ const Msg = {
   },
   renderMoments() {
     const c = document.getElementById('tab-moments');
-    c.innerHTML = `
-      <div class="moments-cover">
-        <div class="me">
-          <span class="name">${escapeHtml(Store.data.userName)}</span>
-          <div class="avatar" style="border-color:#FFFFFF">${initials(Store.data.userName)}</div>
-        </div>
-      </div>
-      <div style="height:40px"></div>
-      <div class="empty">
-        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-        </svg>
-        <div class="empty-title">动态</div>
-        <div class="empty-sub">这里将展示角色们的动态<br>（后续可扩展）</div>
-      </div>`;
+    const p = Moments.profile();
+    const cover = p.cover ? "background-image:url('" + p.cover + "')" : '';
+    const posts = p.posts.map(post => {
+      const imgs = (post.images || []).map(src => '<img src="'+src+'" alt="动态图片">').join('');
+      const meta = [Moments.relative(post.timestamp), post.visibility || '公开'];
+      if (post.mention) meta.push('@ '+escapeHtml(post.mention));
+      return '<article class="moment-post">'+
+        '<div class="moment-post-head"><div class="avatar">'+initials(Store.data.userName)+'</div><div class="moment-post-author">'+escapeHtml(Store.data.userName)+'</div><button class="moment-post-more" onclick="Moments.deletePost(\''+post.id+'\')" aria-label="删除动态">···</button></div>'+
+        (post.text ? '<div class="moment-post-text">'+escapeHtml(post.text)+'</div>' : '')+
+        (imgs ? '<div class="moment-post-images '+((post.images||[]).length===1?'one':'')+'">'+imgs+'</div>' : '')+
+        '<div class="moment-post-meta">'+(post.location?'<span class="moment-post-location">'+escapeHtml(post.location)+'</span>':'')+meta.map(x=>'<span>'+x+'</span>').join('')+'</div></article>';
+    }).join('');
+    c.innerHTML =
+      '<section class="moments-hero" style="'+cover+'">'+
+        '<button class="moments-camera" onclick="Moments.openComposer()" aria-label="发朋友圈"><svg viewBox="0 0 24 24"><path d="M14.5 5 13 3h-2L9.5 5H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z"/><circle cx="12" cy="12" r="4"/></svg></button>'+
+        '<div class="moments-profile"><div class="avatar moments-profile-avatar">'+initials(Store.data.userName)+'</div><div class="moments-profile-name">'+escapeHtml(Store.data.userName)+'</div><div class="moments-profile-signature" onclick="Moments.editSignature()">'+escapeHtml(p.signature || '点击编辑签名')+'</div></div>'+
+        '<button class="moments-cover-edit" onclick="Moments.chooseCover()">更换背景</button>'+
+      '</section>'+
+      '<div class="moments-stats"><div class="moments-stat"><b>'+p.posts.length+'</b><span>动态</span></div><div class="moments-stat"><b>'+((Store.data.characters||[]).length)+'</b><span>联系人</span></div><div class="moments-stat"><b>'+p.posts.reduce((n,x)=>n+(x.images||[]).length,0)+'</b><span>照片</span></div></div>'+
+      '<div class="moments-feed">'+(posts || '<div class="moments-empty">还没有动态，点击右上角相机发布第一条朋友圈</div>')+'</div>';
   },
   renderMe() {
     const c = document.getElementById('tab-me');

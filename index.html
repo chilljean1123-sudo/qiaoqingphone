@@ -2258,6 +2258,15 @@
   .friend-request-actions .accept { background:#3c4149;color:#fff; }
   #chat .nav-bar { background:transparent !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important; border-bottom:0 !important; }
 
+
+  /* ============ 通话最小化 ============ */
+  .call-minimize-btn { position:absolute; z-index:5; left:14px; top:calc(env(safe-area-inset-top,0px) + 14px); width:44px; height:44px; border:0; border-radius:50%; display:grid; place-items:center; color:#fff; background:rgba(20,22,26,.28); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+  .call-minimize-btn svg { width:24px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .call-mini { position:absolute; z-index:220; left:12px; top:calc(env(safe-area-inset-top,0px) + 84px); width:112px; height:142px; display:none; overflow:hidden; border:2px solid rgba(255,255,255,.78); border-radius:19px; color:#fff; background:#292c32 center/cover no-repeat; box-shadow:0 12px 34px rgba(0,0,0,.28); }
+  .call-mini.show { display:block; }
+  .call-mini::after { content:""; position:absolute; inset:40% 0 0; background:linear-gradient(transparent,rgba(0,0,0,.65)); }
+  .call-mini-name { position:absolute; z-index:1; left:9px; right:9px; bottom:9px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12px; font-weight:650; text-shadow:0 1px 4px rgba(0,0,0,.35); }
+
 </style>
 </head>
 <body>
@@ -2962,6 +2971,7 @@
   <div class="call-screen" id="callScreen">
     <div class="call-bg" id="callBg"></div>
     <div class="call-scrim"></div>
+    <button class="call-minimize-btn" onclick="Call.minimize()" aria-label="返回主机"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
     <div class="call-header">
       <div class="call-name" id="callName"></div>
       <div class="call-sub" id="callSub"></div>
@@ -2993,6 +3003,8 @@
     </div>
     <input type="file" id="callCamFileInput" accept="image/*" hidden onchange="Call.onCamFilePick(event)">
   </div>
+
+  <button class="call-mini" id="callMini" onclick="Call.restore()"><span class="call-mini-name" id="callMiniName"></span></button>
 
   <!-- ========== 世界书 ========== -->
   <div class="screen hidden" id="worldbook">
@@ -5879,7 +5891,7 @@ const ChatSettings = {
   close(){ document.getElementById('chatSettingsScreen').classList.remove('show'); },
   render(){
     const ch=this.char(),c=this.cfg();if(!ch)return;
-    const row=(icon,title,value,action,extra='')=>'<button class="chat-setting-row" onclick="'+action+'"><span class="chat-setting-row-icon">'+icon+'</span><span class="chat-setting-row-copy"><span class="chat-setting-row-title">'+title+'</span>'+(value?'<span class="chat-setting-row-value">'+escapeHtml(value)+'</span>':'')+'</span>'+extra+'</button>';
+    const row=(icon,title,value,action,extra='')=>'<button class="chat-setting-row" onclick="'+action+'"><span class="chat-setting-row-icon">'+icon+'</span><span class="chat-setting-row-copy"><span class="chat-setting-row-title">'+title+'</span></span>'+extra+'</button>';
     const arrow='<svg class="chat-setting-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>';
     const pic=(key)=>'<span class="chat-wallpaper-thumb" style="'+(c[key]?'background-image:url('+c[key]+')':'')+'"></span>';
     const person='<svg viewBox="0 0 24 24"><path d="M4 20a8 8 0 0 1 16 0"/><circle cx="12" cy="7" r="4"/></svg>';
@@ -6560,6 +6572,7 @@ const Call = {
     this.mode = mode;
     this.direction = 'outgoing';
     this.state = 'calling';
+    document.getElementById('callMini')?.classList.remove('show');
     this.messages = [];
     this.loading = false;
     document.getElementById('callName').textContent = ch.name;
@@ -6751,6 +6764,20 @@ const Call = {
       this.renderMessages();
     }
   },
+  minimize() {
+    if(this.state==='idle')return;
+    const mini=document.getElementById('callMini');
+    mini.style.backgroundImage=document.getElementById('callBg').style.backgroundImage;
+    document.getElementById('callMiniName').textContent=document.getElementById('callName').textContent;
+    document.getElementById('callScreen').classList.remove('show');
+    mini.classList.add('show');
+    nav.home();
+  },
+  restore() {
+    if(this.state==='idle')return;
+    document.getElementById('callMini').classList.remove('show');
+    document.getElementById('callScreen').classList.add('show');
+  },
   end() {
     clearTimeout(this.ringTimeout);
     clearInterval(this.timer);
@@ -6762,6 +6789,7 @@ const Call = {
     this.state = 'idle';
     this.direction = 'outgoing';
     document.getElementById('callScreen').classList.remove('show');
+    document.getElementById('callMini')?.classList.remove('show');
     this.messages = [];
     if (wasConnected && charId) {
       const arr = (Store.data.chats[charId] = Store.data.chats[charId] || []);

@@ -686,6 +686,50 @@
   .msg-menu-item.danger { color: #ff453a; }
   .msg-menu-item.no-r { border-right: 0; }
   .msg-menu-item.no-b { border-bottom: 0; }
+  .msg-select-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid #C7C7CC;
+    background: #fff;
+    flex: 0 0 auto;
+    position: relative;
+  }
+  .msg-select-circle.checked { background: #007AFF; border-color: #007AFF; }
+  .msg-select-circle.checked::after {
+    content: "✓"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 12px; font-weight: 700;
+  }
+  .multi-select-bar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    background: #F6F6F6;
+    border-top: 0.5px solid #D1D1D6;
+  }
+  .multi-select-bar.show { display: flex; }
+  .multi-select-bar .msb-cancel { border: 0; background: none; color: #007AFF; font-size: 15px; padding: 4px; }
+  .multi-select-bar .msb-count { font-size: 13px; color: #8E8E93; }
+  .multi-select-fab {
+    position: absolute;
+    right: 18px;
+    bottom: 76px;
+    z-index: 60;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 18px;
+    border: 0;
+    border-radius: 26px;
+    background: #FF3B30;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 20px rgba(255,59,48,.35);
+  }
+  .multi-select-fab.show { display: flex; }
+  .multi-select-fab:disabled { opacity: .45; }
   .msg-bubble {
     max-width: 74%;
     padding: 8px 12px;
@@ -2686,7 +2730,7 @@
     <div class="content" id="chatContent">
       <div class="chat-messages" id="chatMessages"></div>
     </div>
-    <div class="input-bar-wrap">
+    <div class="input-bar-wrap" id="inputBarWrap">
       <div class="plus-panel" id="plusPanel">
         <div class="plus-menu" id="plusMenu">
           <div class="plus-item" onclick="Chat.openVoiceInput()">
@@ -2737,6 +2781,15 @@
     </div>
     <div class="msg-menu-overlay" id="msgMenuOverlay" onclick="Chat.closeMessageMenu()"></div>
     <div class="msg-menu-popover" id="msgMenuPopover"></div>
+    <div class="multi-select-bar" id="multiSelectBar">
+      <button class="msb-cancel" onclick="Chat.exitMultiSelect()">取消</button>
+      <span class="msb-count" id="multiSelectCount">已选择 0 条</span>
+      <span style="width:36px"></span>
+    </div>
+    <button class="multi-select-fab" id="multiSelectFab" onclick="Chat.deleteSelected()" aria-label="删除选中的消息">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+      <span id="multiSelectFabText">删除</span>
+    </button>
   </div>
 
   <!-- ========== 世界书 ========== -->
@@ -5600,6 +5653,8 @@ const Chat = {
   currentId: null,
   loading: false,
   pendingQuote: null,
+  multiSelectMode: false,
+  selectedIndices: null,
   open(id) {
     this.currentId = id;
     Store.data.chatReadAt = Store.data.chatReadAt || {};
@@ -5614,6 +5669,8 @@ const Chat = {
     `;
     this.cancelQuote();
     this.closeMessageMenu();
+    this.multiSelectMode = false;
+    this.selectedIndices = new Set();
     this.render();
     document.getElementById('chatInput').value = '';
     this.autoResize();
@@ -5665,7 +5722,8 @@ const Chat = {
       if (m.quote) {
         html += `<div class="msg-quote-line" style="text-align:${side==='self'?'right':'left'}"><span class="msg-quote"><b>${escapeHtml(m.quote.author)}</b>${escapeHtml(m.quote.text)}</span></div>`;
       }
-      html += `<div class="msg-row ${side} ${group}" ondblclick="Chat.openMessageMenu(${i}, event)">${renderMsgBubble(m, i)}</div>`;
+      const selCircle = this.multiSelectMode ? `<span class="msg-select-circle ${this.selectedIndices?.has(i)?'checked':''}"></span>` : '';
+      html += `<div class="msg-row ${side} ${group}" onclick="Chat.rowClick(${i})" ondblclick="if(!Chat.multiSelectMode)Chat.openMessageMenu(${i}, event)">${selCircle}${renderMsgBubble(m, i)}</div>`;
     });
     if (this.loading) {
       html += `<div class="msg-row other new-group">
@@ -5787,6 +5845,7 @@ const Chat = {
     items.push({ label: '引用', fn: `Chat.quoteMessage(${index})` });
     if (m.type === 'voice') items.push({ label: '语音转文字', fn: `Chat.voiceToText(${index})` });
     items.push({ label: favored ? '取消收藏' : '收藏', fn: `Chat.favoriteFromMenu(${index})` });
+    items.push({ label: '多选', fn: `Chat.enterMultiSelect(${index})` });
     items.push({ label: '撤回', fn: `Chat.recallMessage(${index})` });
     items.push({ label: '删除', fn: `Chat.deleteMessage(${index})`, danger: true });
 
@@ -5877,6 +5936,51 @@ const Chat = {
       arr.splice(index, 1);
       Store.save();
       this.render();
+      if (typeof Msg !== 'undefined') Msg.renderChats?.();
+    }, { danger: true, okText: '删除' });
+  },
+  rowClick(index) {
+    if (this.multiSelectMode) this.toggleSelect(index);
+  },
+  enterMultiSelect(index) {
+    this.multiSelectMode = true;
+    this.selectedIndices = new Set(index != null ? [index] : []);
+    document.getElementById('inputBarWrap')?.style.setProperty('display', 'none');
+    document.getElementById('multiSelectBar')?.classList.add('show');
+    this.updateMultiSelectUI();
+    this.render();
+  },
+  exitMultiSelect() {
+    this.multiSelectMode = false;
+    this.selectedIndices = new Set();
+    document.getElementById('inputBarWrap')?.style.removeProperty('display');
+    document.getElementById('multiSelectBar')?.classList.remove('show');
+    document.getElementById('multiSelectFab')?.classList.remove('show');
+    this.render();
+  },
+  toggleSelect(index) {
+    if (!this.selectedIndices) this.selectedIndices = new Set();
+    if (this.selectedIndices.has(index)) this.selectedIndices.delete(index);
+    else this.selectedIndices.add(index);
+    this.updateMultiSelectUI();
+    this.render();
+  },
+  updateMultiSelectUI() {
+    const n = this.selectedIndices ? this.selectedIndices.size : 0;
+    const countEl = document.getElementById('multiSelectCount');
+    if (countEl) countEl.textContent = '已选择 ' + n + ' 条';
+    document.getElementById('multiSelectFab')?.classList.toggle('show', n > 0);
+    const fabText = document.getElementById('multiSelectFabText');
+    if (fabText) fabText.textContent = n > 0 ? '删除(' + n + ')' : '删除';
+  },
+  deleteSelected() {
+    if (!this.selectedIndices || !this.selectedIndices.size) return;
+    const n = this.selectedIndices.size;
+    UI.confirm('删除选中的 ' + n + ' 条消息？', '删除后无法恢复，角色也不会再记得这些消息。', () => {
+      const arr = Store.data.chats[this.currentId] || [];
+      [...this.selectedIndices].sort((a, b) => b - a).forEach(i => arr.splice(i, 1));
+      Store.save();
+      this.exitMultiSelect();
       if (typeof Msg !== 'undefined') Msg.renderChats?.();
     }, { danger: true, okText: '删除' });
   },

@@ -1806,43 +1806,10 @@
   .moments-option select { max-width:105px; }
 
 
-  /* ============ 我的主页 ============ */
-  #tab-me { background:#f7f7f9; overflow-y:auto; color:#202938; }
-  .my-profile-shell { min-height:100%; padding-bottom:28px; }
-  .my-profile-hero { position:relative; height:270px; padding:24px 20px; background:linear-gradient(145deg,#d8dce5,#8993a5); background-size:cover; background-position:center; overflow:hidden; color:#fff; }
-  .my-profile-hero::after { content:""; position:absolute; inset:25% 0 0; background:linear-gradient(transparent,rgba(20,27,39,.68)); pointer-events:none; }
-  .my-profile-edit { position:absolute; z-index:2; right:18px; top:17px; width:44px; height:44px; border:1px solid rgba(255,255,255,.5); border-radius:50%; display:grid; place-items:center; background:rgba(255,255,255,.16); color:#fff; backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
-  .my-profile-edit svg { width:21px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
-  .my-profile-info { position:absolute; z-index:2; left:20px; right:20px; bottom:22px; display:grid; grid-template-columns:74px 1fr; column-gap:14px; align-items:center; }
-  .my-profile-avatar { width:74px; height:74px; border:3px solid #fff; box-shadow:0 7px 24px rgba(0,0,0,.2); font-size:27px; grid-row:1/4; }
-  .my-profile-name { font-size:24px; line-height:1.2; font-weight:750; text-shadow:0 2px 8px rgba(0,0,0,.2); }
-  .my-profile-id { margin-top:5px; font-size:11px; color:rgba(255,255,255,.65); letter-spacing:.04em; }
-  .my-profile-signature { margin-top:5px; font-size:13px; color:rgba(255,255,255,.82); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
-  .my-shortcuts { position:relative; z-index:3; margin:-1px 0 0; padding:24px 14px 21px; display:grid; grid-template-columns:repeat(4,1fr); gap:6px; background:#fff; border-radius:0 0 25px 25px; box-shadow:0 12px 30px rgba(38,46,60,.06); }
-  .my-shortcut { border:0; background:transparent; display:flex; flex-direction:column; align-items:center; gap:9px; min-width:0; }
-  .my-shortcut-circle { width:58px; height:58px; border-radius:50%; display:grid; place-items:center; color:#293545; background:#f5f6f8; border:1px solid #eceef2; box-shadow:0 7px 18px rgba(34,43,57,.07); transition:transform .16s ease,background .16s ease; }
-  .my-shortcut:active .my-shortcut-circle { transform:scale(.94); background:#e9edf3; }
-  .my-shortcut-circle svg { width:25px; height:25px; fill:none; stroke:currentColor; stroke-width:1.65; stroke-linecap:round; stroke-linejoin:round; }
-  .my-shortcut-label { font-size:12px; color:#4d5664; white-space:nowrap; }
-  .my-overview { margin:18px 14px 0; padding:19px; background:#fff; border-radius:22px; box-shadow:0 8px 24px rgba(38,46,60,.045); }
-  .my-overview-title { font-size:17px; font-weight:700; }
-  .my-overview-sub { margin-top:5px; color:#9a9fa8; font-size:12px; line-height:1.5; }
-  .my-overview-stats { display:grid; grid-template-columns:repeat(3,1fr); margin-top:18px; }
-  .my-overview-stat { text-align:center; border-right:1px solid #eceef2; }
-  .my-overview-stat:last-child { border-right:0; }
-  .my-overview-stat b { display:block; font-size:21px; line-height:1.2; }
-  .my-overview-stat span { display:block; margin-top:5px; color:#a2a6ad; font-size:11px; }
-  .my-tip-card { margin:12px 14px 0; min-height:84px; padding:18px 18px 18px 62px; position:relative; background:#fff; border-radius:22px; }
-  .my-tip-icon { position:absolute; left:17px; top:18px; width:32px; height:32px; display:grid; place-items:center; border-radius:50%; background:#f1f3f6; color:#556171; }
-  .my-tip-icon svg { width:17px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
-  .my-tip-title { font-size:14px; font-weight:650; }
-  .my-tip-text { margin-top:5px; color:#9a9fa7; font-size:12px; line-height:1.5; }
-
-
   /* ============ 我的主页 · P2 ============ */
-  #tab-me { background:#817d76; color:#fff; overflow-y:auto; }
-  .me-p2 { position:relative; min-height:100%; padding:22px 18px 34px; background:#817d76; background-size:cover; background-position:center; }
-  .me-p2::before { content:""; position:absolute; inset:0; background:rgba(30,28,26,.32); pointer-events:none; }
+  #tab-me { position:relative; background:#817d76; background-size:cover; background-position:center; color:#fff; overflow-y:auto; }
+  #tab-me::before { content:""; position:absolute; inset:0; background:rgba(30,28,26,.32); pointer-events:none; }
+  .me-p2 { position:relative; min-height:100%; padding:22px 18px 34px; }
   .me-p2-top,.me-p2-profile,.me-p2-orbits,.me-p2-card { position:relative; z-index:1; }
   .me-p2-top { display:flex; align-items:center; justify-content:space-between; }
   .me-p2-back,.me-p2-edit { border:1px solid rgba(255,255,255,.28); height:50px; background:rgba(255,255,255,.14); backdrop-filter:blur(20px) saturate(180%); -webkit-backdrop-filter:blur(20px) saturate(180%); color:#fff; box-shadow:0 5px 14px rgba(34,31,28,.13); }
@@ -7266,9 +7233,9 @@ const Msg = {
     const c=document.getElementById('tab-me');
     const p=Me.profile(), mp=Moments.profile();
     const avatar=Store.data.userAvatar?'<img src="'+Store.data.userAvatar+'" alt="我的头像">':initials(Store.data.userName);
-    const meBg = Store.data.userAvatar ? ' style="background-image:url(\''+Store.data.userAvatar+'\')"' : '';
+    c.style.backgroundImage = Store.data.userAvatar ? 'url(\''+Store.data.userAvatar+'\')' : '';
     c.innerHTML =
-      '<div class="me-p2"'+meBg+'>'+
+      '<div class="me-p2">'+
         '<header class="me-p2-top"><button class="me-p2-back" onclick="nav.home()" aria-label="返回主屏"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button><button class="me-p2-edit" onclick="UserProfile.edit()">编辑</button></header>'+
         '<section class="me-p2-profile"><div class="me-p2-avatar">'+avatar+'</div><div class="me-p2-name">'+escapeHtml(Store.data.userName)+'</div><div class="me-p2-signature" onclick="Moments.editSignature()">'+escapeHtml(mp.signature||'点击编辑签名')+'</div></section>'+
         '<nav class="me-p2-orbits" aria-label="个人功能">'+
@@ -7884,7 +7851,7 @@ const Chat = {
     const longTermMem = Memory.selectLongTermForInjection(ch);
     if (longTermMem) sys += `# 长期记忆\n${longTermMem}\n\n`;
     sys += ROLE_THINK_PROTOCOL;
-    sys += `# 对话须知\n- 始终以「${ch.name}」的第一人称回复\n- 保持角色一致\n- 回复自然、口语化\n- 像真人发微信一样，把想说的话拆成多个短句，每句单独一行；不要写成大段带标点的完整段落，也不要用句号把多句话连在同一行`;
+    sys += `# 对话须知\n- 始终以「${ch.name}」的第一人称回复\n- 保持角色一致\n- 回复自然、口语化\n- 像真人发微信一样，把想说的话拆成多个短句，每句单独一行；不要写成大段带标点的完整段落，也不要用句号把多句话连在同一行\n- 根据角色性格决定说多少：话多、情绪激动或者关心则可以一次连发 4-6 句甚至更多；话少、高冷或者敷衍则可以只回一两句`;
     sys += `\n\n# 转账能力\n如果剧情合理（比如还钱、发红包、表达心意），你可以给用户转账：把这一段回复单独写成一行，格式为 [转账:金额:留言]，例如 [转账:52:小心意]。不要频繁转账，没有合适理由就不要用。转账发出后是"待处理"状态，需要用户接受才会真正到账。`;
     const boundStickers = stickersForCharacter(ch.id);
     if (boundStickers.length) {
@@ -7956,6 +7923,13 @@ const Chat = {
   typingDelay(text) {
     return Math.min(2600, Math.max(550, String(text||'').length * 55));
   },
+  // 把一行文字按句末标点进一步拆开，防止角色把好几句话写成不带换行的
+  // 一整段，导致挤在同一个气泡里；标记（如 [转账:...]）内部没有句末标点，
+  // 不会被拆散。
+  splitSentences(text) {
+    const parts = String(text||'').match(/[^。！？!?~…]+[。！？!?~…]*/g);
+    return (parts || [text]).map(s => s.trim()).filter(Boolean);
+  },
   // 把一段可能含多段落的回复拆成多条消息，模拟真实微信那样一条条陆续发送，
   // 不在一瞬间把所有内容塞进同一条气泡。
   async deliverAssistantReply(charId, rawReply) {
@@ -7967,7 +7941,7 @@ const Chat = {
       .replace(/^\s*<(?:think|analysis)\b[^>]*>[\s\S]*$/gi, '')
       .trim();
     const filteredReply=typeof RegexManager!=='undefined'?RegexManager.apply(privateFiltered,'aiOutput',charId,'all'):privateFiltered;
-    const chunks = String(filteredReply||'').split(/\n+/).map(s => s.trim()).filter(Boolean);
+    const chunks = String(filteredReply||'').split(/\n+/).flatMap(s => this.splitSentences(s)).map(s => s.trim()).filter(Boolean);
     if (!chunks.length) return;
     const arr = (Store.data.chats[charId] = Store.data.chats[charId] || []);
     const memoryTexts = [];
@@ -8233,7 +8207,7 @@ const Call = {
       const messages = [{ role: 'system', content: sys }, ...this.messages.map(m => ({ role: m.role, content: m.content }))];
       if (instructionText) messages.push({ role: 'user', content: instructionText });
       const reply = await API.chat(messages);
-      const chunks = reply.split(/\n+/).map(s => s.trim()).filter(Boolean);
+      const chunks = reply.split(/\n+/).flatMap(s => Chat.splitSentences(s)).map(s => s.trim()).filter(Boolean);
       for (let i = 0; i < chunks.length; i++) {
         if (i > 0) await sleep(Chat.typingDelay(chunks[i-1]));
         this.messages.push({ role: 'assistant', content: chunks[i], timestamp: Date.now() });

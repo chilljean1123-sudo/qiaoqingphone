@@ -2385,6 +2385,51 @@
   .wb-check-row { display:flex; gap:8px; flex-wrap:wrap; }
   .wb-check { height:35px; padding:0 12px; border:0; border-radius:12px; background:#efede8; color:#7d776e; font-size:10px; }
   .wb-check.on { background:#6f7d65; color:#fff; }
+
+  /* ============ 正则牌组 ============ */
+  #regexSettings,#regexEdit { background:#f1f0ed; color:#292826; }
+  .regex-body { padding:17px 15px 36px; overflow-y:auto; }
+  .regex-deck-head { position:relative; min-height:142px; padding:23px 22px; border-radius:27px; color:#fff; background:linear-gradient(135deg,#242321,#57524b); overflow:hidden; }
+  .regex-deck-head:after,.regex-deck-head:before { content:""; position:absolute; right:22px; top:23px; width:64px; height:88px; border:1px solid rgba(255,255,255,.28); border-radius:12px; transform:rotate(10deg); }
+  .regex-deck-head:before { right:43px; top:30px; transform:rotate(-8deg); }
+  .regex-deck-kicker { font-size:10px; letter-spacing:.18em; opacity:.58; }
+  .regex-deck-title { margin-top:8px; font-size:25px; font-weight:760; }
+  .regex-deck-meta { margin-top:9px; font-size:11px; opacity:.68; }
+  .regex-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; margin-top:17px; }
+  .regex-card { position:relative; min-height:200px; padding:14px; border:0; border-radius:22px; text-align:left; background:#fff; box-shadow:0 10px 26px rgba(44,40,34,.08); overflow:hidden; }
+  .regex-card.disabled { opacity:.5; }
+  .regex-card-corner { position:absolute; right:12px; top:10px; font:700 18px/1 ui-monospace,monospace; color:var(--regex-accent,#786f62); }
+  .regex-card-suit { width:52px; height:64px; display:grid; place-items:center; margin-top:9px; border:1.5px solid var(--regex-accent,#786f62); border-radius:10px; color:var(--regex-accent,#786f62); font:750 19px/1 ui-monospace,monospace; transform:rotate(-3deg); }
+  .regex-card-name { display:block; margin-top:17px; font-size:14px; font-weight:720; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .regex-card-pattern { display:block; min-height:32px; margin-top:5px; color:#99938a; font:10px/1.55 ui-monospace,monospace; word-break:break-all; }
+  .regex-card-tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:9px; }
+  .regex-tag { display:inline-flex; height:21px; align-items:center; padding:0 8px; border-radius:12px; color:#706a61; background:#f0eee9; font-size:8px; }
+  .regex-new { border:1.5px dashed #cbc6bc; background:rgba(255,255,255,.42); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+  .regex-new-mark { width:58px; height:76px; display:grid; place-items:center; border:1.5px solid #a8a197; border-radius:12px; color:#777168; font-size:29px; background:#fff; box-shadow:5px 7px 0 #ddd9d1; }
+  .regex-editor { padding:15px 15px 105px; overflow-y:auto; }
+  .regex-rule-top { display:flex; align-items:center; gap:13px; padding:17px; border-radius:23px; background:#302e2a; color:#fff; }
+  .regex-rule-badge { width:54px; height:70px; display:grid; place-items:center; flex:none; border:1px solid rgba(255,255,255,.65); border-radius:11px; font:750 18px ui-monospace,monospace; }
+  .regex-rule-top input { width:100%; border:0; outline:0; background:transparent; color:#fff; font-size:18px; font-weight:720; }
+  .regex-rule-top input::placeholder { color:rgba(255,255,255,.42); }
+  .regex-form-card { margin-top:12px; padding:16px; border-radius:21px; background:#fff; }
+  .regex-form-title { margin-bottom:13px; color:#79736b; font-size:10px; font-weight:720; letter-spacing:.1em; }
+  .regex-field { display:block; margin-bottom:14px; }
+  .regex-field:last-child { margin-bottom:0; }
+  .regex-field span { display:block; margin-bottom:7px; color:#807a72; font-size:10px; }
+  .regex-field input,.regex-field textarea,.regex-field select { width:100%; border:0; outline:0; border-radius:14px; padding:12px; background:#f2f1ee; font:12px/1.5 ui-monospace,monospace; }
+  .regex-field textarea { min-height:92px; resize:vertical; }
+  .regex-options { display:flex; flex-wrap:wrap; gap:8px; }
+  .regex-option { height:35px; padding:0 12px; border:0; border-radius:12px; color:#777168; background:#efede8; font-size:10px; }
+  .regex-option.on { color:#fff; background:#70685d; }
+  .regex-role-grid { display:flex; gap:8px; flex-wrap:wrap; }
+  .regex-role { display:flex; align-items:center; gap:5px; height:33px; padding:0 10px 0 5px; border:1px solid #e1ddd5; border-radius:17px; background:#fff; color:#777168; font-size:10px; }
+  .regex-role.on { color:#fff; border-color:#7b7265; background:#7b7265; }
+  .regex-role .avatar { width:22px!important; height:22px!important; font-size:8px!important; }
+  .regex-test-result { min-height:62px; padding:13px; border-radius:14px; background:#292824; color:#e7e2da; font:11px/1.55 ui-monospace,monospace; white-space:pre-wrap; word-break:break-word; }
+  .regex-bottom { position:absolute; z-index:4; left:15px; right:15px; bottom:calc(15px + env(safe-area-inset-bottom,0px)); display:flex; gap:9px; }
+  .regex-bottom button { height:49px; border:0; border-radius:17px; font-size:13px; font-weight:700; box-shadow:0 9px 22px rgba(45,41,35,.17); }
+  .regex-save { flex:1; color:#fff; background:#302e29; }
+  .regex-delete { width:49px; color:#d5534d; background:#fff; }
 </style>
 </head>
 <body>
@@ -2492,6 +2537,15 @@
             <span class="list-item-label">备份</span>
             <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
           </div>
+          <div class="list-item" onclick="nav.go('regexSettings');RegexManager.renderList()">
+            <div class="item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="3" width="13" height="17" rx="2"/><path d="m8 8 2 2-2 2M12 12h2"/><path d="M17 7h3v14H9v-1"/>
+              </svg>
+            </div>
+            <span class="list-item-label">正则</span>
+            <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
         </div>
       </div>
 
@@ -2516,6 +2570,59 @@
         <div class="list-hint" style="text-align:center">AI 小手机 · v1.0</div>
       </div>
     </div>
+  </div>
+
+  <!-- ========== 正则牌组 ========== -->
+  <div class="screen hidden" id="regexSettings">
+    <div class="nav-bar">
+      <div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>设置</span></div>
+      <div class="nav-title">正则</div>
+      <div class="nav-action" onclick="RegexManager.openEditor()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    </div>
+    <div class="regex-body" id="regexListContent"></div>
+  </div>
+
+  <div class="screen hidden" id="regexEdit">
+    <div class="nav-bar">
+      <div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>正则</span></div>
+      <div class="nav-title" id="regexEditTitle">新规则</div>
+      <div class="nav-action" onclick="RegexManager.save()">保存</div>
+    </div>
+    <div class="regex-editor">
+      <div class="regex-rule-top"><div class="regex-rule-badge">.*</div><input id="regexName" maxlength="70" placeholder="规则名称"></div>
+      <div class="regex-form-card">
+        <div class="regex-form-title">匹配与替换</div>
+        <label class="regex-field"><span>查找正则</span><textarea id="regexFind" placeholder="/(需要匹配的内容)/gi"></textarea></label>
+        <label class="regex-field"><span>替换为（留空即删除）</span><textarea id="regexReplace" placeholder="支持 $1、  <!-- ========== API 设置 ========== -->、  <!-- ========== API 设置 ========== -->lt;name&gt;、{{match}}、{{char}}"></textarea></label>
+        <label class="regex-field"><span>移除文本（每行一条）</span><textarea id="regexTrim" placeholder="每行一条要额外移除的文字"></textarea></label>
+      </div>
+      <div class="regex-form-card">
+        <div class="regex-form-title">作用位置</div>
+        <div class="regex-options">
+          <button class="regex-option" id="regexPlaceUserInput" onclick="RegexManager.togglePlacement('userInput')">用户输入</button>
+          <button class="regex-option" id="regexPlaceAiOutput" onclick="RegexManager.togglePlacement('aiOutput')">AI 输出</button>
+          <button class="regex-option" id="regexPlaceWorldbook" onclick="RegexManager.togglePlacement('worldbook')">世界书</button>
+        </div>
+      </div>
+      <div class="regex-form-card">
+        <div class="regex-form-title">应用方式</div>
+        <div class="regex-options">
+          <button class="regex-option" id="regexEnabled" onclick="RegexManager.toggleFlag('enabled')">启用规则</button>
+          <button class="regex-option" id="regexDisplayOnly" onclick="RegexManager.toggleFlag('displayOnly')">仅显示时</button>
+          <button class="regex-option" id="regexPromptOnly" onclick="RegexManager.toggleFlag('promptOnly')">仅 Prompt</button>
+        </div>
+      </div>
+      <div class="regex-form-card">
+        <div class="regex-form-title">适用角色</div>
+        <div class="regex-role-grid" id="regexRoleBindings"></div>
+      </div>
+      <div class="regex-form-card">
+        <div class="regex-form-title">测试规则</div>
+        <label class="regex-field"><span>测试文本</span><textarea id="regexTestInput" oninput="RegexManager.test()" placeholder="输入一段文字查看替换效果"></textarea></label>
+        <div class="regex-test-result" id="regexTestResult">等待测试文本</div>
+      </div>
+    </div>
+    <div class="regex-bottom"><button class="regex-delete" id="regexDeleteBtn" onclick="RegexManager.delete()" aria-label="删除">⌫</button><button class="regex-save" onclick="RegexManager.save()">保存规则</button></div>
   </div>
 
   <!-- ========== API 设置 ========== -->
@@ -3470,6 +3577,7 @@ const Store = {
       activeApiId: null,
       characters: [],
       worldBooks: [],
+      regexRules: [],
       chats: {},        // { charId: [ {role,content,type,duration?,timestamp} ] }
       chatSettings: {},
       friendRequests: [],
@@ -4979,6 +5087,97 @@ async function resizeImage(file, maxSize = 512) {
 }
 
 /* ============================================================
+   正则牌组
+============================================================ */
+const RegexManager = {
+  editingId:null,draft:null,colors:['#756b5d','#566b66','#756274','#687287','#85685d'],
+  rules(){return Store.data.regexRules||(Store.data.regexRules=[]);},
+  blank(){return {id:Store.uid(),name:'',find:'',replace:'',trim:'',placements:['aiOutput'],enabled:true,displayOnly:false,promptOnly:false,characterIds:[]};},
+  renderList(){
+    const rules=this.rules(),active=rules.filter(rule=>rule.enabled!==false).length,box=document.getElementById('regexListContent');
+    let html='<div class="regex-deck-head"><div class="regex-deck-kicker">REGEX DECK</div><div class="regex-deck-title">整理文字的牌组</div><div class="regex-deck-meta">'+rules.length+' 张规则牌 · '+active+' 张启用</div></div><div class="regex-grid">';
+    rules.forEach((rule,index)=>{
+      const places=(rule.placements||[]).map(p=>p==='userInput'?'输入':p==='aiOutput'?'输出':'世界书');
+      html+='<button class="regex-card '+(rule.enabled===false?'disabled':'')+'" style="--regex-accent:'+this.colors[index%this.colors.length]+'" onclick="RegexManager.openEditor(\''+rule.id+'\')"><span class="regex-card-corner">'+(index+1)+'</span><span class="regex-card-suit">.*</span><span class="regex-card-name">'+escapeHtml(rule.name||'未命名规则')+'</span><span class="regex-card-pattern">'+escapeHtml(rule.find||'尚未填写表达式')+'</span><span class="regex-card-tags">'+places.map(x=>'<span class="regex-tag">'+x+'</span>').join('')+'</span></button>';
+    });
+    html+='<button class="regex-card regex-new" onclick="RegexManager.openEditor()"><span class="regex-new-mark">＋</span><span class="regex-card-name">添加规则牌</span></button></div>';
+    box.innerHTML=html;
+  },
+  openEditor(id){
+    this.editingId=id||null;const source=id?this.rules().find(rule=>rule.id===id):null;
+    this.draft=source?JSON.parse(JSON.stringify(source)):this.blank();
+    document.getElementById('regexEditTitle').textContent=source?'编辑规则':'新规则';
+    document.getElementById('regexName').value=this.draft.name||'';
+    document.getElementById('regexFind').value=this.draft.find||'';
+    document.getElementById('regexReplace').value=this.draft.replace||'';
+    document.getElementById('regexTrim').value=this.draft.trim||'';
+    document.getElementById('regexTestInput').value='';
+    document.getElementById('regexTestResult').textContent='等待测试文本';
+    document.getElementById('regexDeleteBtn').style.visibility=source?'visible':'hidden';
+    this.renderFlags();this.renderRoles();nav.go('regexEdit');
+  },
+  togglePlacement(place){const list=this.draft.placements||(this.draft.placements=[]),i=list.indexOf(place);if(i>=0)list.splice(i,1);else list.push(place);this.renderFlags();this.test();},
+  toggleFlag(key){this.draft[key]=!this.draft[key];this.renderFlags();},
+  toggleRole(id){const list=this.draft.characterIds||(this.draft.characterIds=[]),i=list.indexOf(id);if(i>=0)list.splice(i,1);else list.push(id);this.renderRoles();},
+  renderFlags(){
+    ['userInput','aiOutput','worldbook'].forEach(place=>document.getElementById('regexPlace'+place[0].toUpperCase()+place.slice(1)).classList.toggle('on',(this.draft.placements||[]).includes(place)));
+    ['enabled','displayOnly','promptOnly'].forEach(key=>document.getElementById('regex'+key[0].toUpperCase()+key.slice(1)).classList.toggle('on',!!this.draft[key]));
+  },
+  renderRoles(){
+    const box=document.getElementById('regexRoleBindings'),ids=this.draft.characterIds||[];
+    box.innerHTML='<button class="regex-role '+(!ids.length?'on':'')+'" onclick="RegexManager.clearRoles()">全部角色</button>'+Store.data.characters.map(ch=>'<button class="regex-role '+(ids.includes(ch.id)?'on':'')+'" onclick="RegexManager.toggleRole(\''+ch.id+'\')">'+renderAvatar(ch)+'<span>'+escapeHtml(ch.name)+'</span></button>').join('');
+  },
+  clearRoles(){this.draft.characterIds=[];this.renderRoles();},
+  readDraft(){
+    this.draft.name=document.getElementById('regexName').value.trim();
+    this.draft.find=document.getElementById('regexFind').value.trim();
+    this.draft.replace=document.getElementById('regexReplace').value;
+    this.draft.trim=document.getElementById('regexTrim').value;
+  },
+  parse(source){
+    source=String(source||'').trim();if(!source)return null;
+    let pattern=source,flags='g';
+    if(source[0]==='/'){
+      const end=source.lastIndexOf('/');
+      if(end>0){pattern=source.slice(1,end);flags=source.slice(end+1)||'g';}
+    }
+    if(!flags.includes('g'))flags+='g';
+    try{return new RegExp(pattern,flags);}catch(_){return null;}
+  },
+  applyRule(text,rule,charId){
+    const regex=this.parse(rule.find);if(!regex)return String(text??'');
+    const ch=Store.data.characters.find(item=>item.id===charId);
+    let replacement=String(rule.replace??'').replaceAll('{{char}}',ch?.name||'').replaceAll('{{match}}','$&');
+    let output=String(text??'').replace(regex,replacement);
+    String(rule.trim||'').split(/\n/).map(x=>x.trim()).filter(Boolean).forEach(part=>{output=output.split(part).join('');});
+    return output;
+  },
+  apply(text,placement,charId,mode='all'){
+    return this.rules().filter(rule=>rule.enabled!==false&&(rule.placements||[]).includes(placement)&&(!(rule.characterIds||[]).length||(rule.characterIds||[]).includes(charId))&&(!rule.displayOnly||mode==='display')&&(!rule.promptOnly||mode==='prompt')).reduce((value,rule)=>this.applyRule(value,rule,charId),String(text??''));
+  },
+  test(){
+    if(!this.draft)return;this.readDraft();
+    const input=document.getElementById('regexTestInput').value;
+    if(!input){document.getElementById('regexTestResult').textContent='等待测试文本';return;}
+    const regex=this.parse(this.draft.find);
+    document.getElementById('regexTestResult').textContent=regex?this.applyRule(input,this.draft,Chat.currentId):'正则表达式无效';
+  },
+  save(){
+    this.readDraft();
+    if(!this.draft.name){UI.toast('请填写规则名称');return;}
+    if(!this.parse(this.draft.find)){UI.toast('正则表达式无效');return;}
+    if(!(this.draft.placements||[]).length){UI.toast('请选择作用位置');return;}
+    const index=this.rules().findIndex(rule=>rule.id===this.draft.id),saved=JSON.parse(JSON.stringify(this.draft));
+    if(index>=0)this.rules()[index]=saved;else this.rules().push(saved);
+    Store.save();this.renderList();nav.back();UI.toast('正则规则已保存');
+  },
+  delete(){
+    if(!this.editingId)return;
+    UI.confirm('删除正则规则','这张规则牌将被移除。',()=>{Store.data.regexRules=this.rules().filter(rule=>rule.id!==this.editingId);Store.save();this.renderList();nav.back();},{danger:true,okText:'删除'});
+  }
+};
+
+/* ============================================================
    世界书
 ============================================================ */
 const WB = {
@@ -5119,7 +5318,8 @@ const WB = {
   },
   compile(book,char,all=false){
     const recent=char?(Store.data.chats[char.id]||[]).slice(-20).map(m=>m.content||'').join('\n'):'';
-    return (book.entries||[]).filter(entry=>all||this.matches(entry,recent)).sort((a,b)=>(Number(b.order)||0)-(Number(a.order)||0)).map(entry=>entry.content).filter(Boolean).join('\n\n');
+    const content=(book.entries||[]).filter(entry=>all||this.matches(entry,recent)).sort((a,b)=>(Number(b.order)||0)-(Number(a.order)||0)).map(entry=>entry.content).filter(Boolean).join('\n\n');
+    return typeof RegexManager!=='undefined'?RegexManager.apply(content,'worldbook',char?.id,'prompt'):content;
   },
   getApplicableForCharacter(char){
     this.migrate();
@@ -6503,6 +6703,7 @@ const Chat = {
     this._sendMessage({ role: 'user', type: 'text', content: text });
   },
   _sendMessage(msg) {
+    if(msg.role==='user'&&msg.type==='text'&&typeof RegexManager!=='undefined') msg.content=RegexManager.apply(msg.content,'userInput',this.currentId,'all');
     msg.timestamp = Date.now();
     if (this.pendingQuote) { msg.quote = this.pendingQuote; this.cancelQuote(); }
     const arr = (Store.data.chats[this.currentId] = Store.data.chats[this.currentId] || []);
@@ -6772,6 +6973,7 @@ const Chat = {
         content = m.missed ? `[一次未接${m.mode==='video'?'视频':'语音'}通话]` : `[进行了一次${m.mode==='video'?'视频':'语音'}通话，时长 ${m.duration||0} 秒]`;
       }
       if (m.quote) content = `[引用 ${m.quote.author}: ${m.quote.text}]\n${content}`;
+      if(typeof RegexManager!=='undefined') content=RegexManager.apply(content,m.role==='user'?'userInput':'aiOutput',this.currentId,'prompt');
       return { role: m.role, content };
     });
     const history = Memory.selectRecentHistory(ch, fullHistory);
@@ -6814,7 +7016,8 @@ const Chat = {
   async deliverAssistantReply(charId, rawReply) {
     const ch = Store.data.characters.find(c => c.id === charId);
     if (!ch) return;
-    const chunks = String(rawReply||'').split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+    const filteredReply=typeof RegexManager!=='undefined'?RegexManager.apply(rawReply,'aiOutput',charId,'all'):String(rawReply||'');
+    const chunks = String(filteredReply||'').split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
     if (!chunks.length) return;
     const arr = (Store.data.chats[charId] = Store.data.chats[charId] || []);
     const memoryTexts = [];
@@ -7360,6 +7563,8 @@ function formatDay(ts) {
   return `${d.getMonth() + 1}月${d.getDate()}日 ${time}`;
 }
 function renderMsgBubble(m, i) {
+  const regexPlacement=m.role==='user'?'userInput':'aiOutput';
+  const displayContent=typeof RegexManager!=='undefined'?RegexManager.apply(m.content||'',regexPlacement,Chat.currentId,'display'):String(m.content||'');
   if (m.type === 'call') {
     const mm = String(Math.floor((m.duration||0)/60)).padStart(2,'0');
     const ss = String((m.duration||0)%60).padStart(2,'0');
@@ -7377,13 +7582,13 @@ function renderMsgBubble(m, i) {
   if (m.type === 'photo-desc') {
     return `<div class="msg-photo-card" data-favorite="${Favorite.isSaved(Chat.currentId,i)}">
       <span class="msg-photo-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="m21 16-5-5-4 4-3-3-6 6"/></svg></span>
-      <span class="msg-photo-card-text">${escapeHtml(m.content||'一张照片')}</span>
+      <span class="msg-photo-card-text">${escapeHtml(displayContent||'一张照片')}</span>
     </div>`;
   }
   if (m.type === 'location') {
     return `<div class="msg-location-card" data-favorite="${Favorite.isSaved(Chat.currentId,i)}">
       <div class="msg-map-fake"><span class="pin">📍</span></div>
-      <div class="msg-location-label">${escapeHtml(m.content||'位置')}</div>
+      <div class="msg-location-label">${escapeHtml(displayContent||'位置')}</div>
     </div>`;
   }
   if (m.type === 'transfer') {
@@ -7391,7 +7596,7 @@ function renderMsgBubble(m, i) {
     const statusText = status === 'accepted' ? '已接受' : status === 'declined' ? '已拒绝' : '待处理';
     return `<div class="msg-transfer" data-favorite="${Favorite.isSaved(Chat.currentId,i)}">
       <span class="msg-transfer-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
-      <span class="msg-transfer-copy"><div class="msg-transfer-amt">¥${Number(m.amount||0).toFixed(2)}</div><div class="msg-transfer-note">${escapeHtml(m.content||'转账')} · ${statusText}</div></span>
+      <span class="msg-transfer-copy"><div class="msg-transfer-amt">¥${Number(m.amount||0).toFixed(2)}</div><div class="msg-transfer-note">${escapeHtml(displayContent||'转账')} · ${statusText}</div></span>
     </div>`;
   }
   if (m.type === 'voice') {
@@ -7404,7 +7609,7 @@ function renderMsgBubble(m, i) {
           <div class="msg-voice-wave">${bars.join('')}</div>
           <span class="msg-voice-duration">${m.duration || 1}"</span>
         </div>
-        <div class="msg-voice-text">${escapeHtml(m.content)}</div>
+        <div class="msg-voice-text">${escapeHtml(displayContent)}</div>
       </div>`;
   }
   if (m.type === 'sticker') {
@@ -7412,7 +7617,7 @@ function renderMsgBubble(m, i) {
     if (!s) return `<div class="msg-bubble">[表情包已删除]</div>`;
     return `<div class="sticker-wrap" data-favorite="${Favorite.isSaved(Chat.currentId,i)}" onclick="Favorite.toggle(Chat.currentId,${i})"><img class="msg-sticker" src="${s.dataUrl}" alt="${escapeHtml(s.name)}"></div>`;
   }
-  return `<div class="msg-bubble" data-favorite="${Favorite.isSaved(Chat.currentId,i)}">${escapeHtml(m.content)}</div>`;
+  return `<div class="msg-bubble" data-favorite="${Favorite.isSaved(Chat.currentId,i)}">${escapeHtml(displayContent)}</div>`;
 }
 
 /* ============================================================

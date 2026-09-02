@@ -1527,6 +1527,33 @@
   .backup-empty { padding: 24px 10px; text-align: center; color: #8e8e93; font-size: 13px; }
   .backup-busy { opacity: .55; pointer-events: none; }
 
+
+  /* ============ P2 联系人 ============ */
+  #messaging.messaging-contacts-view #messagingNav { min-height:74px;padding:12px 18px;background:rgba(250,250,252,.92);border-bottom-color:transparent; }
+  #messaging.messaging-contacts-view #messagingNav .nav-back { width:48px;height:48px;padding:0;border-radius:50%;justify-content:center;background:rgba(255,255,255,.9);box-shadow:0 5px 16px rgba(0,0,0,.08);color:#1c1c1e; }
+  #messaging.messaging-contacts-view #messagingNav .nav-back span { display:none; }
+  #messaging.messaging-contacts-view #messagingNav .nav-back svg { width:18px;height:24px;stroke:#1c1c1e; }
+  #messaging.messaging-contacts-view #messagingTitle { display:block;color:#000;font-size:20px;font-weight:750; }
+  #messaging.messaging-contacts-view #messagingAction { width:48px;height:48px;margin-left:auto;padding:0;border-radius:50%;justify-content:center;background:rgba(255,255,255,.9);box-shadow:0 5px 16px rgba(0,0,0,.08); }
+  #messaging.messaging-contacts-view #messagingAction svg { width:24px;height:24px;stroke:#1c1c1e;stroke-width:1.8; }
+  #tab-contacts { min-height:100%;background:#fff;position:relative;padding-bottom:24px; }
+  .ios-contact-search-wrap { padding:10px 18px 16px;background:linear-gradient(#fafafc,#fff); }
+  .ios-contact-search { height:42px;border-radius:21px;background:rgba(245,245,247,.94);display:flex;align-items:center;gap:8px;padding:0 14px;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.04),0 7px 18px rgba(0,0,0,.05); }
+  .ios-contact-search svg { width:19px;height:19px;stroke:#1c1c1e;fill:none;stroke-width:2; }
+  .ios-contact-search input { flex:1;min-width:0;border:0;outline:0;background:transparent;color:#1c1c1e;font-size:16px; }
+  .ios-contact-search input::placeholder { color:#8e8e93; }
+  .ios-contact-groups { padding:0 26px 20px 18px; }
+  .ios-contact-group { scroll-margin-top:12px; }
+  .ios-contact-letter { height:34px;display:flex;align-items:flex-end;padding:0 4px 7px;color:#8e8e93;font-size:14px;border-bottom:.5px solid #d8d8dc; }
+  .ios-contact-row { min-height:76px;display:flex;align-items:center;gap:14px;padding:8px 4px;border-bottom:.5px solid #e1e1e4;cursor:pointer; }
+  .ios-contact-row:active { background:#f2f2f7; }
+  .ios-contact-row .avatar { width:54px;height:54px;border-radius:50%;flex:0 0 54px;font-size:19px;border:.5px solid rgba(0,0,0,.06); }
+  .ios-contact-name { flex:1;min-width:0;color:#050505;font-size:17px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+  .ios-contact-index { position:sticky;top:92px;z-index:5;float:right;width:22px;margin:92px 1px 0 0;display:flex;flex-direction:column;align-items:center;font-size:10px;font-weight:700;line-height:13px;color:#0a84ff; }
+  .ios-contact-index a { color:inherit;text-decoration:none;width:100%;text-align:center; }
+  .ios-contact-empty { padding-top:105px; }
+  @media (max-height:700px) { .ios-contact-index { top:54px;font-size:9px;line-height:10.5px;margin-top:54px; } }
+
 </style>
 </head>
 <body>
@@ -3841,6 +3868,7 @@ const Msg = {
     const titles = { chats: '信息', contacts: '联系人', moments: '动态', me: '我' };
     document.getElementById('messagingTitle').textContent = titles[tab];
     document.getElementById('messaging').classList.toggle('messaging-chats-view', tab === 'chats');
+    document.getElementById('messaging').classList.toggle('messaging-contacts-view', tab === 'contacts');
     const action = document.getElementById('messagingAction');
     action.style.display = (tab === 'contacts' || tab === 'chats') ? 'flex' : 'none';
     action.title = tab === 'chats' ? '新信息' : '新建联系人';
@@ -3917,37 +3945,60 @@ const Msg = {
       </div>`;
     }).join('') + '</div>';
   },
+  contactInitial(name) {
+    const text = String(name || '').trim();
+    if (!text) return '#';
+    const first = text[0].toUpperCase();
+    if (/^[A-Z]$/.test(first)) return first;
+    if (!/[\u3400-\u9fff]/.test(first)) return '#';
+    const boundaries = [['A','阿'],['B','八'],['C','嚓'],['D','咑'],['E','妸'],['F','发'],['G','旮'],['H','哈'],['J','丌'],['K','咔'],['L','垃'],['M','妈'],['N','拏'],['O','噢'],['P','妑'],['Q','七'],['R','呥'],['S','仨'],['T','他'],['W','屲'],['X','夕'],['Y','丫'],['Z','帀']];
+    const collator = new Intl.Collator('zh-CN-u-co-pinyin');
+    let result = '#';
+    for (const [letter, boundary] of boundaries) {
+      if (collator.compare(first, boundary) >= 0) result = letter;
+      else break;
+    }
+    return result;
+  },
+  filterContacts(value) {
+    const query = String(value || '').trim().toLowerCase();
+    document.querySelectorAll('#tab-contacts .ios-contact-row').forEach(row => {
+      row.style.display = !query || row.dataset.search.includes(query) ? 'flex' : 'none';
+    });
+    document.querySelectorAll('#tab-contacts .ios-contact-group').forEach(group => {
+      const visible = Array.from(group.querySelectorAll('.ios-contact-row')).some(row => row.style.display !== 'none');
+      group.style.display = visible ? 'block' : 'none';
+    });
+  },
+  jumpContact(letter) {
+    document.getElementById('contact-group-' + letter)?.scrollIntoView({ behavior:'smooth', block:'start' });
+  },
   renderContacts() {
     const c = document.getElementById('tab-contacts');
+    const search = `<div class="ios-contact-search-wrap"><label class="ios-contact-search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+      <input type="search" placeholder="搜索" oninput="Msg.filterContacts(this.value)">
+    </label></div>`;
     if (!Store.data.characters.length) {
-      c.innerHTML = `
-        <div class="empty">
-          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
-          </svg>
-          <div class="empty-title">还没有联系人</div>
-          <div class="empty-sub">点击右上角 + 创建人设</div>
-        </div>`;
+      c.innerHTML = search + `<div class="empty ios-contact-empty">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div class="empty-title">还没有联系人</div><div class="empty-sub">点击右上角 + 创建自定义角色</div>
+      </div>`;
       return;
     }
-    // 按字母/拼音排序（简化：按 name 排）
-    const list = [...Store.data.characters].sort((a, b) => a.name.localeCompare(b.name, 'zh'));
-    c.innerHTML = `
-      <div style="height:8px"></div>
-      <div class="list" style="margin:0 16px 20px">
-        ${list.map(ch => `
-          <div class="list-item" onclick="Chat.open('${ch.id}')">
-            ${renderAvatar(ch, 'small')}
-            <div style="width:12px"></div>
-            <div class="list-item-column">
-              <div class="list-item-label">${escapeHtml(ch.name)}</div>
-              ${ch.notes ? `<div class="list-item-sub">${escapeHtml(ch.notes)}</div>` : ''}
-            </div>
-            <span class="btn text" onclick="event.stopPropagation();Char.openEditor('${ch.id}')">编辑</span>
-            <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
-          </div>`).join('')}
-      </div>`;
+    const list = [...Store.data.characters].sort((a,b) => String(a.name||'').localeCompare(String(b.name||''),'zh-CN-u-co-pinyin'));
+    const groups = {};
+    list.forEach(ch => { const letter=this.contactInitial(ch.name); (groups[letter] ||= []).push(ch); });
+    const alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('');
+    const letters=alphabet.filter(letter => groups[letter]?.length);
+    const index='<div class="ios-contact-index">'+alphabet.map(letter => '<a href="javascript:void(0)" onclick="Msg.jumpContact(\''+letter+'\')">'+letter+'</a>').join('')+'</div>';
+    const body=letters.map(letter => `<section class="ios-contact-group" id="contact-group-${letter}">
+      <div class="ios-contact-letter">${letter}</div>
+      ${groups[letter].map(ch => `<div class="ios-contact-row" data-search="${escapeHtml(String(ch.name||'').toLowerCase())}" onclick="Chat.open('${ch.id}')">
+        ${renderAvatar(ch)}<div class="ios-contact-name">${escapeHtml(ch.name)}</div>
+      </div>`).join('')}
+    </section>`).join('');
+    c.innerHTML=search+index+'<div class="ios-contact-groups">'+body+'</div>';
   },
   renderMoments() {
     const c = document.getElementById('tab-moments');

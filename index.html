@@ -1635,6 +1635,47 @@
   .my-tip-title { font-size:14px; font-weight:650; }
   .my-tip-text { margin-top:5px; color:#9a9fa7; font-size:12px; line-height:1.5; }
 
+
+  /* ============ 我的主页 · P2 ============ */
+  #tab-me { background:#817d76; color:#fff; overflow-y:auto; }
+  .me-p2 { min-height:100%; padding:22px 18px 34px; background:#817d76; }
+  .me-p2-top { display:flex; align-items:center; justify-content:space-between; }
+  .me-p2-back,.me-p2-edit { border:0; height:50px; background:#302d29; color:#fff; box-shadow:0 5px 14px rgba(34,31,28,.13); }
+  .me-p2-back { width:50px; border-radius:50%; display:grid; place-items:center; }
+  .me-p2-edit { min-width:78px; padding:0 20px; border-radius:25px; font-size:16px; font-weight:600; }
+  .me-p2-back svg { width:25px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+  .me-p2-profile { display:flex; flex-direction:column; align-items:center; margin-top:28px; }
+  .me-p2-avatar { width:176px; height:176px; border:5px solid rgba(255,255,255,.96); border-radius:50%; display:grid; place-items:center; overflow:hidden; background:#f7f4ef; color:#625e58; font-size:64px; font-weight:500; box-shadow:0 15px 36px rgba(38,34,30,.18); }
+  .me-p2-avatar img { width:100%; height:100%; object-fit:cover; }
+  .me-p2-name { margin-top:24px; font-size:35px; line-height:1.15; font-weight:750; letter-spacing:.04em; }
+  .me-p2-signature { margin-top:8px; max-width:80%; color:rgba(255,255,255,.7); font-size:12px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .me-p2-orbits { margin:27px auto 25px; display:grid; grid-template-columns:repeat(4,1fr); gap:9px; max-width:360px; }
+  .me-p2-orbit { border:0; background:transparent; color:#fff; display:flex; flex-direction:column; align-items:center; gap:8px; min-width:0; }
+  .me-p2-orbit-icon { width:68px; height:68px; border:1px solid rgba(255,255,255,.68); border-radius:50%; display:grid; place-items:center; background:rgba(255,255,255,.08); transition:.16s ease; }
+  .me-p2-orbit:active .me-p2-orbit-icon { transform:scale(.93); background:rgba(255,255,255,.18); }
+  .me-p2-orbit svg { width:27px; height:27px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+  .me-p2-orbit-label { max-width:74px; font-size:10px; color:rgba(255,255,255,.78); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .me-p2-card { width:100%; min-height:74px; margin-top:12px; padding:0 24px; border:0; border-radius:25px; display:flex; align-items:center; gap:14px; text-align:left; background:rgba(183,179,170,.48); color:#fff; }
+  .me-p2-card:active { background:rgba(202,198,189,.52); }
+  .me-p2-card-icon { width:27px; height:27px; flex:0 0 auto; }
+  .me-p2-card-icon svg { width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+  .me-p2-card-copy { flex:1; min-width:0; }
+  .me-p2-card-title { font-size:19px; font-weight:620; }
+  .me-p2-card-sub { margin-top:4px; color:rgba(255,255,255,.57); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .me-p2-card-value { color:rgba(255,255,255,.76); font-size:13px; }
+  .me-p2-chevron { width:20px; fill:none; stroke:currentColor; stroke-width:2; }
+  .me-p2-switch { width:48px; height:29px; padding:3px; border-radius:16px; background:rgba(44,42,39,.38); transition:.2s; }
+  .me-p2-switch::after { content:""; display:block; width:23px; height:23px; border-radius:50%; background:#fff; transition:.2s; }
+  .me-p2-switch.on { background:#302d29; }
+  .me-p2-switch.on::after { transform:translateX(19px); }
+  @media (max-height:720px) {
+    .me-p2-profile { margin-top:16px; }
+    .me-p2-avatar { width:132px; height:132px; font-size:48px; }
+    .me-p2-name { margin-top:15px; font-size:29px; }
+    .me-p2-orbits { margin:19px auto; }
+    .me-p2-orbit-icon { width:60px; height:60px; }
+  }
+
 </style>
 </head>
 <body>
@@ -2373,6 +2414,8 @@
   </div>
   <input type="file" id="momentsCoverInput" accept="image/*" hidden onchange="Moments.importCover(event)">
 
+  <input type="file" id="meAvatarInput" accept="image/*" hidden onchange="Me.importAvatar(event)">
+
   <!-- ========== 通用弹窗 / 抽屉 / Toast ========== -->
   <div class="modal" id="modal">
     <div class="modal-box">
@@ -2423,6 +2466,7 @@ const Store = {
     };
     this.data.backup = { ...d.backup, ...(this.data.backup || {}) };
     this.data.momentsProfile = { ...d.momentsProfile, ...(this.data.momentsProfile || {}) };
+    this.data.meProfile = { ...d.meProfile, ...(this.data.meProfile || {}) };
     if (!Array.isArray(this.data.momentsProfile.posts)) this.data.momentsProfile.posts = [];
     // 后台项目升级时只迁移一次，保留设备身份、开关和消息间隔。
     if (this.data.notificationSettings.backendProject !== d.notificationSettings.backendProject) {
@@ -2451,6 +2495,7 @@ const Store = {
       stickers: [],     // [ {id, name, dataUrl} ]
       userName: '用户',
       momentsProfile: { cover: '', signature: '点击编辑签名', posts: [] },
+      meProfile: { avatar: '', status: '今天也要认真生活', enterToSend: true, ringtone: '默认铃声' },
       imgApi: {
         enabled: false,
         url: '',
@@ -3958,6 +4003,45 @@ const WB = {
    送信（Messaging）
 ============================================================ */
 
+
+const Me = {
+  profile() {
+    if (!Store.data.meProfile) Store.data.meProfile={avatar:'',status:'今天也要认真生活',enterToSend:true,ringtone:'默认铃声'};
+    return Store.data.meProfile;
+  },
+  edit() {
+    UI.sheet('<div class="sheet-title">编辑主页</div>'+
+      '<button class="sheet-action" onclick="UI.closeSheet();document.getElementById(\'meAvatarInput\').click()">更换头像</button>'+
+      '<button class="sheet-action" onclick="UI.closeSheet();Settings.editUserName()">修改昵称</button>'+
+      '<button class="sheet-action" onclick="UI.closeSheet();Me.editStatus()">修改今日状态</button>'+
+      '<button class="sheet-action" onclick="UI.closeSheet();Moments.editSignature()">修改签名</button>');
+  },
+  async importAvatar(event) {
+    const file=event.target.files[0]; event.target.value=''; if(!file)return;
+    try { this.profile().avatar=await Theme.resizeImage(file,900,900,.88); Store.save(); Msg.renderMe(); UI.toast('头像已更换'); }
+    catch(_){ UI.toast('头像读取失败'); }
+  },
+  editStatus() {
+    UI.prompt('今日状态','写下此刻的心情',this.profile().status||'',v=>{
+      this.profile().status=String(v||'').trim()||'今天也要认真生活'; Store.save(); Msg.renderMe();
+    });
+  },
+  toggleEnter() { const p=this.profile(); p.enterToSend=!p.enterToSend; Store.save(); Msg.renderMe(); UI.toast(p.enterToSend?'回车键发送已开启':'回车键发送已关闭'); },
+  ringtone() {
+    UI.sheet('<div class="sheet-title">铃声</div>'+
+      ['默认铃声','轻柔','清脆','静音'].map(x=>'<button class="sheet-action" onclick="Me.setRingtone(\''+x+'\')">'+x+'</button>').join(''));
+  },
+  setRingtone(v){ this.profile().ringtone=v; Store.save(); UI.closeSheet(); Msg.renderMe(); UI.toast('已设为'+v); },
+  feature(type) {
+    if(type==='moments'){ Msg.showTab('moments'); return; }
+    if(type==='memory'){ nav.go('worldbook'); WB.renderList(); return; }
+    if(type==='interaction'){ nav.go('pushSettings'); Push.render(); return; }
+    const count=(Store.data.stickers||[]).length;
+    UI.alert('表情包','当前已保存 '+count+' 个表情包，在聊天输入栏的表情入口中使用。');
+  },
+  wallet(){ UI.alert('钱包','这里预留角色关系、积分与虚拟物品功能入口。'); }
+};
+
 const Moments = {
   draftImages: [],
   profile() {
@@ -4206,127 +4290,25 @@ const Msg = {
       '<div class="moments-feed">'+(posts || '<div class="moments-empty">还没有动态，点击右上角相机发布第一条朋友圈</div>')+'</div>';
   },
   renderMe() {
-    const c = document.getElementById('tab-me');
-    const profile = Moments.profile();
-    const cover = profile.cover ? "background-image:url('" + profile.cover + "')" : '';
+    const c=document.getElementById('tab-me');
+    const p=Me.profile(), mp=Moments.profile();
+    const avatar=p.avatar?'<img src="'+p.avatar+'" alt="我的头像">':initials(Store.data.userName);
     c.innerHTML =
-      '<div class="my-profile-shell">'+
-        '<section class="my-profile-hero" style="'+cover+'">'+
-          '<button class="my-profile-edit" onclick="Settings.editUserName()" aria-label="编辑昵称"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button>'+
-          '<div class="my-profile-info">'+
-            '<div class="avatar my-profile-avatar">'+initials(Store.data.userName)+'</div>'+
-            '<div class="my-profile-name">'+escapeHtml(Store.data.userName)+'</div>'+
-            '<div class="my-profile-id">QIAOQING · PERSONAL SPACE</div>'+
-            '<div class="my-profile-signature" onclick="Moments.editSignature()">'+escapeHtml(profile.signature || '点击编辑签名')+'</div>'+
-          '</div>'+
-        '</section>'+
-        '<nav class="my-shortcuts" aria-label="主页功能">'+
-          '<button class="my-shortcut" onclick="Settings.editUserName()"><span class="my-shortcut-circle"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span class="my-shortcut-label">个人资料</span></button>'+
-          '<button class="my-shortcut" onclick="nav.go(\'apiList\');API.renderList()"><span class="my-shortcut-circle"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/><path d="M7 7h.01M7 17h.01M11 7h7M11 17h7"/></svg></span><span class="my-shortcut-label">接口</span></button>'+
-          '<button class="my-shortcut" onclick="nav.go(\'themeSettings\')"><span class="my-shortcut-circle"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18h1.5a1.5 1.5 0 0 0 0-3H12a2 2 0 0 1 0-4h3a6 6 0 0 0 0-12Z"/><circle cx="7.5" cy="10" r=".8"/><circle cx="9.5" cy="6.8" r=".8"/><circle cx="14" cy="6.5" r=".8"/></svg></span><span class="my-shortcut-label">外观</span></button>'+
-          '<button class="my-shortcut" onclick="nav.go(\'backupSettings\');Backup.render()"><span class="my-shortcut-circle"><svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 8.4 4.8 4.8 0 0 0 7 18Z"/><path d="m9 14 3-3 3 3M12 11v8"/></svg></span><span class="my-shortcut-label">备份</span></button>'+
+      '<div class="me-p2">'+
+        '<header class="me-p2-top"><button class="me-p2-back" onclick="nav.home()" aria-label="返回主屏"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button><button class="me-p2-edit" onclick="Me.edit()">编辑</button></header>'+
+        '<section class="me-p2-profile"><div class="me-p2-avatar">'+avatar+'</div><div class="me-p2-name">'+escapeHtml(Store.data.userName)+'</div><div class="me-p2-signature" onclick="Moments.editSignature()">'+escapeHtml(mp.signature||'点击编辑签名')+'</div></section>'+
+        '<nav class="me-p2-orbits" aria-label="个人功能">'+
+          '<button class="me-p2-orbit" onclick="Me.feature(\'emoji\')"><span class="me-p2-orbit-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="10" r=".8" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r=".8" fill="currentColor" stroke="none"/></svg></span><span class="me-p2-orbit-label">表情包</span></button>'+
+          '<button class="me-p2-orbit" onclick="Me.feature(\'interaction\')"><span class="me-p2-orbit-icon"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10 20h4"/></svg></span><span class="me-p2-orbit-label">互动设置</span></button>'+
+          '<button class="me-p2-orbit" onclick="Me.feature(\'moments\')"><span class="me-p2-orbit-icon"><svg viewBox="0 0 24 24"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z"/><path d="m8 10 2.5 2.5L16 7"/></svg></span><span class="me-p2-orbit-label">我的动态</span></button>'+
+          '<button class="me-p2-orbit" onclick="Me.feature(\'memory\')"><span class="me-p2-orbit-icon"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5Z"/><path d="M8 3v17M12 8h4M12 12h4"/></svg></span><span class="me-p2-orbit-label">记忆</span></button>'+
         '</nav>'+
-        '<section class="my-overview">'+
-          '<div class="my-overview-title">我的小世界</div>'+
-          '<div class="my-overview-sub">这里记录你与角色共同留下的内容</div>'+
-          '<div class="my-overview-stats">'+
-            '<div class="my-overview-stat"><b>'+Store.data.characters.length+'</b><span>角色</span></div>'+
-            '<div class="my-overview-stat"><b>'+Object.values(Store.data.chats||{}).reduce((n,a)=>n+(a?.length||0),0)+'</b><span>消息</span></div>'+
-            '<div class="my-overview-stat"><b>'+profile.posts.length+'</b><span>动态</span></div>'+
-          '</div>'+
-        '</section>'+
-        '<section class="my-tip-card"><span class="my-tip-icon"><svg viewBox="0 0 24 24"><path d="M12 3a7 7 0 0 0-4 12.7V20l4-2 4 2v-4.3A7 7 0 0 0 12 3Z"/></svg></span><div class="my-tip-title">保持属于你的样子</div><div class="my-tip-text">头像、封面与签名会和动态主页同步显示。</div></section>'+
+        '<button class="me-p2-card" onclick="Me.wallet()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><path d="M3 7h16a2 2 0 0 1 2 2v10H5a2 2 0 0 1-2-2Z"/><path d="M3 7V5a2 2 0 0 1 2-2h13v4"/><path d="M16 12h5v4h-5a2 2 0 0 1 0-4Z"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">钱包</span><span class="me-p2-card-sub">关系积分与虚拟物品入口</span></span><svg class="me-p2-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>'+
+        '<button class="me-p2-card" onclick="Me.editStatus()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">今日状态</span><span class="me-p2-card-sub">'+escapeHtml(p.status)+'</span></span><svg class="me-p2-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>'+
+        '<button class="me-p2-card" onclick="Me.toggleEnter()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><path d="M20 5v8a3 3 0 0 1-3 3H5"/><path d="m9 12-4 4 4 4"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">回车键发送</span><span class="me-p2-card-sub">控制聊天输入框的发送方式</span></span><span class="me-p2-switch '+(p.enterToSend?'on':'')+'"></span></button>'+
+        '<button class="me-p2-card" onclick="Me.ringtone()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10 20h4"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">铃声</span><span class="me-p2-card-sub">通知提示音与静音模式</span></span><span class="me-p2-card-value">'+escapeHtml(p.ringtone)+'</span></button>'+
       '</div>';
   }};
-
-/* ============================================================
-   角色
-============================================================ */
-const Char = {
-  editingId: null,
-  editing: null,
-  openEditor(id) {
-    this.editingId = id || null;
-    const item = id ? Store.data.characters.find(c => c.id === id) : null;
-    this.editing = item ? { ...item, worldBookIds: [...(item.worldBookIds || [])] } : { worldBookIds: [] };
-    document.getElementById('charEditTitle').textContent = item ? '编辑人设' : '创建人设';
-    document.getElementById('charName').value = item?.name || '';
-    document.getElementById('charNotes').value = item?.notes || '';
-    document.getElementById('charPersona').value = item?.persona || '';
-    document.getElementById('charAvatarStatus').textContent = item?.avatar ? '已设置' : '未设置';
-    document.getElementById('charDeleteBtn').style.display = item ? 'block' : 'none';
-    this.renderWorldbookList();
-    nav.go('charEdit');
-  },
-  renderWorldbookList() {
-    const box = document.getElementById('charWorldbookList');
-    if (!Store.data.worldBooks.length) {
-      box.innerHTML = '<div class="list-item" style="color:#8E8E93;justify-content:center">还没有世界书</div>';
-      return;
-    }
-    box.innerHTML = Store.data.worldBooks.map(w => {
-      const isGlobal = w.isGlobal;
-      const checked = isGlobal || this.editing.worldBookIds.includes(w.id);
-      return `
-        <div class="check-item ${checked ? 'checked' : ''}" onclick="Char.toggleWB('${w.id}', ${isGlobal})">
-          <div class="check"></div>
-          <div class="info">
-            <div class="name">${escapeHtml(w.name)} ${isGlobal ? '<span class="badge green">全局</span>' : (w.group ? `<span class="badge">${escapeHtml(w.group)}</span>` : '')}</div>
-            <div class="sub">${escapeHtml((w.content || '').slice(0, 40))}</div>
-          </div>
-        </div>`;
-    }).join('');
-  },
-  toggleWB(id, isGlobal) {
-    if (isGlobal) { UI.toast('全局世界书默认生效'); return; }
-    const idx = this.editing.worldBookIds.indexOf(id);
-    if (idx >= 0) this.editing.worldBookIds.splice(idx, 1);
-    else this.editing.worldBookIds.push(id);
-    this.renderWorldbookList();
-  },
-  onAvatarPick(e) {
-    const f = e.target.files?.[0];
-    if (!f) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.editing.avatar = reader.result;
-      document.getElementById('charAvatarStatus').textContent = '已设置';
-    };
-    reader.readAsDataURL(f);
-  },
-  save() {
-    const name = document.getElementById('charName').value.trim();
-    const notes = document.getElementById('charNotes').value.trim();
-    const persona = document.getElementById('charPersona').value.trim();
-    if (!name) { UI.toast('请填写姓名'); return; }
-    let item;
-    if (this.editingId) {
-      item = Store.data.characters.find(c => c.id === this.editingId);
-    } else {
-      item = { id: Store.uid() };
-      Store.data.characters.push(item);
-    }
-    item.name = name;
-    item.notes = notes;
-    item.persona = persona;
-    item.worldBookIds = [...this.editing.worldBookIds];
-    if (this.editing.avatar !== undefined) item.avatar = this.editing.avatar;
-    Store.save();
-    Msg.showTab('contacts');
-    nav.back();
-    UI.toast('已保存');
-  },
-  delete() {
-    if (!this.editingId) return;
-    UI.confirm('删除人设', '角色及其所有聊天记录都将被删除。', () => {
-      Store.data.characters = Store.data.characters.filter(c => c.id !== this.editingId);
-      delete Store.data.chats[this.editingId];
-      Store.save();
-      Msg.showTab('contacts');
-      nav.back();
-    }, { danger: true, okText: '删除' });
-  }
-};
 
 /* ============================================================
    聊天

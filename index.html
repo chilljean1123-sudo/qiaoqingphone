@@ -1452,6 +1452,54 @@
   .theme-modal-cancel { background: #f2f2f7; }
   .theme-modal-ok { background: #3a3a3c; color: #fff; }
 
+
+  /* ============ 数据备份 ============ */
+  .backup-page { padding: 12px 16px 46px; }
+  .backup-hero {
+    padding: 20px; border-radius: 22px; color: #fff;
+    background: linear-gradient(135deg, #2f80ed, #7b61ff);
+    box-shadow: 0 14px 30px rgba(76,100,230,.23);
+  }
+  .backup-hero-title { font-size: 21px; font-weight: 750; }
+  .backup-hero-sub { margin-top: 7px; font-size: 13px; line-height: 1.55; opacity: .84; }
+  .backup-section-title { padding: 24px 8px 8px; color: #8e8e93; font-size: 12px; font-weight: 700; letter-spacing: 1.6px; }
+  .backup-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .backup-action {
+    min-height: 126px; padding: 17px; border: 0; border-radius: 20px; background: #fff;
+    text-align: left; cursor: pointer; box-shadow: 0 2px 12px rgba(0,0,0,.035);
+  }
+  .backup-action:active { transform: scale(.985); }
+  .backup-action-icon {
+    width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center;
+    background: #edf4ff; color: #2677e8; font-size: 21px; margin-bottom: 16px;
+  }
+  .backup-action-title { font-size: 16px; font-weight: 700; }
+  .backup-action-sub { margin-top: 4px; color: #8e8e93; font-size: 12px; line-height: 1.4; }
+  .cloud-card { padding: 16px; border-radius: 20px; background: #fff; }
+  .cloud-code-row { display: flex; gap: 8px; margin-top: 12px; }
+  .cloud-code-input {
+    flex: 1; min-width: 0; border: 0; outline: 0; border-radius: 12px;
+    background: #f2f2f7; padding: 11px 12px; font: 12px/1.2 var(--theme-font-family);
+  }
+  .cloud-mini-btn {
+    border: 0; border-radius: 12px; padding: 0 13px; background: #eaf3ff;
+    color: #1672e8; font-size: 13px; font-weight: 650;
+  }
+  .cloud-main-btn { margin-top: 12px; }
+  .cloud-security-note { margin-top: 10px; color: #8e8e93; font-size: 11px; line-height: 1.45; }
+  .cloud-list { margin-top: 12px; display: flex; flex-direction: column; gap: 9px; }
+  .cloud-backup-row {
+    padding: 13px 14px; border-radius: 16px; background: #fff;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .cloud-backup-info { flex: 1; min-width: 0; }
+  .cloud-backup-name { font-size: 14px; font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cloud-backup-meta { color: #8e8e93; font-size: 11px; margin-top: 3px; }
+  .cloud-row-btn { border: 0; background: #edf4ff; color: #1672e8; border-radius: 10px; padding: 8px 10px; font-size: 12px; }
+  .cloud-row-btn.danger { background: #fff0ef; color: #ff3b30; }
+  .backup-empty { padding: 24px 10px; text-align: center; color: #8e8e93; font-size: 13px; }
+  .backup-busy { opacity: .55; pointer-events: none; }
+
 </style>
 </head>
 <body>
@@ -1548,7 +1596,7 @@
             <span class="list-item-label">美化</span>
             <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
           </div>
-          <div class="list-item" onclick="nav.go('backupSettings')">
+          <div class="list-item" onclick="nav.go('backupSettings');Backup.render()">
             <div class="item-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/>
@@ -1877,18 +1925,47 @@
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>设置</span>
       </div>
       <div class="nav-title">备份</div>
+      <div class="nav-action" onclick="Backup.refreshCloud()">刷新</div>
     </div>
     <div class="content">
-      <div class="empty" style="padding-top:120px">
-        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/>
-          <polyline points="16 16 12 12 8 16"/>
-          <line x1="12" y1="12" x2="12" y2="21"/>
-        </svg>
-        <div class="empty-title">备份</div>
-        <div class="empty-sub">待补充内容</div>
+      <div class="backup-page" id="backupPage">
+        <div class="backup-hero">
+          <div class="backup-hero-title">把小手机稳稳存好</div>
+          <div class="backup-hero-sub">本机 ZIP 适合离线保管，Supabase 云备份适合跨设备恢复。云端内容上传前会在本机加密。</div>
+        </div>
+
+        <div class="backup-section-title">LOCAL BACKUP</div>
+        <div class="backup-actions">
+          <button class="backup-action" onclick="Backup.exportZip()">
+            <div class="backup-action-icon">↓</div>
+            <div class="backup-action-title">导出数据</div>
+            <div class="backup-action-sub">生成包含完整数据的 ZIP 文件</div>
+          </button>
+          <button class="backup-action" onclick="document.getElementById('backupImportInput').click()">
+            <div class="backup-action-icon">↑</div>
+            <div class="backup-action-title">导入数据</div>
+            <div class="backup-action-sub">支持本应用导出的 ZIP 或 JSON</div>
+          </button>
+        </div>
+
+        <div class="backup-section-title">SUPABASE CLOUD</div>
+        <div class="cloud-card">
+          <div class="backup-action-title">云备份码</div>
+          <div class="backup-action-sub">换设备时输入同一串备份码，即可查看并恢复云端备份。</div>
+          <div class="cloud-code-row">
+            <input class="cloud-code-input" id="backupCloudCode" autocomplete="off" autocapitalize="off" spellcheck="false" onchange="Backup.setCloudCode(this.value)">
+            <button class="cloud-mini-btn" onclick="Backup.copyCode()">复制</button>
+            <button class="cloud-mini-btn" onclick="Backup.regenerateCode()">换码</button>
+          </div>
+          <button class="btn cloud-main-btn" onclick="Backup.uploadCloud()">立即云备份</button>
+          <div class="cloud-security-note">请妥善保存备份码。Supabase 只保存加密后的内容；备份码丢失后，云端数据无法解密。</div>
+        </div>
+        <div class="cloud-list" id="cloudBackupList">
+          <div class="backup-empty">正在读取云备份…</div>
+        </div>
       </div>
     </div>
+    <input id="backupImportInput" type="file" hidden accept=".zip,.json,application/zip,application/json" onchange="Backup.importFile(event)">
   </div>
 
   <!-- ========== API 编辑 ========== -->
@@ -2190,6 +2267,7 @@ const Store = {
       ...(this.data.theme || {}),
       icons: { ...d.theme.icons, ...((this.data.theme || {}).icons || {}) }
     };
+    this.data.backup = { ...d.backup, ...(this.data.backup || {}) };
     // 后台项目升级时只迁移一次，保留设备身份、开关和消息间隔。
     if (this.data.notificationSettings.backendProject !== d.notificationSettings.backendProject) {
       Object.assign(this.data.notificationSettings, {
@@ -2223,6 +2301,9 @@ const Store = {
         size: 'auto',
         quality: 'auto',
         extraPrompt: ''
+      },
+      backup: {
+        cloudCode: ''
       },
       theme: {
         wallpaper: '',
@@ -2646,6 +2727,326 @@ const Push = {
   }
 };
 
+
+
+/* ============================================================
+   本机 / Supabase 云备份
+============================================================ */
+const Backup = {
+  busy: false,
+  cloudRows: [],
+  cfg() { return Store.data.backup; },
+  randomHex(bytes = 24) {
+    const values = new Uint8Array(bytes);
+    crypto.getRandomValues(values);
+    return Array.from(values, value => value.toString(16).padStart(2, '0')).join('');
+  },
+  ensureCode() {
+    if (!this.cfg().cloudCode || this.cfg().cloudCode.length < 32) {
+      this.cfg().cloudCode = this.randomHex(24);
+      Store.save();
+    }
+    return this.cfg().cloudCode;
+  },
+  normalizeCode(value) {
+    return String(value || '').trim().toLowerCase().replace(/[^a-f0-9]/g, '').slice(0, 96);
+  },
+  setBusy(value) {
+    this.busy = value;
+    document.getElementById('backupPage')?.classList.toggle('backup-busy', value);
+  },
+  async render() {
+    const code = this.ensureCode();
+    const input = document.getElementById('backupCloudCode');
+    if (input) input.value = code;
+    await this.refreshCloud();
+  },
+  setCloudCode(value) {
+    const code = this.normalizeCode(value);
+    if (code.length < 32) {
+      document.getElementById('backupCloudCode').value = this.cfg().cloudCode;
+      return UI.toast('云备份码至少需要 32 位', 3000);
+    }
+    this.cfg().cloudCode = code;
+    Store.save();
+    this.refreshCloud();
+  },
+  copyCode() {
+    const code = this.ensureCode();
+    const done = () => UI.toast('云备份码已复制');
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(code).then(done).catch(() => this.copyFallback(code));
+    else this.copyFallback(code);
+  },
+  copyFallback(code) {
+    const input = document.getElementById('backupCloudCode');
+    input.value = code; input.select(); document.execCommand('copy'); input.setSelectionRange(0, 0);
+    UI.toast('云备份码已复制');
+  },
+  regenerateCode() {
+    UI.confirm('更换云备份码', '更换后将进入一个新的云备份空间。旧备份仍保留，但需要旧备份码才能恢复。', () => {
+      this.cfg().cloudCode = this.randomHex(24);
+      Store.save();
+      document.getElementById('backupCloudCode').value = this.cfg().cloudCode;
+      this.cloudRows = [];
+      this.renderCloudList();
+      UI.toast('已生成新的云备份码');
+    }, { danger: true, okText: '更换' });
+  },
+  envelope() {
+    return {
+      format: 'qiaoqingphone-backup',
+      version: 1,
+      createdAt: new Date().toISOString(),
+      data: Store.data
+    };
+  },
+  crc32(bytes) {
+    let crc = 0xffffffff;
+    for (const byte of bytes) {
+      crc ^= byte;
+      for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ (0xedb88320 & -(crc & 1));
+    }
+    return (crc ^ 0xffffffff) >>> 0;
+  },
+  u16(value) {
+    const out = new Uint8Array(2);
+    new DataView(out.buffer).setUint16(0, value, true);
+    return out;
+  },
+  u32(value) {
+    const out = new Uint8Array(4);
+    new DataView(out.buffer).setUint32(0, value >>> 0, true);
+    return out;
+  },
+  createZip(filename, text) {
+    const encoder = new TextEncoder();
+    const name = encoder.encode(filename);
+    const data = encoder.encode(text);
+    const crc = this.crc32(data);
+    const local = new Blob([
+      this.u32(0x04034b50), this.u16(20), this.u16(0x0800), this.u16(0), this.u16(0), this.u16(0),
+      this.u32(crc), this.u32(data.length), this.u32(data.length), this.u16(name.length), this.u16(0),
+      name, data
+    ]);
+    const central = new Blob([
+      this.u32(0x02014b50), this.u16(20), this.u16(20), this.u16(0x0800), this.u16(0), this.u16(0), this.u16(0),
+      this.u32(crc), this.u32(data.length), this.u32(data.length), this.u16(name.length), this.u16(0), this.u16(0),
+      this.u16(0), this.u16(0), this.u32(0), this.u32(0), name
+    ]);
+    const end = new Blob([
+      this.u32(0x06054b50), this.u16(0), this.u16(0), this.u16(1), this.u16(1),
+      this.u32(central.size), this.u32(local.size), this.u16(0)
+    ]);
+    return new Blob([local, central, end], { type: 'application/zip' });
+  },
+  exportZip() {
+    try {
+      const json = JSON.stringify(this.envelope());
+      const blob = this.createZip('backup.json', json);
+      const date = new Date();
+      const pad = value => String(value).padStart(2, '0');
+      const name = 'qiaoqingphone-backup-' + date.getFullYear() + pad(date.getMonth()+1) + pad(date.getDate()) + '-' + pad(date.getHours()) + pad(date.getMinutes()) + '.zip';
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url; anchor.download = name; anchor.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+      UI.toast('ZIP 备份已导出');
+    } catch (error) { UI.toast('导出失败：' + (error.message || error), 3800); }
+  },
+  async readZip(buffer) {
+    const view = new DataView(buffer);
+    if (view.byteLength < 30 || view.getUint32(0, true) !== 0x04034b50) throw new Error('不是有效的 ZIP 备份');
+    const flags = view.getUint16(6, true);
+    const method = view.getUint16(8, true);
+    if (flags & 0x0008) throw new Error('暂不支持带数据描述符的 ZIP');
+    const size = view.getUint32(18, true);
+    const nameLength = view.getUint16(26, true);
+    const extraLength = view.getUint16(28, true);
+    const start = 30 + nameLength + extraLength;
+    const compressed = new Uint8Array(buffer, start, size);
+    let bytes;
+    if (method === 0) bytes = compressed;
+    else if (method === 8 && typeof DecompressionStream !== 'undefined') {
+      const stream = new Blob([compressed]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+      bytes = new Uint8Array(await new Response(stream).arrayBuffer());
+    } else throw new Error('不支持此 ZIP 压缩格式');
+    return new TextDecoder().decode(bytes);
+  },
+  async importFile(event) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    try {
+      const buffer = await file.arrayBuffer();
+      const text = file.name.toLowerCase().endsWith('.zip')
+        ? await this.readZip(buffer)
+        : new TextDecoder().decode(buffer);
+      const parsed = JSON.parse(text);
+      const data = parsed?.format === 'qiaoqingphone-backup' ? parsed.data : parsed;
+      this.validateData(data);
+      UI.confirm('导入备份', '导入后会覆盖当前小手机里的 API、人设、聊天、表情包、美化和设置。', () => {
+        this.restoreData(data);
+      }, { danger: true, okText: '导入' });
+    } catch (error) { UI.toast('导入失败：' + (error.message || error), 4200); }
+  },
+  validateData(data) {
+    if (!data || typeof data !== 'object') throw new Error('备份内容为空');
+    if (!Array.isArray(data.apis) || !Array.isArray(data.characters) || !data.chats || typeof data.chats !== 'object') {
+      throw new Error('不是有效的小手机备份');
+    }
+  },
+  restoreData(data) {
+    const restored = JSON.parse(JSON.stringify(data));
+    const defaults = Store.defaults();
+    restored.notificationSettings = {
+      ...defaults.notificationSettings,
+      ...(restored.notificationSettings || {}),
+      enabled: false,
+      deviceId: '',
+      deviceSecret: ''
+    };
+    restored.backup = { ...defaults.backup, ...(restored.backup || {}) };
+    Store.data = restored;
+    Store.save();
+    UI.toast('数据已恢复，正在重新载入');
+    setTimeout(() => location.reload(), 600);
+  },
+  bytesToBase64(bytes) {
+    let binary = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+    }
+    return btoa(binary);
+  },
+  base64ToBytes(text) {
+    const binary = atob(text);
+    const out = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) out[i] = binary.charCodeAt(i);
+    return out;
+  },
+  async sha256Bytes(text) {
+    return new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)));
+  },
+  async sha256Hex(text) {
+    const bytes = await this.sha256Bytes(text);
+    return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+  },
+  async cloudCredentials() {
+    const code = this.ensureCode();
+    return {
+      backupId: await this.sha256Hex('qiaoqingphone:id:' + code),
+      backupAuth: await this.sha256Hex('qiaoqingphone:auth:' + code),
+      code
+    };
+  },
+  async encrypt(text, code) {
+    const rawKey = await this.sha256Bytes('qiaoqingphone:enc:' + code);
+    const key = await crypto.subtle.importKey('raw', rawKey, 'AES-GCM', false, ['encrypt']);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const cipher = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(text)));
+    const combined = new Uint8Array(iv.length + cipher.length);
+    combined.set(iv); combined.set(cipher, iv.length);
+    return this.bytesToBase64(combined);
+  },
+  async decrypt(payload, code) {
+    const combined = this.base64ToBytes(payload);
+    if (combined.length < 29) throw new Error('云备份内容损坏');
+    const rawKey = await this.sha256Bytes('qiaoqingphone:enc:' + code);
+    const key = await crypto.subtle.importKey('raw', rawKey, 'AES-GCM', false, ['decrypt']);
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: combined.slice(0, 12) }, key, combined.slice(12));
+    return new TextDecoder().decode(plain);
+  },
+  async cloudGateway(action, payload = {}) {
+    const credentials = await this.cloudCredentials();
+    return Push.gateway(action, { backupId: credentials.backupId, backupAuth: credentials.backupAuth, ...payload });
+  },
+  async uploadCloud() {
+    if (this.busy) return;
+    try {
+      this.setBusy(true);
+      const credentials = await this.cloudCredentials();
+      const plain = JSON.stringify(this.envelope());
+      const payload = await this.encrypt(plain, credentials.code);
+      const sizeBytes = new TextEncoder().encode(payload).length;
+      if (sizeBytes > 8 * 1024 * 1024) throw new Error('备份超过 8MB，请先减少大图片或字体');
+      const stamp = new Date().toLocaleString('zh-CN', { hour12: false });
+      await Push.gateway('backup-save', {
+        backupId: credentials.backupId,
+        backupAuth: credentials.backupAuth,
+        name: '手动备份 ' + stamp,
+        payload,
+        sizeBytes
+      });
+      UI.toast('云备份完成');
+      await this.refreshCloud();
+    } catch (error) { UI.toast('云备份失败：' + (error.message || error), 4500); }
+    finally { this.setBusy(false); }
+  },
+  async refreshCloud() {
+    if (this.busy) return;
+    const list = document.getElementById('cloudBackupList');
+    if (list) list.innerHTML = '<div class="backup-empty">正在读取云备份…</div>';
+    try {
+      const result = await this.cloudGateway('backup-list');
+      this.cloudRows = Array.isArray(result.backups) ? result.backups : [];
+      this.renderCloudList();
+    } catch (error) {
+      if (list) list.innerHTML = '<div class="backup-empty">读取失败：' + escapeHtml(error.message || error) + '</div>';
+    }
+  },
+  renderCloudList() {
+    const list = document.getElementById('cloudBackupList');
+    if (!list) return;
+    if (!this.cloudRows.length) {
+      list.innerHTML = '<div class="backup-empty">还没有云备份</div>';
+      return;
+    }
+    list.innerHTML = this.cloudRows.map(row => {
+      const date = new Date(row.created_at);
+      const size = Number(row.size_bytes) < 1024 * 1024
+        ? Math.max(1, Math.round(Number(row.size_bytes) / 1024)) + ' KB'
+        : (Number(row.size_bytes) / 1024 / 1024).toFixed(1) + ' MB';
+      return '<div class="cloud-backup-row">' +
+        '<div class="cloud-backup-info"><div class="cloud-backup-name">' + escapeHtml(row.name || '云备份') + '</div>' +
+        '<div class="cloud-backup-meta">' + escapeHtml(date.toLocaleString('zh-CN', { hour12:false })) + ' · ' + size + '</div></div>' +
+        '<button class="cloud-row-btn" onclick="Backup.restoreCloud(\'' + row.id + '\')">恢复</button>' +
+        '<button class="cloud-row-btn danger" onclick="Backup.deleteCloud(\'' + row.id + '\')">删除</button></div>';
+    }).join('');
+  },
+  async restoreCloud(id) {
+    const row = this.cloudRows.find(item => item.id === id);
+    if (!row) return;
+    UI.confirm('恢复云备份', '将用“' + (row.name || '云备份') + '”覆盖当前小手机数据。', async () => {
+      try {
+        this.setBusy(true);
+        const credentials = await this.cloudCredentials();
+        const result = await Push.gateway('backup-get', {
+          backupId: credentials.backupId,
+          backupAuth: credentials.backupAuth,
+          backupRowId: id
+        });
+        const text = await this.decrypt(result.backup.payload, credentials.code);
+        const envelope = JSON.parse(text);
+        const data = envelope?.format === 'qiaoqingphone-backup' ? envelope.data : envelope;
+        this.validateData(data);
+        this.restoreData(data);
+      } catch (error) { UI.toast('恢复失败：备份码不正确或数据已损坏', 4500); this.setBusy(false); }
+    }, { danger: true, okText: '恢复' });
+  },
+  deleteCloud(id) {
+    const row = this.cloudRows.find(item => item.id === id);
+    if (!row) return;
+    UI.confirm('删除云备份', '删除后无法找回“' + (row.name || '云备份') + '”。', async () => {
+      try {
+        this.setBusy(true);
+        await this.cloudGateway('backup-delete', { backupRowId: id });
+        UI.toast('云备份已删除');
+        await this.refreshCloud();
+      } catch (error) { UI.toast('删除失败：' + (error.message || error), 4000); }
+      finally { this.setBusy(false); }
+    }, { danger: true, okText: '删除' });
+  }
+};
 
 /* ============================================================
    美化

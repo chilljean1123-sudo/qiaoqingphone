@@ -2298,6 +2298,25 @@
   #apiEdit .api-model-value-row label { min-width:0; }
   #apiEdit .api-model-value-row select,#apiEdit .api-model-value-row input { width:100%; min-width:0; max-width:100%; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
+
+  /* 聊天顶栏：完全透明并移除 iOS 毛玻璃 */
+  #chat .nav-bar,
+  #chat .chat-header-info,
+  #chat .nav-back,
+  #chat .nav-action,
+  .page-header,
+  .conversation-header,
+  .chat-header {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+
 </style>
 </head>
 <body>

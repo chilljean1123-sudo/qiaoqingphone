@@ -3803,7 +3803,7 @@ const Push = {
   },
   async notifyLocalReply(charId, preview) {
     const p=this.cfg();
-    if(document.visibilityState==='visible' || !p.enabled || Notification.permission!=='granted') return false;
+    if(document.visibilityState==='visible' || !p.enabled || !('Notification' in window) || Notification.permission!=='granted') return false;
     const ch=Store.data.characters.find(item=>item.id===charId);
     if(!ch || !('serviceWorker' in navigator)) return false;
     try {

@@ -3801,6 +3801,29 @@ const Push = {
     Msg.showTab('chats');
     Chat.open(characterId);
   },
+  async notifyLocalReply(charId, preview) {
+    const p=this.cfg();
+    if(document.visibilityState==='visible' || !p.enabled || Notification.permission!=='granted') return false;
+    const ch=Store.data.characters.find(item=>item.id===charId);
+    if(!ch || !('serviceWorker' in navigator)) return false;
+    try {
+      const registration=await navigator.serviceWorker.ready;
+      const title=ChatSettings.name(ch)||ch.name||'新消息';
+      const body=String(preview||'发来一条新消息').replace(/\s+/g,' ').slice(0,120);
+      await registration.showNotification(title,{
+        body,
+        icon:ch.avatar||'./icon.svg',
+        badge:'./icon.svg',
+        tag:'local-chat-'+charId,
+        renotify:true,
+        data:{url:'./?chat='+encodeURIComponent(charId),charId}
+      });
+      return true;
+    } catch(error) {
+      console.warn('local reply notification failed',error);
+      return false;
+    }
+  },
   async init() {
     try { await this.registerServiceWorker(); } catch (error) { console.warn('service worker register failed', error); }
     if (this.cfg().enabled && this.isConfigured()) {
@@ -6567,6 +6590,7 @@ const Chat = {
     if (!chunks.length) return;
     const arr = (Store.data.chats[charId] = Store.data.chats[charId] || []);
     const memoryTexts = [];
+    let notificationPreview = '';
     for (let i = 0; i < chunks.length; i++) {
       if (i > 0) await sleep(this.typingDelay(chunks[i-1]));
       const c = chunks[i];
@@ -6581,9 +6605,11 @@ const Chat = {
         const note = tm[2] || '';
         arr.push({ role: 'assistant', type: 'transfer', content: note, amount: Math.round(amt*100)/100, status: 'pending', timestamp: Date.now() });
         memoryTexts.push('[转账 ¥'+amt.toFixed(2)+'] '+note);
+        notificationPreview='[转账] '+(note||('¥'+amt.toFixed(2)));
       } else if (sticker) {
         arr.push({ role: 'assistant', type: 'sticker', content: sticker.id, timestamp: Date.now() });
         memoryTexts.push('[表情包：'+sticker.name+']');
+        notificationPreview='[表情包] '+sticker.name;
       } else if (rm) {
         let idx = arr.length - 1;
         while (idx >= 0 && (arr[idx].role !== 'assistant' || arr[idx].type === 'call' || arr[idx].recalled)) idx--;
@@ -6606,12 +6632,14 @@ const Chat = {
       } else {
         arr.push({ role: 'assistant', type: 'text', content: c, timestamp: Date.now() });
         memoryTexts.push(c);
+        notificationPreview=c;
       }
       Store.save();
       if (this.currentId === charId) this.render();
       if (typeof Msg !== 'undefined') Msg.renderChats?.();
     }
     memoryTexts.forEach(t => Memory.logEvent(charId, 'assistant', t));
+    if(notificationPreview) Push.notifyLocalReply(charId,notificationPreview).catch(()=>{});
   },
   openInfo() { ChatSettings.open(); },
   clearHistory() {

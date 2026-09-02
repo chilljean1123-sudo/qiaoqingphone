@@ -2858,6 +2858,12 @@
             </div>
             <span>位置</span>
           </div>
+          <div class="plus-item" onclick="Chat.retryLastRound()">
+            <div class="icon-box">
+              <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+            </div>
+            <span>重回</span>
+          </div>
         </div>
         <div class="sticker-panel" id="stickerPanel" style="display:none">
           <div class="sticker-panel-head">
@@ -2917,7 +2923,7 @@
     </div>
     <div class="call-bottom">
       <button class="call-hangup-btn" onclick="Call.end()" aria-label="挂断">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8.5c-3.2 0-6 .9-8.4 2.4a1.5 1.5 0 0 0-.4 2.2l1.7 2.2c.4.5 1.1.7 1.7.4 1-.5 2.1-.9 3.3-1.1a.8.8 0 0 0 .6-.8v-2.6c1.3-.2 2.7-.2 4 0v2.6c0 .4.3.7.6.8 1.2.2 2.3.6 3.3 1.1.6.3 1.3.1 1.7-.4l1.7-2.2c.5-.7.3-1.7-.4-2.2C18 9.4 15.2 8.5 12 8.5Z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
       </button>
       <div class="call-input-bar" id="callInputBar" style="display:none">
         <button class="call-retry-btn" onclick="Call.retryLast()" aria-label="重回"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
@@ -6168,7 +6174,7 @@ const Chat = {
   retryMessage(index) {
     const arr = Store.data.chats[this.currentId] || [];
     const m = arr[index];
-    if (!m || m.role !== 'assistant' || this.loading) return;
+    if (!m || m.role !== 'assistant' || m.type === 'call' || this.loading) return;
     let start = index;
     while (start > 0 && arr[start-1].role === 'assistant') start--;
     let end = index;
@@ -6179,6 +6185,14 @@ const Chat = {
       this.render();
       this.askAI();
     });
+  },
+  retryLastRound() {
+    document.getElementById('plusPanel')?.classList.remove('show');
+    const arr = Store.data.chats[this.currentId] || [];
+    let idx = arr.length - 1;
+    while (idx >= 0 && (arr[idx].role !== 'assistant' || arr[idx].type === 'call')) idx--;
+    if (idx < 0) { UI.toast('还没有角色的回复可以重来'); return; }
+    this.retryMessage(idx);
   },
   async askAI() {
     const api = API.getActive();

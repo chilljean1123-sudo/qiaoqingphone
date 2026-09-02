@@ -2978,12 +2978,12 @@ const Backup = {
         sizeBytes
       });
       UI.toast('云备份完成');
-      await this.refreshCloud();
+      await this.refreshCloud(true);
     } catch (error) { UI.toast('云备份失败：' + (error.message || error), 4500); }
     finally { this.setBusy(false); }
   },
-  async refreshCloud() {
-    if (this.busy) return;
+  async refreshCloud(force = false) {
+    if (this.busy && !force) return;
     const list = document.getElementById('cloudBackupList');
     if (list) list.innerHTML = '<div class="backup-empty">正在读取云备份…</div>';
     try {
@@ -3041,7 +3041,7 @@ const Backup = {
         this.setBusy(true);
         await this.cloudGateway('backup-delete', { backupRowId: id });
         UI.toast('云备份已删除');
-        await this.refreshCloud();
+        await this.refreshCloud(true);
       } catch (error) { UI.toast('删除失败：' + (error.message || error), 4000); }
       finally { this.setBusy(false); }
     }, { danger: true, okText: '删除' });

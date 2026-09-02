@@ -1704,6 +1704,38 @@
   .favorite-item-head { display:flex; justify-content:space-between; gap:10px; margin-bottom:6px; color:#8d9198; font-size:10px; }
   .favorite-item-text { font-size:13px; line-height:1.5; word-break:break-word; }
 
+
+  /* ============ 编辑身份 ============ */
+  .identity-editor { position:absolute; z-index:205; inset:0; display:none; flex-direction:column; background:#fff; color:#252d3a; }
+  .identity-editor.show { display:flex; }
+  .identity-head { height:66px; flex:0 0 auto; display:grid; grid-template-columns:62px 1fr 62px; align-items:center; border-bottom:1px solid #eceef1; background:rgba(255,255,255,.96); }
+  .identity-head strong { text-align:center; font-size:18px; }
+  .identity-head button { width:46px; height:46px; margin:auto; border:0; background:transparent; color:#303846; display:grid; place-items:center; }
+  .identity-head .identity-close { font-size:31px; font-weight:200; color:#9b9fa6; }
+  .identity-head svg { width:25px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+  .identity-body { flex:1; overflow-y:auto; padding:22px 18px 36px; }
+  .identity-avatar-wrap { display:flex; flex-direction:column; align-items:center; }
+  .identity-avatar { width:112px; height:112px; border:4px solid #f0f1f3; border-radius:50%; overflow:hidden; display:grid; place-items:center; background:#e2e3e7; color:#555b65; font-size:38px; }
+  .identity-avatar img { width:100%; height:100%; object-fit:cover; }
+  .identity-avatar-note { margin-top:8px; color:#9b9fa7; font-size:10px; }
+  .identity-url-row { margin:18px auto 20px; max-width:350px; display:grid; grid-template-columns:30px 1fr; align-items:center; gap:9px; }
+  .identity-url-row svg { width:21px; fill:none; stroke:#8a8f97; stroke-width:1.8; }
+  .identity-url-row input,.identity-field input,.identity-field select,.identity-field textarea { width:100%; border:0; outline:0; border-radius:17px; background:#f2f3f5; color:#2b3442; font:inherit; font-size:14px; }
+  .identity-url-row input { height:54px; padding:0 17px; }
+  .identity-grid { display:grid; grid-template-columns:1fr 112px; gap:14px; }
+  .identity-grid.equal { grid-template-columns:1fr 1fr; }
+  .identity-field { margin-top:16px; min-width:0; }
+  .identity-field label { display:block; margin:0 4px 7px; color:#7d828b; font-size:12px; font-weight:600; }
+  .identity-field input,.identity-field select { height:54px; padding:0 16px; }
+  .identity-field textarea { min-height:112px; padding:15px 16px; line-height:1.55; resize:vertical; }
+  .identity-field textarea.identity-custom { min-height:140px; }
+  @media (max-height:720px) {
+    .identity-body { padding-top:14px; }
+    .identity-avatar { width:86px; height:86px; font-size:30px; }
+    .identity-url-row { margin:11px auto 12px; }
+    .identity-field { margin-top:11px; }
+  }
+
 </style>
 </head>
 <body>
@@ -2442,6 +2474,35 @@
   </div>
   <input type="file" id="momentsCoverInput" accept="image/*" hidden onchange="Moments.importCover(event)">
 
+
+  <div class="identity-editor" id="identityEditor">
+    <header class="identity-head">
+      <button class="identity-close" onclick="UserProfile.close()" aria-label="关闭">×</button>
+      <strong>编辑身份</strong>
+      <button onclick="UserProfile.save()" aria-label="保存"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg></button>
+    </header>
+    <div class="identity-body">
+      <div class="identity-avatar-wrap">
+        <button class="identity-avatar" id="identityAvatar" onclick="document.getElementById('userAvatarInput').click()" aria-label="选择头像"></button>
+        <div class="identity-avatar-note">点击头像从本地选择</div>
+      </div>
+      <div class="identity-url-row">
+        <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1"/></svg>
+        <input id="identityAvatarUrl" type="url" placeholder="或粘贴图片 URL…" oninput="UserProfile.previewUrl()">
+      </div>
+      <div class="identity-grid">
+        <div class="identity-field"><label>名字 (Name)</label><input id="identityName" maxlength="30"></div>
+        <div class="identity-field"><label>性别</label><select id="identityGender"><option value="">未设置</option><option>男</option><option>女</option><option>其他</option></select></div>
+      </div>
+      <div class="identity-grid equal">
+        <div class="identity-field"><label>年龄 (Age)</label><input id="identityAge" inputmode="numeric" maxlength="3"></div>
+        <div class="identity-field"><label>职业 (Occupation)</label><input id="identityOccupation" maxlength="50"></div>
+      </div>
+      <div class="identity-field"><label>简介 (Bio)</label><textarea id="identityBio" maxlength="1000" placeholder="写一点关于自己的介绍…"></textarea></div>
+      <div class="identity-field"><label>自定义设定 (Custom Settings)</label><textarea class="identity-custom" id="identityCustom" maxlength="3000" placeholder="更深入的性格、爱好以及对话偏好…"></textarea></div>
+    </div>
+  </div>
+
   <input type="file" id="userAvatarInput" accept="image/*" hidden onchange="UserProfile.importAvatar(event)">
 
   <!-- ========== 通用弹窗 / 抽屉 / Toast ========== -->
@@ -2496,6 +2557,7 @@ const Store = {
     this.data.backup = { ...d.backup, ...(this.data.backup || {}) };
     this.data.momentsProfile = { ...d.momentsProfile, ...(this.data.momentsProfile || {}) };
     this.data.meProfile = { ...d.meProfile, ...(this.data.meProfile || {}) };
+    this.data.userProfile = { ...d.userProfile, ...(this.data.userProfile || {}) };
     if (!Array.isArray(this.data.momentsProfile.posts)) this.data.momentsProfile.posts = [];
     // 后台项目升级时只迁移一次，保留设备身份、开关和消息间隔。
     if (this.data.notificationSettings.backendProject !== d.notificationSettings.backendProject) {
@@ -2525,6 +2587,7 @@ const Store = {
       favoriteMessages: [],
       userName: '用户',
       userAvatar: '',
+      userProfile: { gender: '', age: '', occupation: '', bio: '', custom: '' },
       momentsProfile: { cover: '', signature: '点击编辑签名', posts: [] },
       meProfile: { status: '今天也要认真生活', enterToSend: true, ringtone: '默认铃声' },
       imgApi: {
@@ -4037,17 +4100,49 @@ const WB = {
 
 
 const UserProfile = {
-  edit() {
-    UI.sheet('<div class="sheet-title">User 设定</div>'+
-      '<button class="sheet-action" onclick="UI.closeSheet();document.getElementById(\'userAvatarInput\').click()">设定头像</button>'+
-      '<button class="sheet-action" onclick="UI.closeSheet();Settings.editUserName()">设定姓名</button>');
+  draftAvatar: '',
+  data(){ if(!Store.data.userProfile) Store.data.userProfile={gender:'',age:'',occupation:'',bio:'',custom:''}; return Store.data.userProfile; },
+  edit(){ this.open(); },
+  open() {
+    const p=this.data();
+    this.draftAvatar=Store.data.userAvatar||'';
+    document.getElementById('identityName').value=Store.data.userName||'';
+    document.getElementById('identityGender').value=p.gender||'';
+    document.getElementById('identityAge').value=p.age||'';
+    document.getElementById('identityOccupation').value=p.occupation||'';
+    document.getElementById('identityBio').value=p.bio||'';
+    document.getElementById('identityCustom').value=p.custom||'';
+    document.getElementById('identityAvatarUrl').value=/^https?:/i.test(this.draftAvatar)?this.draftAvatar:'';
+    this.renderAvatar();
+    document.getElementById('identityEditor').classList.add('show');
+  },
+  close(){ document.getElementById('identityEditor').classList.remove('show'); },
+  renderAvatar() {
+    const box=document.getElementById('identityAvatar');
+    box.innerHTML=this.draftAvatar?'<img src="'+this.draftAvatar+'" alt="头像">':initials(document.getElementById('identityName')?.value||Store.data.userName);
+  },
+  previewUrl() {
+    const value=document.getElementById('identityAvatarUrl').value.trim();
+    if(value) this.draftAvatar=value;
+    this.renderAvatar();
   },
   async importAvatar(event) {
     const file=event.target.files[0]; event.target.value=''; if(!file)return;
-    try {
-      Store.data.userAvatar=await Theme.resizeImage(file,900,900,.9);
-      Store.save(); Msg.renderMe(); Msg.renderMoments(); UI.toast('User 头像已更新');
-    } catch(_){ UI.toast('头像读取失败'); }
+    try { this.draftAvatar=await Theme.resizeImage(file,900,900,.9); document.getElementById('identityAvatarUrl').value=''; this.renderAvatar(); }
+    catch(_){ UI.toast('头像读取失败'); }
+  },
+  save() {
+    const name=document.getElementById('identityName').value.trim();
+    if(!name) return UI.toast('请填写名字');
+    const p=this.data();
+    Store.data.userName=name;
+    Store.data.userAvatar=this.draftAvatar;
+    p.gender=document.getElementById('identityGender').value;
+    p.age=document.getElementById('identityAge').value.trim();
+    p.occupation=document.getElementById('identityOccupation').value.trim();
+    p.bio=document.getElementById('identityBio').value.trim();
+    p.custom=document.getElementById('identityCustom').value.trim();
+    Store.save(); this.close(); Msg.renderMe(); Msg.renderMoments(); UI.toast('身份设定已保存');
   }
 };
 

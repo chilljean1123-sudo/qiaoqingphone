@@ -649,6 +649,43 @@
   .chat-quote-bar.show { display: flex; }
   .chat-quote-bar .quote-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .chat-quote-bar button { border: 0; background: transparent; color: #8E8E93; font-size: 20px; line-height: 1; padding: 2px 6px; }
+  .msg-menu-overlay { position: absolute; inset: 0; z-index: 250; display: none; background: transparent; }
+  .msg-menu-overlay.show { display: block; }
+  .msg-menu-popover {
+    position: absolute;
+    z-index: 251;
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+    min-width: 220px;
+    max-width: 92%;
+    background: rgba(28,28,30,.96);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 13px;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(0,0,0,.35);
+    opacity: 0;
+    transform: scale(.92);
+    transition: opacity .12s ease, transform .12s ease;
+  }
+  .msg-menu-popover.show { display: grid; opacity: 1; transform: scale(1); }
+  .msg-menu-item {
+    padding: 13px 8px;
+    text-align: center;
+    font-size: 13px;
+    color: #fff;
+    border: 0;
+    background: transparent;
+    border-right: 0.5px solid rgba(255,255,255,.16);
+    border-bottom: 0.5px solid rgba(255,255,255,.16);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .msg-menu-item:active { background: rgba(255,255,255,.1); }
+  .msg-menu-item.danger { color: #ff453a; }
+  .msg-menu-item.no-r { border-right: 0; }
+  .msg-menu-item.no-b { border-bottom: 0; }
   .msg-bubble {
     max-width: 74%;
     padding: 8px 12px;
@@ -658,6 +695,8 @@
     word-wrap: break-word;
     white-space: pre-wrap;
     position: relative;
+    user-select: none;
+    -webkit-user-select: none;
   }
   .msg-row.other .msg-bubble {
     background: #E9E9EB;
@@ -2010,7 +2049,7 @@
   .wallet-empty { padding:22px 8px; text-align:center; color:#9aa39d; font-size:11px; }
 
   /* 聊天内转账气泡 */
-  .msg-transfer { position:relative; display:inline-flex; flex-direction:column; gap:3px; min-width:120px; background:linear-gradient(135deg,#f4b942,#e8912b); color:#402a06; border-radius:16px 16px 16px 4px; padding:12px 15px; }
+  .msg-transfer { position:relative; user-select:none; -webkit-user-select:none; display:inline-flex; flex-direction:column; gap:3px; min-width:120px; background:linear-gradient(135deg,#f4b942,#e8912b); color:#402a06; border-radius:16px 16px 16px 4px; padding:12px 15px; }
   .msg-row.self .msg-transfer { border-radius:16px 16px 4px 16px; }
   .msg-transfer-amt { font-size:19px; font-weight:760; }
   .msg-transfer-note { font-size:10.5px; opacity:.85; }
@@ -2696,6 +2735,8 @@
         </button>
       </div>
     </div>
+    <div class="msg-menu-overlay" id="msgMenuOverlay" onclick="Chat.closeMessageMenu()"></div>
+    <div class="msg-menu-popover" id="msgMenuPopover"></div>
   </div>
 
   <!-- ========== 世界书 ========== -->
@@ -5572,6 +5613,7 @@ const Chat = {
       <span class="chat-header-status" id="chatHeaderStatus"></span>
     `;
     this.cancelQuote();
+    this.closeMessageMenu();
     this.render();
     document.getElementById('chatInput').value = '';
     this.autoResize();
@@ -5623,7 +5665,7 @@ const Chat = {
       if (m.quote) {
         html += `<div class="msg-quote-line" style="text-align:${side==='self'?'right':'left'}"><span class="msg-quote"><b>${escapeHtml(m.quote.author)}</b>${escapeHtml(m.quote.text)}</span></div>`;
       }
-      html += `<div class="msg-row ${side} ${group}" ondblclick="Chat.openMessageMenu(${i})">${renderMsgBubble(m, i)}</div>`;
+      html += `<div class="msg-row ${side} ${group}" ondblclick="Chat.openMessageMenu(${i}, event)">${renderMsgBubble(m, i)}</div>`;
     });
     if (this.loading) {
       html += `<div class="msg-row other new-group">
@@ -5735,22 +5777,63 @@ const Chat = {
     if (m.type === 'transfer') return '[转账 ¥' + Number(m.amount||0).toFixed(2) + '] ' + (m.content||'');
     return m.content || '';
   },
-  openMessageMenu(index) {
+  openMessageMenu(index, ev) {
     const ch = Store.data.characters.find(c => c.id === this.currentId);
     const arr = Store.data.chats[this.currentId] || [];
     const m = arr[index];
     if (!m || !ch) return;
     const favored = Favorite.isSaved(this.currentId, index);
-    const rows = [];
-    rows.push(['引用', `Chat.quoteMessage(${index})`]);
-    if (m.type === 'voice') rows.push(['语音转文字', `Chat.voiceToText(${index})`]);
-    rows.push([favored ? '取消收藏' : '收藏', `Chat.favoriteFromMenu(${index})`]);
-    rows.push(['撤回', `Chat.recallMessage(${index})`]);
-    let html = '<div class="sheet-title">消息</div><div class="list" style="margin:0">' +
-      rows.map(([label, fn]) => `<div class="list-item" onclick="UI.closeSheet();${fn}"><span class="list-item-label">${label}</span></div>`).join('') +
-      `<div class="list-item" onclick="UI.closeSheet();Chat.deleteMessage(${index})"><span class="list-item-label" style="color:#FF3B30">删除</span></div>` +
-      '</div><button class="btn btn-block" style="margin-top:12px" onclick="UI.closeSheet()">取消</button>';
-    UI.sheet(html);
+    const items = [];
+    items.push({ label: '引用', fn: `Chat.quoteMessage(${index})` });
+    if (m.type === 'voice') items.push({ label: '语音转文字', fn: `Chat.voiceToText(${index})` });
+    items.push({ label: favored ? '取消收藏' : '收藏', fn: `Chat.favoriteFromMenu(${index})` });
+    items.push({ label: '撤回', fn: `Chat.recallMessage(${index})` });
+    items.push({ label: '删除', fn: `Chat.deleteMessage(${index})`, danger: true });
+
+    const cols = Math.min(3, items.length);
+    const lastRowCount = items.length % cols || cols;
+    const html = items.map((it, idx) => {
+      const noRight = (idx + 1) % cols === 0 || idx === items.length - 1;
+      const noBottom = idx >= items.length - lastRowCount;
+      const cls = ['msg-menu-item'];
+      if (it.danger) cls.push('danger');
+      if (noRight) cls.push('no-r');
+      if (noBottom) cls.push('no-b');
+      return `<button class="${cls.join(' ')}" onclick="Chat.closeMessageMenu();${it.fn}">${it.label}</button>`;
+    }).join('');
+
+    const pop = document.getElementById('msgMenuPopover');
+    const overlay = document.getElementById('msgMenuOverlay');
+    pop.innerHTML = html;
+    pop.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    overlay.classList.add('show');
+    pop.classList.add('show');
+
+    const screenEl = document.getElementById('chat');
+    const rowEl = ev?.target?.closest ? ev.target.closest('.msg-row') : null;
+    requestAnimationFrame(() => {
+      const sRect = screenEl.getBoundingClientRect();
+      const popRect = pop.getBoundingClientRect();
+      let top, left;
+      if (rowEl) {
+        const r = rowEl.getBoundingClientRect();
+        const relTop = r.top - sRect.top, relBottom = r.bottom - sRect.top;
+        const relLeft = r.left - sRect.left, relRight = r.right - sRect.left;
+        left = (relLeft + relRight) / 2 - popRect.width / 2;
+        top = relTop - popRect.height - 10 > 60 ? relTop - popRect.height - 10 : relBottom + 10;
+      } else {
+        left = (sRect.width - popRect.width) / 2;
+        top = (sRect.height - popRect.height) / 2;
+      }
+      left = Math.max(8, Math.min(left, sRect.width - popRect.width - 8));
+      top = Math.max(60, Math.min(top, sRect.height - popRect.height - 70));
+      pop.style.left = left + 'px';
+      pop.style.top = top + 'px';
+    });
+  },
+  closeMessageMenu() {
+    document.getElementById('msgMenuOverlay')?.classList.remove('show');
+    document.getElementById('msgMenuPopover')?.classList.remove('show');
   },
   quoteMessage(index) {
     const ch = Store.data.characters.find(c => c.id === this.currentId);

@@ -1736,6 +1736,61 @@
     .identity-field { margin-top:11px; }
   }
 
+
+  /* ============ 表情包分组管理 ============ */
+  .sticker-screen { position:absolute; z-index:204; inset:0; display:none; flex-direction:column; background:#fafafa; color:#273140; }
+  .sticker-screen.show { display:flex; }
+  .sticker-screen-head { height:68px; flex:0 0 auto; display:grid; grid-template-columns:58px 1fr 58px; align-items:center; border-bottom:1px solid #f0f1f3; background:#fff; }
+  .sticker-screen-head strong { text-align:center; font-size:17px; }
+  .sticker-screen-head button { width:44px; height:44px; margin:auto; border:0; background:transparent; color:#303947; display:grid; place-items:center; }
+  .sticker-screen-head svg { width:24px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .sticker-screen-body { flex:1; overflow-y:auto; padding:18px; }
+  .sticker-group-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+  .sticker-group-card { position:relative; min-height:176px; padding:18px; border:0; border-radius:22px; background:#fff; text-align:left; box-shadow:0 9px 24px rgba(38,45,57,.055); }
+  .sticker-group-symbol { width:54px; height:54px; border-radius:50%; display:grid; place-items:center; color:#485566; background:#edf1f2; }
+  .sticker-group-symbol svg { width:27px; fill:none; stroke:currentColor; stroke-width:1.7; }
+  .sticker-group-card:nth-child(3n+1) .sticker-group-symbol { background:#d9f4eb; color:#168c78; }
+  .sticker-group-card:nth-child(3n+2) .sticker-group-symbol { background:#fff0cc; color:#d98213; }
+  .sticker-group-card:nth-child(3n) .sticker-group-symbol { background:#e7e5fa; color:#6c63b8; }
+  .sticker-group-name { margin-top:17px; font-size:16px; font-weight:700; }
+  .sticker-group-count { margin-top:4px; color:#a1a5ac; font-size:11px; }
+  .sticker-group-bindings { margin-top:13px; display:flex; flex-wrap:wrap; gap:5px; }
+  .sticker-group-chip { max-width:100%; padding:4px 8px; border-radius:10px; background:#f3f3f5; color:#7f848b; font-size:9px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .sticker-group-delete { position:absolute; right:12px; top:12px; width:34px; height:34px; border:0; border-radius:50%; display:grid; place-items:center; background:#f7f7f8; color:#ef5a55; box-shadow:0 3px 10px rgba(0,0,0,.07); }
+  .sticker-group-delete svg { width:17px; fill:none; stroke:currentColor; stroke-width:1.8; }
+  .sticker-group-new { min-height:176px; border:1.5px dashed #e1e3e6; border-radius:22px; background:transparent; color:#a6aab0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; }
+  .sticker-group-new span:first-child { width:52px; height:52px; border-radius:50%; display:grid; place-items:center; background:#fff; box-shadow:0 5px 15px rgba(0,0,0,.06); font-size:28px; font-weight:200; }
+  .sticker-group-new span:last-child { font-size:12px; font-weight:600; }
+  .sticker-detail-meta { padding:3px 2px 18px; }
+  .sticker-detail-label { color:#92969d; font-size:11px; font-weight:600; }
+  .sticker-character-chips { display:flex; gap:8px; overflow-x:auto; padding:10px 0 4px; }
+  .sticker-character-chip { flex:0 0 auto; padding:9px 14px; border:0; border-radius:17px; background:#eef0f2; color:#9a9ea5; font-size:11px; }
+  .sticker-character-chip.active { background:#4c4b49; color:#fff; }
+  .sticker-library { margin:8px -18px -18px; padding:20px 18px 34px; border-radius:25px 25px 0 0; background:#fff; min-height:50vh; }
+  .sticker-library-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:18px; }
+  .sticker-library-title { font-size:19px; font-weight:750; }
+  .sticker-library-title span { color:#b1b4ba; font-weight:500; }
+  .sticker-import-button { border:0; padding:9px 13px; border-radius:18px; background:#f0f0f2; color:#3d4653; font-size:11px; }
+  .sticker-library-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px 12px; }
+  .sticker-library-item { position:relative; min-width:0; text-align:center; }
+  .sticker-library-item img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:10px; background:#f2f2f2; box-shadow:0 6px 13px rgba(0,0,0,.07); }
+  .sticker-library-item-name { margin-top:7px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#757a82; font-size:10px; }
+  .sticker-library-delete { position:absolute; right:-4px; top:-7px; width:27px; height:27px; border:0; border-radius:50%; background:#fff; color:#ef554d; box-shadow:0 3px 9px rgba(0,0,0,.12); font-size:16px; }
+  .sticker-import-overlay { position:absolute; z-index:222; inset:0; display:none; align-items:center; justify-content:center; padding:18px; background:rgba(20,23,28,.48); }
+  .sticker-import-overlay.show { display:flex; }
+  .sticker-import-card { width:min(100%,360px); max-height:calc(100% - 30px); overflow-y:auto; border-radius:23px; background:#fff; padding:22px; color:#2b3442; }
+  .sticker-import-card h3 { text-align:center; font-size:18px; margin-bottom:18px; }
+  .sticker-import-drop { min-height:120px; border:0; border-radius:18px; background:#f2f3f5; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#9da1a8; width:100%; }
+  .sticker-import-drop svg { width:33px; margin-bottom:9px; fill:none; stroke:currentColor; stroke-width:1.7; }
+  .sticker-import-drop strong { font-size:13px; }
+  .sticker-import-drop span { margin-top:5px; font-size:10px; }
+  .sticker-import-card label { display:block; margin:16px 4px 7px; color:#70757d; font-size:11px; }
+  .sticker-import-card textarea { width:100%; min-height:115px; padding:13px; border:0; outline:0; border-radius:16px; background:#f2f3f5; color:#333b47; font:inherit; font-size:11px; line-height:1.5; }
+  .sticker-import-help { margin-top:7px; color:#a1a5ac; font-size:9px; line-height:1.45; }
+  .sticker-import-actions { display:grid; grid-template-columns:1fr 1.35fr; gap:10px; margin-top:18px; }
+  .sticker-import-actions button { height:48px; border:0; border-radius:16px; background:#f1f1f3; font-size:13px; }
+  .sticker-import-actions .primary { background:#4a4947; color:#fff; }
+
 </style>
 </head>
 <body>
@@ -2475,6 +2530,37 @@
   <input type="file" id="momentsCoverInput" accept="image/*" hidden onchange="Moments.importCover(event)">
 
 
+
+  <div class="sticker-screen" id="stickerGroupScreen">
+    <header class="sticker-screen-head">
+      <button onclick="StickerGroups.closeManager()" aria-label="返回"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+      <strong>表情包管理</strong><span></span>
+    </header>
+    <div class="sticker-screen-body"><div class="sticker-group-grid" id="stickerGroupGrid"></div></div>
+  </div>
+  <div class="sticker-screen" id="stickerGroupDetail">
+    <header class="sticker-screen-head">
+      <button onclick="StickerGroups.closeDetail()" aria-label="返回"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+      <strong id="stickerDetailTitle"></strong>
+      <button onclick="StickerGroups.rename()" aria-label="编辑名称"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button>
+    </header>
+    <div class="sticker-screen-body" id="stickerDetailBody"></div>
+  </div>
+  <div class="sticker-import-overlay" id="stickerImportOverlay" onclick="if(event.target===this)StickerGroups.closeImport()">
+    <div class="sticker-import-card">
+      <h3>批量添加表情</h3>
+      <button class="sticker-import-drop" onclick="document.getElementById('stickerBatchInput').click()">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-5-5L5 20M17 2v6M14 5h6"/></svg>
+        <strong>选择照片或文本文件</strong><span>支持多张图片、TXT、JSON、CSV</span>
+      </button>
+      <input type="file" id="stickerBatchInput" accept="image/*,.txt,.json,.csv,text/plain,application/json,text/csv" multiple hidden onchange="StickerGroups.importFiles(event)">
+      <label>批量 URL</label>
+      <textarea id="stickerUrlList" placeholder="贴贴: https://example.com/a.jpg&#10;可爱 https://example.com/b.gif"></textarea>
+      <div class="sticker-import-help">每行一个，支持“名称: URL”“名称 URL”或仅填写 URL。</div>
+      <div class="sticker-import-actions"><button onclick="StickerGroups.closeImport()">取消</button><button class="primary" onclick="StickerGroups.importUrls()">全部添加</button></div>
+    </div>
+  </div>
+
   <div class="identity-editor" id="identityEditor">
     <header class="identity-head">
       <button class="identity-close" onclick="UserProfile.close()" aria-label="关闭">×</button>
@@ -2547,6 +2633,7 @@ const Store = {
     for (const k in d) if (!(k in this.data)) this.data[k] = d[k];
     this.data.chatReadAt = { ...d.chatReadAt, ...(this.data.chatReadAt || {}) };
     if (!Array.isArray(this.data.favoriteMessages)) this.data.favoriteMessages = [];
+    if (!Array.isArray(this.data.stickerGroups)) this.data.stickerGroups = [];
     this.data.imgApi = { ...d.imgApi, ...(this.data.imgApi || {}) };
     this.data.notificationSettings = { ...d.notificationSettings, ...(this.data.notificationSettings || {}) };
     this.data.theme = {
@@ -2585,6 +2672,7 @@ const Store = {
       chatReadAt: {},   // { charId: lastOpenedTimestamp }
       stickers: [],     // [ {id, name, dataUrl} ]
       favoriteMessages: [],
+      stickerGroups: [],
       userName: '用户',
       userAvatar: '',
       userProfile: { gender: '', age: '', occupation: '', bio: '', custom: '' },
@@ -4192,8 +4280,7 @@ const Me = {
     if(type==='favorites'){ Favorite.open(); return; }
     if(type==='memory'){ nav.go('worldbook'); WB.renderList(); return; }
     if(type==='interaction'){ nav.go('pushSettings'); Push.render(); return; }
-    const count=(Store.data.stickers||[]).length;
-    UI.alert('表情包','当前已保存 '+count+' 个表情包，在聊天输入栏的表情入口中使用。');
+    StickerGroups.open();
   },
   wallet(){ UI.alert('钱包','这里预留关系积分与虚拟物品功能入口。'); }
 };
@@ -4686,6 +4773,101 @@ const Chat = {
 /* ============================================================
    表情包
 ============================================================ */
+const StickerGroups = {
+  currentId:null,
+  groups(){ if(!Array.isArray(Store.data.stickerGroups)) Store.data.stickerGroups=[]; return Store.data.stickerGroups; },
+  current(){ return this.groups().find(x=>x.id===this.currentId); },
+  open(){ this.renderManager(); document.getElementById('stickerGroupScreen').classList.add('show'); },
+  closeManager(){ document.getElementById('stickerGroupScreen').classList.remove('show'); },
+  create(){
+    UI.prompt('新建表情包分组','例如：猫猫、狗狗、常用','',name=>{
+      name=String(name||'').trim(); if(!name)return;
+      const g={id:'sg_'+Date.now(),name,notes:'',characterIds:[]};
+      this.groups().push(g); Store.save(); this.renderManager(); this.openDetail(g.id);
+    });
+  },
+  renderManager(){
+    const grid=document.getElementById('stickerGroupGrid'); if(!grid)return;
+    const cards=this.groups().map((g,i)=>{
+      const count=Store.data.stickers.filter(s=>s.groupId===g.id).length;
+      const names=(g.characterIds||[]).map(id=>Store.data.characters.find(c=>c.id===id)?.name).filter(Boolean);
+      return '<button class="sticker-group-card" onclick="StickerGroups.openDetail(\''+g.id+'\')">'+
+        '<span class="sticker-group-symbol"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h5M8 14s1 2 3 2 3-2 3-2M9 11h.01M14 11h.01"/></svg></span>'+
+        '<span class="sticker-group-name">'+escapeHtml(g.name)+'</span><span class="sticker-group-count">'+count+' 个表情</span>'+
+        '<span class="sticker-group-bindings">'+(names.length?names.slice(0,2).map(n=>'<span class="sticker-group-chip">'+escapeHtml(n)+'</span>').join(''):'<span class="sticker-group-chip">未绑定角色</span>')+'</span>'+
+        '<span class="sticker-group-delete" onclick="event.stopPropagation();StickerGroups.removeGroup(\''+g.id+'\')"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14M10 11v6M14 11v6"/></svg></span></button>';
+    }).join('');
+    grid.innerHTML=cards+'<button class="sticker-group-new" onclick="StickerGroups.create()"><span>＋</span><span>新建图集</span></button>';
+  },
+  removeGroup(id){
+    const g=this.groups().find(x=>x.id===id); if(!g)return;
+    UI.confirm('删除“'+g.name+'”？','该分组内的表情也会一并删除',()=>{
+      Store.data.stickerGroups=this.groups().filter(x=>x.id!==id);
+      Store.data.stickers=Store.data.stickers.filter(x=>x.groupId!==id);
+      Store.save(); this.renderManager(); UI.toast('分组已删除');
+    });
+  },
+  openDetail(id){ this.currentId=id; this.renderDetail(); document.getElementById('stickerGroupDetail').classList.add('show'); },
+  closeDetail(){ document.getElementById('stickerGroupDetail').classList.remove('show'); this.renderManager(); },
+  rename(){
+    const g=this.current(); if(!g)return;
+    UI.prompt('修改分组名称','',g.name,v=>{v=String(v||'').trim();if(!v)return;g.name=v;Store.save();this.renderDetail();});
+  },
+  toggleCharacter(id){
+    const g=this.current(); if(!g)return;
+    g.characterIds=g.characterIds||[];
+    const i=g.characterIds.indexOf(id); if(i>=0)g.characterIds.splice(i,1);else g.characterIds.push(id);
+    Store.save(); this.renderDetail();
+  },
+  renderDetail(){
+    const g=this.current(); if(!g)return;
+    document.getElementById('stickerDetailTitle').textContent=g.name;
+    const chips=Store.data.characters.length?Store.data.characters.map(c=>'<button class="sticker-character-chip '+((g.characterIds||[]).includes(c.id)?'active':'')+'" onclick="StickerGroups.toggleCharacter(\''+c.id+'\')">'+escapeHtml(c.name)+'</button>').join(''):'<span style="color:#aaa;font-size:11px">还没有角色</span>';
+    const items=Store.data.stickers.filter(s=>s.groupId===g.id);
+    document.getElementById('stickerDetailBody').innerHTML=
+      '<div class="sticker-detail-meta"><div class="sticker-detail-label">绑定给现有角色</div><div class="sticker-character-chips">'+chips+'</div></div>'+
+      '<section class="sticker-library"><div class="sticker-library-head"><div class="sticker-library-title">表情库 <span>'+items.length+'</span></div><button class="sticker-import-button" onclick="StickerGroups.openImport()">批量导入</button></div>'+
+      '<div class="sticker-library-grid">'+(items.map(s=>'<div class="sticker-library-item"><img src="'+s.dataUrl+'" alt="'+escapeHtml(s.name)+'"><button class="sticker-library-delete" onclick="StickerGroups.deleteSticker(\''+s.id+'\')">×</button><div class="sticker-library-item-name">'+escapeHtml(s.name)+'</div></div>').join('')||'<div style="grid-column:1/-1;padding:50px 10px;text-align:center;color:#aaa;font-size:11px">还没有表情，点击批量导入添加</div>')+'</div></section>';
+  },
+  deleteSticker(id){ Store.data.stickers=Store.data.stickers.filter(x=>x.id!==id);Store.save();this.renderDetail(); },
+  openImport(){ document.getElementById('stickerUrlList').value='';document.getElementById('stickerImportOverlay').classList.add('show'); },
+  closeImport(){ document.getElementById('stickerImportOverlay').classList.remove('show'); },
+  parseText(text){
+    text=String(text||'').trim(); if(!text)return[];
+    try {
+      const data=JSON.parse(text);
+      if(Array.isArray(data))return data.map((x,i)=>typeof x==='string'?this.parseLine(x,i):{name:x.name||x.title||('表情'+(i+1)),url:x.url||x.dataUrl}).filter(x=>x.url);
+    } catch(_){}
+    return text.split(/\r?\n/).map((x,i)=>this.parseLine(x,i)).filter(x=>x&&x.url);
+  },
+  parseLine(line,i){
+    line=String(line||'').trim(); if(!line)return null;
+    const urlMatch=line.match(/https?:\/\/\S+/i); if(!urlMatch)return null;
+    const url=urlMatch[0].replace(/[),，。]+$/,'');
+    let name=line.slice(0,urlMatch.index).replace(/[:：,，\s]+$/,'').trim();
+    if(!name)name='表情'+(i+1);
+    return {name,url};
+  },
+  async importFiles(event){
+    const files=[...event.target.files]; event.target.value=''; if(!files.length)return;
+    let added=0;
+    for(const file of files){
+      if(file.type.startsWith('image/')){
+        try { const dataUrl=await Theme.resizeImage(file,900,900,.86); Store.data.stickers.push({id:Store.uid(),name:file.name.replace(/\.[^.]+$/,'')||'表情',dataUrl,groupId:this.currentId});added++; } catch(_){}
+      } else {
+        try { const entries=this.parseText(await file.text()); entries.forEach(x=>{Store.data.stickers.push({id:Store.uid(),name:x.name,dataUrl:x.url,groupId:this.currentId});added++;}); } catch(_){}
+      }
+    }
+    Store.save(); this.closeImport(); this.renderDetail(); UI.toast('已导入 '+added+' 个表情');
+  },
+  importUrls(){
+    const entries=this.parseText(document.getElementById('stickerUrlList').value);
+    if(!entries.length)return UI.toast('没有识别到有效 URL');
+    entries.forEach(x=>Store.data.stickers.push({id:Store.uid(),name:x.name,dataUrl:x.url,groupId:this.currentId}));
+    Store.save(); this.closeImport(); this.renderDetail(); UI.toast('已添加 '+entries.length+' 个表情');
+  }
+};
+
 const Sticker = {
   editMode: false,
   render() {
@@ -4693,7 +4875,8 @@ const Sticker = {
     const panel = document.getElementById('stickerPanel');
     panel.classList.toggle('edit-mode', this.editMode);
     let html = '';
-    Store.data.stickers.forEach(s => {
+    const boundGroupIds = StickerGroups.groups().filter(group => (group.characterIds || []).includes(Chat.currentId)).map(group => group.id);
+    Store.data.stickers.filter(s => !s.groupId || boundGroupIds.includes(s.groupId)).forEach(s => {
       html += `
         <div class="sticker-item" title="${escapeHtml(s.name)}" onclick="Sticker.onClick('${s.id}')">
           <img src="${s.dataUrl}" alt="${escapeHtml(s.name)}">

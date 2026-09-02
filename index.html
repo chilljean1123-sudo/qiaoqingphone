@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#F2F2F7">
 <link rel="manifest" href="./manifest.webmanifest">
-<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icon.svg">
 <title>AI 小手机</title>
 <style>
   /* ============ 基础 ============ */
@@ -2014,6 +2014,16 @@ const Store = {
     for (const k in d) if (!(k in this.data)) this.data[k] = d[k];
     this.data.imgApi = { ...d.imgApi, ...(this.data.imgApi || {}) };
     this.data.notificationSettings = { ...d.notificationSettings, ...(this.data.notificationSettings || {}) };
+    // 后台项目升级时只迁移一次，保留设备身份、开关和消息间隔。
+    if (this.data.notificationSettings.backendProject !== d.notificationSettings.backendProject) {
+      Object.assign(this.data.notificationSettings, {
+        backendProject: d.notificationSettings.backendProject,
+        supabaseUrl: d.notificationSettings.supabaseUrl,
+        supabaseAnonKey: d.notificationSettings.supabaseAnonKey,
+        vapidPublicKey: d.notificationSettings.vapidPublicKey,
+        enabled: false
+      });
+    }
   },
   save() {
     try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); }
@@ -2040,9 +2050,10 @@ const Store = {
       },
       notificationSettings: {
         enabled: false,
-        supabaseUrl: '',
-        supabaseAnonKey: '',
-        vapidPublicKey: 'BDteq7QAVZbdmyHbY0_7-aGiGJlYepvdogl-vU3PZsXZwqWPCnN1qB4RFcGSfWRreLNy1ieelrN4DQLC916ATWc',
+        backendProject: 'qppsrpsxjzrrcesykhsk',
+        supabaseUrl: 'https://qppsrpsxjzrrcesykhsk.supabase.co',
+        supabaseAnonKey: 'sb_publishable_2cTuueCGWolpmjXk47jUIg_hCSEosyr',
+        vapidPublicKey: 'BFPMBTG5TAcROuGVCCp6qAdE1c0_eunik04zSFqtwxtcHbIcW-8dqTZMGuqmHgrY_D_eaOVg9TrDokn1YDQ5jj8',
         deviceId: '',
         deviceSecret: '',
         autoMessage: false,

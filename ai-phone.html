@@ -1,0 +1,3237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>AI 小手机</title>
+<style>
+  /* ============ 基础 ============ */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+                 "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: #C7C7CC;
+    color: #1C1C1E;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+  input, textarea, select, button { font-family: inherit; color: inherit; }
+  textarea { resize: none; }
+
+  /* ============ 手机外壳 ============ */
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #DCDCE0;
+  }
+  #phone {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 420px;
+    background: #F2F2F7;
+    overflow: hidden;
+  }
+  @media (min-width: 500px) {
+    body { padding: 20px; }
+    #phone {
+      height: 92vh;
+      max-height: 900px;
+      border-radius: 44px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.18), 0 0 0 8px #1C1C1E, 0 0 0 10px #3A3A3C;
+    }
+  }
+
+  /* ============ 屏幕切换 ============ */
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background: #F2F2F7;
+    transform: translateX(0);
+    transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+    z-index: 1;
+  }
+  .screen.hidden {
+    transform: translateX(100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .screen.behind {
+    transform: translateX(-25%);
+    pointer-events: none;
+  }
+
+  /* ============ 主屏幕 ============ */
+  .home-screen {
+    background:
+      radial-gradient(circle at 30% 20%, rgba(255,255,255,0.6), transparent 60%),
+      radial-gradient(circle at 70% 80%, rgba(200,200,210,0.4), transparent 60%),
+      linear-gradient(180deg, #EDEDF2 0%, #F5F5F8 100%);
+    padding: 56px 22px 28px;
+    justify-content: flex-start;
+  }
+  .home-header {
+    text-align: center;
+    margin-bottom: 32px;
+    color: #48484A;
+  }
+  .home-header .time {
+    font-size: 68px;
+    font-weight: 200;
+    letter-spacing: -2px;
+    line-height: 1;
+    color: #1C1C1E;
+  }
+  .home-header .date {
+    font-size: 14px;
+    margin-top: 6px;
+    color: #636366;
+  }
+  .app-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px 14px;
+  }
+  .app-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .app-icon:active { transform: scale(0.92); }
+  .app-icon-box {
+    width: 62px;
+    height: 62px;
+    border-radius: 16px;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.05);
+    border: 0.5px solid rgba(0,0,0,0.04);
+  }
+  .app-icon svg {
+    width: 32px;
+    height: 32px;
+    stroke: #1C1C1E;
+    stroke-width: 1.5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .app-label {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #1C1C1E;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+  }
+  .home-dock {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;
+    height: 5px;
+    background: #1C1C1E;
+    border-radius: 3px;
+    opacity: 0.4;
+  }
+
+  /* ============ 导航栏 ============ */
+  .nav-bar {
+    background: rgba(249, 249, 249, 0.85);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid rgba(60,60,67,0.15);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+  }
+  .nav-title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 17px;
+    font-weight: 600;
+    color: #1C1C1E;
+    max-width: 60%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .nav-back, .nav-action, .nav-left {
+    color: #007AFF;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    z-index: 2;
+    padding: 4px 2px;
+  }
+  .nav-action, .nav-right {
+    margin-left: auto;
+    color: #007AFF;
+  }
+  .nav-back svg { width: 12px; height: 20px; stroke: #007AFF; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-action svg { width: 22px; height: 22px; stroke: #007AFF; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ============ 底部标签栏 ============ */
+  .tab-bar {
+    background: rgba(249, 249, 249, 0.9);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-top: 0.5px solid rgba(60,60,67,0.15);
+    display: flex;
+    padding: 6px 0 10px;
+    flex-shrink: 0;
+  }
+  .tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    color: #8E8E93;
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.15s;
+  }
+  .tab-item.active { color: #007AFF; }
+  .tab-item svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .tab-item span { font-size: 10px; font-weight: 500; }
+
+  /* ============ 内容区 ============ */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ============ 列表 ============ */
+  .section {
+    margin: 18px 0;
+  }
+  .section-title {
+    font-size: 13px;
+    color: #6C6C70;
+    padding: 0 30px 6px;
+    letter-spacing: 0.2px;
+  }
+  .section-hint {
+    font-size: 12px;
+    color: #8E8E93;
+    padding: 6px 30px 0;
+    line-height: 1.35;
+  }
+  .list {
+    background: #FFFFFF;
+    margin: 0 16px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .list-item {
+    padding: 11px 16px;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    cursor: pointer;
+    position: relative;
+    background: #FFFFFF;
+    transition: background 0.1s;
+  }
+  .list-item:active { background: #E5E5EA; }
+  .list-item + .list-item::before {
+    content: '';
+    position: absolute;
+    left: 16px;
+    right: 0;
+    top: 0;
+    height: 0.5px;
+    background: #E5E5EA;
+  }
+  .list-item-label {
+    flex: 1;
+    font-size: 16px;
+    color: #1C1C1E;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .list-item-sub {
+    font-size: 13px;
+    color: #8E8E93;
+    margin-top: 2px;
+  }
+  .list-item-column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
+  .list-item-value {
+    color: #8E8E93;
+    font-size: 15px;
+    margin-right: 4px;
+    max-width: 55%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .chevron {
+    color: #C7C7CC;
+    margin-left: 6px;
+    display: flex;
+    align-items: center;
+  }
+  .chevron svg { width: 8px; height: 13px; stroke: #C7C7CC; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+  .item-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: #E5E5EA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+  .item-icon svg { width: 18px; height: 18px; stroke: #1C1C1E; stroke-width: 1.6; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ============ 表单 ============ */
+  .form {
+    background: #FFFFFF;
+    margin: 0 16px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .form-field {
+    padding: 11px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    position: relative;
+  }
+  .form-field + .form-field::before {
+    content: '';
+    position: absolute;
+    left: 16px;
+    right: 0;
+    top: 0;
+    height: 0.5px;
+    background: #E5E5EA;
+  }
+  .form-field label {
+    font-size: 16px;
+    color: #1C1C1E;
+    min-width: 78px;
+    flex-shrink: 0;
+  }
+  .form-field input,
+  .form-field select {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+    color: #1C1C1E;
+    text-align: right;
+    min-width: 0;
+  }
+  .form-field select { text-align-last: right; direction: rtl; }
+  .form-field select option { direction: ltr; text-align: left; }
+  .form-field input::placeholder { color: #C7C7CC; }
+  .form-field.column {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    padding: 12px 16px;
+  }
+  .form-field.column label { text-align: left; }
+  .form-field.column textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    background: transparent;
+    min-height: 100px;
+    padding: 4px 0;
+    line-height: 1.5;
+  }
+
+  .btn {
+    background: #007AFF;
+    color: #FFFFFF;
+    border: none;
+    padding: 13px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    width: 100%;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn:active { opacity: 0.7; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-block {
+    margin: 16px;
+    display: block;
+  }
+  .btn.secondary {
+    background: #FFFFFF;
+    color: #007AFF;
+  }
+  .btn.danger {
+    background: #FFFFFF;
+    color: #FF3B30;
+  }
+  .btn.text {
+    background: transparent;
+    color: #007AFF;
+    padding: 8px;
+    width: auto;
+  }
+
+  /* ============ 空态 ============ */
+  .empty {
+    text-align: center;
+    padding: 60px 24px;
+    color: #8E8E93;
+  }
+  .empty svg {
+    width: 56px;
+    height: 56px;
+    stroke: #C7C7CC;
+    stroke-width: 1.2;
+    fill: none;
+    margin-bottom: 12px;
+  }
+  .empty-title {
+    font-size: 17px;
+    color: #3A3A3C;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  .empty-sub {
+    font-size: 14px;
+    color: #8E8E93;
+    line-height: 1.4;
+  }
+
+  /* ============ 头像 ============ */
+  .avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #E5E5EA 0%, #C7C7CC 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 500;
+    color: #48484A;
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 0.5px solid rgba(0,0,0,0.05);
+  }
+  .avatar.small { width: 36px; height: 36px; font-size: 14px; }
+  .avatar.large { width: 82px; height: 82px; font-size: 30px; }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ============ 聊天列表 / 联系人 ============ */
+  .chat-row {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #FFFFFF;
+    cursor: pointer;
+    position: relative;
+  }
+  .chat-row:active { background: #E5E5EA; }
+  .chat-row + .chat-row::before {
+    content: '';
+    position: absolute;
+    left: 74px;
+    right: 0;
+    top: 0;
+    height: 0.5px;
+    background: #E5E5EA;
+  }
+  .chat-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .chat-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: #1C1C1E;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .chat-time {
+    font-size: 12px;
+    color: #8E8E93;
+    font-weight: 400;
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+  .chat-preview {
+    font-size: 14px;
+    color: #8E8E93;
+    margin-top: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ============ 聊天界面 ============ */
+  .chat-screen {
+    background: #FFFFFF;
+  }
+  .chat-header-info {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+  }
+  .chat-header-info .name {
+    font-size: 12px;
+    color: #1C1C1E;
+    margin-top: 2px;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .chat-messages {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .msg-day {
+    text-align: center;
+    font-size: 11px;
+    color: #8E8E93;
+    padding: 12px 0 8px;
+  }
+  .msg-row {
+    display: flex;
+    margin-top: 2px;
+    align-items: flex-end;
+    gap: 6px;
+    max-width: 100%;
+  }
+  .msg-row.self { justify-content: flex-end; }
+  .msg-row.other { justify-content: flex-start; }
+  .msg-row.grouped { margin-top: 2px; }
+  .msg-row.new-group { margin-top: 10px; }
+  .msg-bubble {
+    max-width: 74%;
+    padding: 8px 12px;
+    border-radius: 18px;
+    font-size: 16px;
+    line-height: 1.35;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    position: relative;
+  }
+  .msg-row.other .msg-bubble {
+    background: #E9E9EB;
+    color: #1C1C1E;
+    border-bottom-left-radius: 5px;
+  }
+  .msg-row.self .msg-bubble {
+    background: #007AFF;
+    color: #FFFFFF;
+    border-bottom-right-radius: 5px;
+  }
+  .msg-bubble.system {
+    background: #F2F2F7 !important;
+    color: #8E8E93 !important;
+    font-size: 13px;
+    border-radius: 8px !important;
+    text-align: center;
+    max-width: 90%;
+    margin: 8px auto;
+  }
+
+  /* 语音消息 */
+  .msg-voice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 90px;
+    cursor: pointer;
+  }
+  .msg-voice-wave {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 20px;
+  }
+  .msg-voice-wave span {
+    width: 2px;
+    background: currentColor;
+    border-radius: 1px;
+    opacity: 0.85;
+  }
+  .msg-voice-duration { font-size: 13px; opacity: 0.85; }
+  .msg-voice-text {
+    background: rgba(0,0,0,0.04);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #1C1C1E;
+    margin-top: 4px;
+    max-width: 74%;
+    display: none;
+    align-self: flex-start;
+  }
+  .msg-row.self .msg-voice-text { align-self: flex-end; }
+  .msg-voice-text.show { display: block; }
+
+  /* 表情包 */
+  .msg-sticker {
+    max-width: 130px;
+    max-height: 130px;
+    border-radius: 8px;
+    display: block;
+  }
+  .msg-row.other .msg-sticker,
+  .msg-row.self .msg-sticker {
+    padding: 0;
+  }
+  .msg-row .sticker-wrap {
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 8px !important;
+  }
+
+  /* ============ 输入栏 ============ */
+  .input-bar-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+  .input-bar {
+    background: #F6F6F6;
+    border-top: 0.5px solid #D1D1D6;
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px));
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    background: transparent;
+    border: none;
+  }
+  .icon-btn svg {
+    width: 26px;
+    height: 26px;
+    stroke: #007AFF;
+    fill: none;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .icon-btn.send { background: #007AFF; }
+  .icon-btn.send svg { stroke: #FFFFFF; width: 18px; height: 18px; stroke-width: 2.2; }
+  .icon-btn.send:disabled { background: #B0D5FF; cursor: not-allowed; }
+
+  .input-wrap {
+    flex: 1;
+    background: #FFFFFF;
+    border-radius: 18px;
+    border: 0.5px solid #D1D1D6;
+    padding: 5px 12px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+  }
+  .input-wrap textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+    min-height: 22px;
+    max-height: 100px;
+    line-height: 1.35;
+    padding: 0;
+    display: block;
+    overflow-y: auto;
+  }
+
+  /* + 菜单 */
+  .plus-panel {
+    background: #FFFFFF;
+    border-top: 0.5px solid #D1D1D6;
+    max-height: 260px;
+    overflow-y: auto;
+    display: none;
+  }
+  .plus-panel.show { display: block; }
+  .plus-menu {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 16px;
+  }
+  .plus-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .plus-item .icon-box {
+    width: 54px;
+    height: 54px;
+    background: #F2F2F7;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .plus-item .icon-box svg {
+    width: 26px;
+    height: 26px;
+    stroke: #1C1C1E;
+    fill: none;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .plus-item span { font-size: 12px; color: #3A3A3C; }
+
+  /* 表情包面板 */
+  .sticker-panel {
+    padding: 12px;
+  }
+  .sticker-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px 10px;
+    font-size: 13px;
+    color: #6C6C70;
+  }
+  .sticker-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .sticker-item {
+    aspect-ratio: 1;
+    background: #F2F2F7;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sticker-item img { width: 100%; height: 100%; object-fit: cover; }
+  .sticker-item .del {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 18px;
+    height: 18px;
+    background: rgba(0,0,0,0.55);
+    color: #FFFFFF;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1;
+  }
+  .sticker-panel.edit-mode .sticker-item .del { display: flex; }
+  .sticker-add {
+    aspect-ratio: 1;
+    background: #F2F2F7;
+    border: 1.5px dashed #C7C7CC;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .sticker-add svg { width: 24px; height: 24px; stroke: #8E8E93; fill: none; stroke-width: 1.5; }
+
+  /* ============ 弹窗 / 抽屉 ============ */
+  .modal {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 20px;
+  }
+  .modal.show { display: flex; }
+  .modal-box {
+    background: rgba(242, 242, 247, 0.94);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    width: 100%;
+    max-width: 280px;
+    border-radius: 14px;
+    overflow: hidden;
+    text-align: center;
+  }
+  .modal-body {
+    padding: 20px 16px 16px;
+  }
+  .modal-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #1C1C1E;
+  }
+  .modal-msg {
+    font-size: 13px;
+    color: #3A3A3C;
+    line-height: 1.4;
+  }
+  .modal-input {
+    width: 100%;
+    border: 0.5px solid #C7C7CC;
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-size: 13px;
+    margin-top: 12px;
+    background: #FFFFFF;
+    outline: none;
+  }
+  .modal-actions {
+    display: flex;
+    border-top: 0.5px solid rgba(60,60,67,0.3);
+  }
+  .modal-btn {
+    flex: 1;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    color: #007AFF;
+    font-size: 17px;
+    cursor: pointer;
+  }
+  .modal-btn.primary { font-weight: 600; }
+  .modal-btn.danger { color: #FF3B30; }
+  .modal-btn + .modal-btn { border-left: 0.5px solid rgba(60,60,67,0.3); }
+
+  /* 底部抽屉 */
+  .sheet {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    align-items: flex-end;
+    z-index: 200;
+  }
+  .sheet.show { display: flex; }
+  .sheet-content {
+    background: #F2F2F7;
+    width: 100%;
+    border-radius: 14px 14px 0 0;
+    max-height: 85%;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .sheet-handle {
+    width: 36px;
+    height: 5px;
+    background: #C7C7CC;
+    border-radius: 3px;
+    margin: 8px auto 4px;
+  }
+  .sheet-body {
+    padding: 8px 16px 16px;
+    overflow-y: auto;
+  }
+
+  /* Toast */
+  .toast {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.75);
+    color: #FFFFFF;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    z-index: 500;
+    display: none;
+    max-width: 80%;
+    text-align: center;
+  }
+  .toast.show { display: block; }
+
+  /* 加载 */
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(0,0,0,0.15);
+    border-top-color: #007AFF;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* 打字中 */
+  .typing {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 14px;
+  }
+  .typing span {
+    width: 6px;
+    height: 6px;
+    background: #8E8E93;
+    border-radius: 50%;
+    animation: typing 1.2s infinite;
+  }
+  .typing span:nth-child(2) { animation-delay: 0.15s; }
+  .typing span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes typing {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  /* 复选 */
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #FFFFFF;
+    cursor: pointer;
+    position: relative;
+  }
+  .check-item + .check-item::before {
+    content: '';
+    position: absolute;
+    left: 16px;
+    right: 0;
+    top: 0;
+    height: 0.5px;
+    background: #E5E5EA;
+  }
+  .check-item .check {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid #C7C7CC;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .check-item.checked .check {
+    background: #007AFF;
+    border-color: #007AFF;
+  }
+  .check-item.checked .check::after {
+    content: '';
+    width: 10px;
+    height: 6px;
+    border-left: 2px solid #FFFFFF;
+    border-bottom: 2px solid #FFFFFF;
+    transform: rotate(-45deg) translate(1px, -1px);
+  }
+  .check-item .info { flex: 1; overflow: hidden; }
+  .check-item .info .name { font-size: 15px; }
+  .check-item .info .sub { font-size: 12px; color: #8E8E93; margin-top: 2px; }
+
+  /* 开关 */
+  .switch {
+    position: relative;
+    width: 51px;
+    height: 31px;
+    background: #E9E9EA;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 27px;
+    height: 27px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .switch.on { background: #34C759; }
+  .switch.on::after { transform: translateX(20px); }
+
+  /* 徽章 */
+  .badge {
+    background: #E5E5EA;
+    color: #3A3A3C;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 8px;
+    margin-left: 6px;
+  }
+  .badge.blue { background: #E0EEFF; color: #007AFF; }
+  .badge.green { background: #DFF7E4; color: #34C759; }
+
+  /* 动态页 */
+  .moments-cover {
+    height: 160px;
+    background: linear-gradient(135deg, #E5E5EA, #C7C7CC);
+    position: relative;
+  }
+  .moments-cover .me {
+    position: absolute;
+    right: 16px;
+    bottom: -20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .moments-cover .me .name {
+    font-size: 15px;
+    color: #FFFFFF;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+
+  /* 我的 */
+  .me-header {
+    background: #FFFFFF;
+    padding: 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .me-header .name { font-size: 20px; font-weight: 500; }
+  .me-header .sub { font-size: 13px; color: #8E8E93; margin-top: 4px; }
+
+  /* ============ iOS 大标题 ============ */
+  .large-title {
+    font-size: 34px;
+    font-weight: 700;
+    padding: 8px 20px 14px;
+    color: #1C1C1E;
+    letter-spacing: -0.6px;
+    line-height: 1.1;
+  }
+  .nav-bar.transparent {
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border-bottom: none;
+  }
+
+  /* ============ iOS 风格分组列表（带图标） ============ */
+  .list.with-icons {
+    margin: 0 16px;
+  }
+  .list.with-icons .list-item {
+    padding: 8px 16px;
+    min-height: 52px;
+    gap: 12px;
+  }
+  .list.with-icons .list-item + .list-item::before {
+    left: 60px;
+  }
+  .list.with-icons .item-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: linear-gradient(180deg, #FAFAFC 0%, #EDEDF0 100%);
+    border: 0.5px solid rgba(0,0,0,0.08);
+    box-shadow: 0 0.5px 1px rgba(0,0,0,0.04);
+    margin-right: 0;
+  }
+  .list.with-icons .item-icon svg {
+    width: 17px;
+    height: 17px;
+    stroke: #1C1C1E;
+    stroke-width: 1.7;
+  }
+  .list.with-icons .item-icon.danger {
+    background: linear-gradient(180deg, #FFF0EF 0%, #FFDBDA 100%);
+    border-color: rgba(255,59,48,0.15);
+  }
+  .list.with-icons .item-icon.danger svg { stroke: #FF3B30; }
+
+  .list-hint {
+    font-size: 13px;
+    color: #8E8E93;
+    padding: 8px 20px 0;
+    line-height: 1.4;
+  }
+
+  /* ============ 卡片式表单（生图 API） ============ */
+  .card {
+    background: #FFFFFF;
+    margin: 0 16px;
+    border-radius: 12px;
+    padding: 4px 16px;
+  }
+  .card-row {
+    padding: 12px 0;
+    position: relative;
+  }
+  .card-row + .card-row::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 0.5px;
+    background: #E5E5EA;
+  }
+  .card-row-flex {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-label {
+    font-size: 13px;
+    color: #8E8E93;
+    margin-bottom: 6px;
+  }
+  .card-input,
+  .card-select,
+  .card-textarea {
+    width: 100%;
+    background: #F2F2F7;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 15px;
+    outline: none;
+    color: #1C1C1E;
+    font-family: inherit;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+    line-height: 1.3;
+  }
+  .card-input::placeholder,
+  .card-textarea::placeholder { color: #C7C7CC; }
+  .card-select {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238E8E93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+    padding-right: 34px;
+  }
+  .card-textarea {
+    min-height: 110px;
+    line-height: 1.5;
+  }
+  .card-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .card-hint {
+    font-size: 12px;
+    color: #8E8E93;
+    padding: 8px 20px 0;
+    line-height: 1.45;
+  }
+  .card-inline-btn {
+    background: #F2F2F7;
+    color: #1C1C1E;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+  .card-inline-btn svg {
+    width: 14px; height: 14px;
+    stroke: #1C1C1E;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* 顶部开关卡片 */
+  .switch-card {
+    background: #FFFFFF;
+    margin: 0 16px;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .switch-card .icon-box {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #FAFAFC 0%, #EDEDF0 100%);
+    border: 0.5px solid rgba(0,0,0,0.08);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .switch-card .icon-box svg {
+    width: 22px; height: 22px;
+    stroke: #1C1C1E; fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .switch-card .info { flex: 1; min-width: 0; }
+  .switch-card .info .name { font-size: 16px; color: #1C1C1E; font-weight: 500; }
+  .switch-card .info .sub { font-size: 12px; color: #8E8E93; margin-top: 3px; line-height: 1.4; }
+
+  /* 参考图列表 */
+  .ref-list {
+    background: #FFFFFF;
+    margin: 0 16px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .ref-list-item {
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #FFFFFF;
+    position: relative;
+  }
+  .ref-list-item + .ref-list-item::before {
+    content: '';
+    position: absolute;
+    left: 70px; right: 0; top: 0;
+    height: 0.5px;
+    background: #E5E5EA;
+  }
+  .ref-thumb {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: #F2F2F7;
+    border: 0.5px solid #E5E5EA;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ref-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .ref-thumb svg { width: 20px; height: 20px; stroke: #C7C7CC; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .ref-info { flex: 1; min-width: 0; }
+  .ref-info .name {
+    font-size: 15px; color: #1C1C1E;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ref-info .sub { font-size: 12px; color: #8E8E93; margin-top: 2px; }
+  .ref-actions { display: flex; gap: 4px; align-items: center; }
+
+  /* 绿色主按钮 */
+  .btn-success {
+    background: #34C759;
+    color: #FFFFFF;
+    border: none;
+    padding: 15px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 6px 16px rgba(52,199,89,0.25);
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn-success:active { opacity: 0.85; transform: scale(0.99); }
+  .btn-success svg { stroke: #FFFFFF; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* 生图测试结果 */
+  .test-result {
+    margin: 0 16px 16px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .test-result img {
+    width: 100%;
+    border-radius: 10px;
+    display: block;
+  }
+  .test-result .label { font-size: 12px; color: #8E8E93; margin-bottom: 8px; }
+  .test-result.error { color: #FF3B30; font-size: 14px; }
+  .test-result.loading { display: flex; align-items: center; gap: 10px; color: #8E8E93; justify-content: center; font-size: 14px; }
+</style>
+</head>
+<body>
+<div id="phone">
+
+  <!-- ========== 主屏 ========== -->
+  <div class="screen home-screen" id="home">
+    <div class="home-header">
+      <div class="time" id="homeTime">09:41</div>
+      <div class="date" id="homeDate">星期二  9月1日</div>
+    </div>
+    <div class="app-grid">
+      <div class="app-icon" onclick="nav.go('settings')">
+        <div class="app-icon-box">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        <div class="app-label">设置</div>
+      </div>
+      <div class="app-icon" onclick="nav.go('messaging'); Msg.showTab('chats')">
+        <div class="app-icon-box">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="app-label">送信</div>
+      </div>
+      <div class="app-icon" onclick="nav.go('worldbook'); WB.renderList()">
+        <div class="app-icon-box">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <div class="app-label">世界书</div>
+      </div>
+    </div>
+    <div class="home-dock"></div>
+  </div>
+
+  <!-- ========== 设置 ========== -->
+  <div class="screen hidden" id="settings">
+    <div class="nav-bar transparent">
+      <div class="nav-back" onclick="nav.back()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>主屏</span>
+      </div>
+    </div>
+    <div class="content">
+      <div class="large-title">设置</div>
+
+      <div class="section" style="margin-top:8px">
+        <div class="list with-icons">
+          <div class="list-item" onclick="nav.go('apiList');API.renderList()">
+            <div class="item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="7" rx="1.5"/>
+                <rect x="3" y="13" width="18" height="7" rx="1.5"/>
+                <line x1="7" y1="7.5" x2="7.01" y2="7.5"/>
+                <line x1="7" y1="16.5" x2="7.01" y2="16.5"/>
+              </svg>
+            </div>
+            <span class="list-item-label">API 设置</span>
+            <span class="list-item-value" id="settingsApiValue"></span>
+            <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+          <div class="list-item" onclick="nav.go('imgApi');ImgApi.render()">
+            <div class="item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+            </div>
+            <span class="list-item-label">生图 API</span>
+            <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="list with-icons">
+          <div class="list-item" onclick="nav.go('pushSettings')">
+            <div class="item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+            </div>
+            <span class="list-item-label">后台消息推送</span>
+            <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+          <div class="list-item" onclick="nav.go('themeSettings')">
+            <div class="item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18.37 2.63a2.12 2.12 0 0 1 3 3L9.5 17.5 3 19l1.5-6.5z"/>
+                <path d="M13 5l6 6"/>
+              </svg>
+            </div>
+            <span class="list-item-label">美化</span>
+            <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+          <div class="list-item" onclick="nav.go('backupSettings')">
+            <div class="item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/>
+                <polyline points="16 16 12 12 8 16"/>
+                <line x1="12" y1="12" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <span class="list-item-label">备份</span>
+            <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="list with-icons">
+          <div class="list-item" onclick="Settings.clearAllData()">
+            <div class="item-icon danger">
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <line x1="10" y1="11" x2="10" y2="17"/>
+                <line x1="14" y1="11" x2="14" y2="17"/>
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+              </svg>
+            </div>
+            <span class="list-item-label" style="color:#FF3B30">清空所有数据</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="list-hint" style="text-align:center">AI 小手机 · v1.0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== API 设置 ========== -->
+  <div class="screen hidden" id="apiList">
+    <div class="nav-bar">
+      <div class="nav-back" onclick="nav.back()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>设置</span>
+      </div>
+      <div class="nav-title">API 设置</div>
+      <div class="nav-action" onclick="API.openEditor()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+    </div>
+    <div class="content" id="apiListContent"></div>
+  </div>
+
+  <!-- ========== 生图 API ========== -->
+  <div class="screen hidden" id="imgApi">
+    <div class="nav-bar transparent">
+      <div class="nav-back" onclick="nav.back()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>设置</span>
+      </div>
+    </div>
+    <div class="content">
+      <div class="large-title">生图 API</div>
+
+      <div class="switch-card" onclick="ImgApi.toggle()">
+        <div class="icon-box">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 3l1.8 5.3a2 2 0 0 0 1.2 1.2L20.4 12l-5.4 1.8a2 2 0 0 0-1.2 1.2L12 20.3l-1.8-5.3a2 2 0 0 0-1.2-1.2L3.6 12l5.4-1.8A2 2 0 0 0 10.2 9z"/>
+            <path d="M19 3l.6 1.4L21 5l-1.4.6L19 7l-.6-1.4L17 5l1.4-.6z"/>
+          </svg>
+        </div>
+        <div class="info">
+          <div class="name">启用自动生图</div>
+          <div class="sub">角色输出照片标签时自动调用图像生成 API</div>
+        </div>
+        <div class="switch" id="imgApiEnable" onclick="event.stopPropagation();ImgApi.toggle()"></div>
+      </div>
+
+      <div class="section" style="margin-top:20px">
+        <div class="section-title">API 配置</div>
+        <div class="card">
+          <div class="card-row">
+            <div class="card-label">Base URL</div>
+            <input class="card-input" id="imgApiUrl" placeholder="https://api.openai.com/v1" autocomplete="off" oninput="ImgApi.autoSave()">
+          </div>
+          <div class="card-row">
+            <div class="card-label">API Key</div>
+            <input class="card-input" id="imgApiKey" type="password" placeholder="sk-..." autocomplete="off" oninput="ImgApi.autoSave()">
+          </div>
+          <div class="card-row">
+            <div class="card-label">模型名</div>
+            <div class="card-row-flex">
+              <input class="card-input" id="imgApiModel" placeholder="gpt-image-1" autocomplete="off" oninput="ImgApi.autoSave()">
+              <button class="card-inline-btn" onclick="ImgApi.fetchModels()">
+                <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                拉取模型
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">参数</div>
+        <div class="card">
+          <div class="card-row">
+            <div class="card-grid-2">
+              <div>
+                <div class="card-label">尺寸</div>
+                <select class="card-select" id="imgApiSize" onchange="ImgApi.autoSave()">
+                  <option value="auto">auto</option>
+                  <option value="1024x1024">1:1 (1024×1024)</option>
+                  <option value="1024x1536">2:3 (1024×1536)</option>
+                  <option value="1536x1024">3:2 (1536×1024)</option>
+                  <option value="1024x1792">9:16 (1024×1792)</option>
+                  <option value="1792x1024">16:9 (1792×1024)</option>
+                </select>
+              </div>
+              <div>
+                <div class="card-label">质量</div>
+                <select class="card-select" id="imgApiQuality" onchange="ImgApi.autoSave()">
+                  <option value="auto">auto</option>
+                  <option value="low">low</option>
+                  <option value="medium">medium</option>
+                  <option value="high">high</option>
+                  <option value="standard">standard</option>
+                  <option value="hd">hd</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="card-row">
+            <div class="card-label">补充提示词</div>
+            <textarea class="card-textarea" id="imgApiPrompt" placeholder="写实风格 手机日常自拍 / 随拍 日系偏冷&#10;白胶片滤镜感。&#10;光影与画质：光线以自然冷白光为主……" oninput="ImgApi.autoSave()"></textarea>
+          </div>
+        </div>
+        <div class="card-hint">
+          尺寸设为 auto 以外时，会在提示词末尾追加一句「【画面比例】…」构图提示，用于纠正部分不认 size 参数的接口（如 gpt-image-2）。
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">角色锁脸参考图</div>
+        <div class="ref-list" id="imgApiRefList"></div>
+        <div class="card-hint">
+          从相册为每个角色选择一张参考图，用于生图时保持人物面部一致。图片会自动压缩后本地保存。
+        </div>
+      </div>
+
+      <div style="padding:8px 16px 12px">
+        <button class="btn-success" onclick="ImgApi.test()">
+          <svg viewBox="0 0 24 24" width="18" height="18">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <span>测试生图</span>
+        </button>
+      </div>
+
+      <div id="imgApiTestResult"></div>
+      <div style="height:24px"></div>
+
+      <input type="file" id="imgApiRefFile" accept="image/*" style="display:none" onchange="ImgApi.onRefPick(event)">
+    </div>
+  </div>
+
+  <!-- ========== 后台消息推送 ========== -->
+  <div class="screen hidden" id="pushSettings">
+    <div class="nav-bar">
+      <div class="nav-back" onclick="nav.back()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>设置</span>
+      </div>
+      <div class="nav-title">后台消息推送</div>
+    </div>
+    <div class="content">
+      <div class="empty" style="padding-top:120px">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <div class="empty-title">后台消息推送</div>
+        <div class="empty-sub">待补充内容</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 美化 ========== -->
+  <div class="screen hidden" id="themeSettings">
+    <div class="nav-bar">
+      <div class="nav-back" onclick="nav.back()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>设置</span>
+      </div>
+      <div class="nav-title">美化</div>
+    </div>
+    <div class="content">
+      <div class="empty" style="padding-top:120px">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18.37 2.63a2.12 2.12 0 0 1 3 3L9.5 17.5 3 19l1.5-6.5z"/>
+          <path d="M13 5l6 6"/>
+        </svg>
+        <div class="empty-title">美化</div>
+        <div class="empty-sub">待补充内容</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 备份 ========== -->
+  <div class="screen hidden" id="backupSettings">
+    <div class="nav-bar">
+      <div class="nav-back" onclick="nav.back()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>设置</span>
+      </div>
+      <div class="nav-title">备份</div>
+    </div>
+    <div class="content">
+      <div class="empty" style="padding-top:120px">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/>
+          <polyline points="16 16 12 12 8 16"/>
+          <line x1="12" y1="12" x2="12" y2="21"/>
+        </svg>
+        <div class="empty-title">备份</div>
+        <div class="empty-sub">待补充内容</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== API 编辑 ========== -->
+  <div class="screen hidden" id="apiEdit">
+    <div class="nav-bar">
+      <div class="nav-back" onclick="nav.back()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>API 设置</span>
+      </div>
+      <div class="nav-title" id="apiEditTitle">添加 API</div>
+      <div class="nav-action" onclick="API.save()">保存</div>
+    </div>
+    <div class="content">
+      <div class="section">
+        <div class="section-title">基本信息</div>
+        <div class="form">
+          <div class="form-field">
+            <label>名称</label>
+            <input id="apiName" placeholder="例如：我的 OpenAI">
+          </div>
+          <div class="form-field">
+            <label>Base URL</label>
+            <input id="apiUrl" placeholder="https://api.openai.com/v1" autocomplete="off">
+          </div>
+          <div class="form-field">
+            <label>API Key</label>
+            <input id="apiKey" placeholder="sk-..." autocomplete="off" type="password">
+          </div>
+        </div>
+        <div class="section-hint">URL 可填写到 /v1 结尾，也支持任意 OpenAI 兼容端点。</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">模型</div>
+        <div class="form">
+          <div class="form-field" onclick="API.fetchModels()">
+            <label style="color:#007AFF">拉取模型</label>
+            <span class="list-item-value" id="apiFetchStatus"></span>
+          </div>
+          <div class="form-field">
+            <label>当前模型</label>
+            <select id="apiModel">
+              <option value="">未选择</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>或手动填写</label>
+            <input id="apiModelManual" placeholder="gpt-4o-mini">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn danger btn-block" id="apiDeleteBtn" onclick="API.delete()" style="display:none">删除该 API</button>
+    </div>
+  </div>
+
+  <!-- ========== 送信 ========== -->
+  <div class="screen hidden" id="messaging">
+    <div class="nav-bar" id="messagingNav">
+      <div class="nav-back" onclick="nav.back()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>主屏</span>
+      </div>
+      <div class="nav-title" id="messagingTitle">聊天</div>
+      <div class="nav-action" id="messagingAction" style="display:none" onclick="Msg.onActionClick()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+    </div>
+    <div class="content">
+      <div class="tab-content active" id="tab-chats"></div>
+      <div class="tab-content" id="tab-contacts"></div>
+      <div class="tab-content" id="tab-moments"></div>
+      <div class="tab-content" id="tab-me"></div>
+    </div>
+    <div class="tab-bar">
+      <div class="tab-item active" data-tab="chats" onclick="Msg.showTab('chats')">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>聊天</span>
+      </div>
+      <div class="tab-item" data-tab="contacts" onclick="Msg.showTab('contacts')">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>联系人</span>
+      </div>
+      <div class="tab-item" data-tab="moments" onclick="Msg.showTab('moments')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span>动态</span>
+      </div>
+      <div class="tab-item" data-tab="me" onclick="Msg.showTab('me')">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>我</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 角色编辑 ========== -->
+  <div class="screen hidden" id="charEdit">
+    <div class="nav-bar">
+      <div class="nav-back" onclick="nav.back()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>返回</span>
+      </div>
+      <div class="nav-title" id="charEditTitle">创建人设</div>
+      <div class="nav-action" onclick="Char.save()">保存</div>
+    </div>
+    <div class="content">
+      <div class="section">
+        <div class="section-title">基本信息</div>
+        <div class="form">
+          <div class="form-field">
+            <label>头像</label>
+            <input type="file" id="charAvatarFile" accept="image/*" style="display:none" onchange="Char.onAvatarPick(event)">
+            <span class="list-item-value" id="charAvatarStatus">未设置</span>
+            <span class="btn text" onclick="document.getElementById('charAvatarFile').click()">选择</span>
+          </div>
+          <div class="form-field">
+            <label>姓名</label>
+            <input id="charName" placeholder="必填">
+          </div>
+          <div class="form-field">
+            <label>备注</label>
+            <input id="charNotes" placeholder="选填">
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">角色设定</div>
+        <div class="form">
+          <div class="form-field column">
+            <textarea id="charPersona" placeholder="描述角色的性格、背景、说话风格等，AI 将以此角色进行回复……"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">世界书绑定</div>
+        <div class="list" id="charWorldbookList"></div>
+        <div class="section-hint">已勾选的世界书将在与此角色对话时作为守则强制生效（全局世界书始终生效）。</div>
+      </div>
+
+      <button class="btn danger btn-block" id="charDeleteBtn" onclick="Char.delete()" style="display:none">删除该角色</button>
+    </div>
+  </div>
+
+  <!-- ========== 聊天界面 ========== -->
+  <div class="screen hidden chat-screen" id="chat">
+    <div class="nav-bar">
+      <div class="nav-back" onclick="nav.back()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>聊天</span>
+      </div>
+      <div class="chat-header-info" id="chatHeaderInfo"></div>
+      <div class="nav-action" onclick="Chat.openInfo()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </div>
+    </div>
+    <div class="content" id="chatContent">
+      <div class="chat-messages" id="chatMessages"></div>
+    </div>
+    <div class="input-bar-wrap">
+      <div class="plus-panel" id="plusPanel">
+        <div class="plus-menu" id="plusMenu">
+          <div class="plus-item" onclick="Chat.openVoiceInput()">
+            <div class="icon-box">
+              <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            </div>
+            <span>语音</span>
+          </div>
+          <div class="plus-item" onclick="Chat.openStickers()">
+            <div class="icon-box">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            </div>
+            <span>表情包</span>
+          </div>
+        </div>
+        <div class="sticker-panel" id="stickerPanel" style="display:none">
+          <div class="sticker-panel-head">
+            <span>表情包</span>
+            <div>
+              <button class="btn text" onclick="Sticker.toggleEdit()" id="stickerEditBtn">管理</button>
+            </div>
+          </div>
+          <div class="sticker-grid" id="stickerGrid"></div>
+          <input type="file" id="stickerFileInput" accept="image/*" multiple style="display:none" onchange="Sticker.onImport(event)">
+        </div>
+      </div>
+      <div class="input-bar">
+        <button class="icon-btn" onclick="Chat.togglePlus()" id="plusBtn">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="input-wrap">
+          <textarea id="chatInput" placeholder="信息" rows="1"></textarea>
+        </div>
+        <button class="icon-btn send" id="sendBtn" onclick="Chat.send()">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 世界书 ========== -->
+  <div class="screen hidden" id="worldbook">
+    <div class="nav-bar">
+      <div class="nav-back" onclick="nav.back()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>主屏</span>
+      </div>
+      <div class="nav-title">世界书</div>
+      <div class="nav-action" onclick="WB.openEditor()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+    </div>
+    <div class="content" id="wbListContent"></div>
+  </div>
+
+  <!-- ========== 世界书编辑 ========== -->
+  <div class="screen hidden" id="wbEdit">
+    <div class="nav-bar">
+      <div class="nav-back" onclick="nav.back()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>世界书</span>
+      </div>
+      <div class="nav-title" id="wbEditTitle">新建世界书</div>
+      <div class="nav-action" onclick="WB.save()">保存</div>
+    </div>
+    <div class="content">
+      <div class="section">
+        <div class="section-title">基本</div>
+        <div class="form">
+          <div class="form-field">
+            <label>名称</label>
+            <input id="wbName" placeholder="例如：奇幻世界设定">
+          </div>
+          <div class="form-field">
+            <label>分组</label>
+            <input id="wbGroup" placeholder="选填，例如：世界观">
+          </div>
+          <div class="form-field">
+            <label>全局生效</label>
+            <div style="flex:1;display:flex;justify-content:flex-end">
+              <div class="switch" id="wbGlobalSwitch" onclick="WB.toggleGlobal()"></div>
+            </div>
+          </div>
+        </div>
+        <div class="section-hint">开启后此世界书将对所有角色自动生效；关闭后需在角色编辑中手动勾选。</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">守则内容</div>
+        <div class="form">
+          <div class="form-field column">
+            <textarea id="wbContent" placeholder="写下角色回复时必须遵守的世界观、规则、设定……" style="min-height:200px"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn danger btn-block" id="wbDeleteBtn" onclick="WB.delete()" style="display:none">删除该世界书</button>
+    </div>
+  </div>
+
+  <!-- ========== 通用弹窗 / 抽屉 / Toast ========== -->
+  <div class="modal" id="modal">
+    <div class="modal-box">
+      <div class="modal-body">
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-msg" id="modalMsg"></div>
+        <input class="modal-input" id="modalInput" style="display:none">
+      </div>
+      <div class="modal-actions" id="modalActions"></div>
+    </div>
+  </div>
+
+  <div class="sheet" id="sheet" onclick="if(event.target===this)UI.closeSheet()">
+    <div class="sheet-content">
+      <div class="sheet-handle"></div>
+      <div class="sheet-body" id="sheetBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+</div>
+
+<script>
+/* ============================================================
+   数据层
+============================================================ */
+const Store = {
+  KEY: 'ai-phone-v1',
+  data: null,
+  load() {
+    try {
+      const raw = localStorage.getItem(this.KEY);
+      this.data = raw ? JSON.parse(raw) : this.defaults();
+    } catch (e) {
+      this.data = this.defaults();
+    }
+    // 补齐默认字段
+    const d = this.defaults();
+    for (const k in d) if (!(k in this.data)) this.data[k] = d[k];
+  },
+  save() {
+    try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); }
+    catch (e) { UI.toast('保存失败：存储空间不足'); }
+  },
+  defaults() {
+    return {
+      apis: [],
+      activeApiId: null,
+      characters: [],
+      worldBooks: [],
+      chats: {},        // { charId: [ {role,content,type,duration?,timestamp} ] }
+      stickers: [],     // [ {id, name, dataUrl} ]
+      userName: '用户',
+      imgApi: {
+        enabled: false,
+        url: '',
+        key: '',
+        model: '',
+        size: 'auto',
+        quality: 'auto',
+        extraPrompt: ''
+      }
+    };
+  },
+  uid() { return 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+};
+
+/* ============================================================
+   通用 UI
+============================================================ */
+const UI = {
+  toast(msg, ms = 1800) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(this._toastT);
+    this._toastT = setTimeout(() => t.classList.remove('show'), ms);
+  },
+  confirm(title, msg, onOk, opts = {}) {
+    document.getElementById('modalTitle').textContent = title || '';
+    document.getElementById('modalMsg').textContent = msg || '';
+    document.getElementById('modalInput').style.display = 'none';
+    const actions = document.getElementById('modalActions');
+    actions.innerHTML = '';
+    const cancel = document.createElement('button');
+    cancel.className = 'modal-btn';
+    cancel.textContent = opts.cancelText || '取消';
+    cancel.onclick = () => this.closeModal();
+    const ok = document.createElement('button');
+    ok.className = 'modal-btn primary' + (opts.danger ? ' danger' : '');
+    ok.textContent = opts.okText || '确定';
+    ok.onclick = () => { this.closeModal(); onOk && onOk(); };
+    actions.appendChild(cancel);
+    actions.appendChild(ok);
+    document.getElementById('modal').classList.add('show');
+  },
+  alert(title, msg, onOk) {
+    document.getElementById('modalTitle').textContent = title || '';
+    document.getElementById('modalMsg').textContent = msg || '';
+    document.getElementById('modalInput').style.display = 'none';
+    const actions = document.getElementById('modalActions');
+    actions.innerHTML = '';
+    const ok = document.createElement('button');
+    ok.className = 'modal-btn primary';
+    ok.textContent = '好';
+    ok.onclick = () => { this.closeModal(); onOk && onOk(); };
+    actions.appendChild(ok);
+    document.getElementById('modal').classList.add('show');
+  },
+  prompt(title, msg, defVal, onOk, opts = {}) {
+    document.getElementById('modalTitle').textContent = title || '';
+    document.getElementById('modalMsg').textContent = msg || '';
+    const input = document.getElementById('modalInput');
+    input.style.display = 'block';
+    input.value = defVal || '';
+    input.placeholder = opts.placeholder || '';
+    if (opts.multiline) {
+      // 简化：仍用 input，但允许更长
+    }
+    const actions = document.getElementById('modalActions');
+    actions.innerHTML = '';
+    const cancel = document.createElement('button');
+    cancel.className = 'modal-btn';
+    cancel.textContent = '取消';
+    cancel.onclick = () => this.closeModal();
+    const ok = document.createElement('button');
+    ok.className = 'modal-btn primary';
+    ok.textContent = '确定';
+    ok.onclick = () => {
+      const v = input.value.trim();
+      this.closeModal();
+      onOk && onOk(v);
+    };
+    actions.appendChild(cancel);
+    actions.appendChild(ok);
+    document.getElementById('modal').classList.add('show');
+    setTimeout(() => input.focus(), 100);
+  },
+  closeModal() {
+    document.getElementById('modal').classList.remove('show');
+  },
+  sheet(html) {
+    document.getElementById('sheetBody').innerHTML = html;
+    document.getElementById('sheet').classList.add('show');
+  },
+  closeSheet() {
+    document.getElementById('sheet').classList.remove('show');
+  }
+};
+
+/* ============================================================
+   屏幕导航
+============================================================ */
+const nav = {
+  stack: ['home'],
+  go(id) {
+    const cur = this.stack[this.stack.length - 1];
+    if (cur === id) return;
+    const curEl = document.getElementById(cur);
+    const nextEl = document.getElementById(id);
+    if (!nextEl) return;
+    nextEl.classList.remove('hidden');
+    // 强制回流以启用动画
+    nextEl.getBoundingClientRect();
+    this.stack.push(id);
+  },
+  back() {
+    if (this.stack.length <= 1) return;
+    const cur = this.stack.pop();
+    const curEl = document.getElementById(cur);
+    curEl.classList.add('hidden');
+    // 关闭抽屉/plus 面板
+    document.getElementById('plusPanel')?.classList.remove('show');
+    document.getElementById('stickerPanel') && (document.getElementById('stickerPanel').style.display = 'none');
+    document.getElementById('plusMenu') && (document.getElementById('plusMenu').style.display = '');
+  },
+  home() {
+    while (this.stack.length > 1) this.back();
+  }
+};
+
+/* ============================================================
+   设置 / API
+============================================================ */
+const Settings = {
+  refresh() {
+    // 更新设置主页的 API 摘要
+    const apiVal = document.getElementById('settingsApiValue');
+    if (apiVal) {
+      const active = API.getActive();
+      apiVal.textContent = active ? active.name : (Store.data.apis.length ? '未选择' : '未配置');
+    }
+  },
+  editUserName() {
+    UI.prompt('修改昵称', '', Store.data.userName, v => {
+      if (v) { Store.data.userName = v; Store.save(); Msg.renderMe(); }
+    });
+  },
+  clearAllData() {
+    UI.confirm('清空所有数据', '所有 API、角色、世界书、聊天记录、表情包都将被删除，且不可恢复。', () => {
+      localStorage.removeItem(Store.KEY);
+      Store.load();
+      this.refresh();
+      UI.toast('已清空');
+    }, { danger: true, okText: '清空' });
+  }
+};
+
+const API = {
+  editingId: null,
+  renderList() {
+    const c = document.getElementById('apiListContent');
+    if (!c) return;
+    if (!Store.data.apis.length) {
+      c.innerHTML = `
+        <div class="empty" style="padding-top:100px">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="7" rx="1.5"/>
+            <rect x="3" y="13" width="18" height="7" rx="1.5"/>
+            <line x1="7" y1="7.5" x2="7.01" y2="7.5"/>
+            <line x1="7" y1="16.5" x2="7.01" y2="16.5"/>
+          </svg>
+          <div class="empty-title">还没有 API</div>
+          <div class="empty-sub">点击右上角 + 添加你的第一个 API</div>
+        </div>`;
+      return;
+    }
+    let html = '<div class="section" style="margin-top:12px"><div class="section-title">已保存的 API</div><div class="list">';
+    Store.data.apis.forEach(a => {
+      const active = a.id === Store.data.activeApiId;
+      html += `
+        <div class="list-item" onclick="API.selectActive('${a.id}')">
+          <div class="list-item-column">
+            <div class="list-item-label">
+              ${escapeHtml(a.name || '未命名')}
+              ${active ? '<span class="badge blue">当前</span>' : ''}
+            </div>
+            <div class="list-item-sub">${escapeHtml(a.model || '未选择模型')}</div>
+          </div>
+          <span class="btn text" onclick="event.stopPropagation();API.openEditor('${a.id}')">编辑</span>
+          <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>`;
+    });
+    html += '</div>';
+    html += '<div class="section-hint">兼容 OpenAI 格式的 API。点击某项可设为当前 API 或进入编辑。</div>';
+    html += '</div>';
+    c.innerHTML = html;
+  },
+  openEditor(id) {
+    this.editingId = id || null;
+    const item = id ? Store.data.apis.find(a => a.id === id) : null;
+    document.getElementById('apiEditTitle').textContent = item ? '编辑 API' : '添加 API';
+    document.getElementById('apiName').value = item?.name || '';
+    document.getElementById('apiUrl').value = item?.url || '';
+    document.getElementById('apiKey').value = item?.key || '';
+    document.getElementById('apiModelManual').value = '';
+    document.getElementById('apiFetchStatus').textContent = '';
+    const sel = document.getElementById('apiModel');
+    sel.innerHTML = '<option value="">未选择</option>';
+    if (item?.model) {
+      const opt = document.createElement('option');
+      opt.value = item.model; opt.textContent = item.model; opt.selected = true;
+      sel.appendChild(opt);
+    }
+    if (item?.availableModels) {
+      item.availableModels.forEach(m => {
+        if (m === item.model) return;
+        const opt = document.createElement('option');
+        opt.value = m; opt.textContent = m;
+        sel.appendChild(opt);
+      });
+    }
+    document.getElementById('apiDeleteBtn').style.display = item ? 'block' : 'none';
+    nav.go('apiEdit');
+  },
+  normalizeUrl(url) {
+    url = (url || '').trim().replace(/\/+$/, '');
+    if (url.endsWith('/chat/completions')) url = url.slice(0, -'/chat/completions'.length);
+    if (url.endsWith('/models')) url = url.slice(0, -'/models'.length);
+    return url;
+  },
+  async fetchModels() {
+    const url = this.normalizeUrl(document.getElementById('apiUrl').value);
+    const key = document.getElementById('apiKey').value.trim();
+    if (!url || !key) { UI.toast('请先填写 URL 和 Key'); return; }
+    const status = document.getElementById('apiFetchStatus');
+    status.innerHTML = '<span class="spinner"></span>';
+    try {
+      const res = await fetch(url + '/models', {
+        headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' }
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status + ': ' + (await res.text()).slice(0, 120));
+      const data = await res.json();
+      const models = (data.data || data.models || []).map(m => m.id || m.name || m).filter(Boolean);
+      if (!models.length) throw new Error('未返回任何模型');
+      models.sort();
+      const sel = document.getElementById('apiModel');
+      const cur = sel.value;
+      sel.innerHTML = '<option value="">请选择</option>';
+      models.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m; opt.textContent = m;
+        if (m === cur) opt.selected = true;
+        sel.appendChild(opt);
+      });
+      status.textContent = `已获取 ${models.length} 个模型`;
+      this._lastFetched = models;
+    } catch (e) {
+      status.textContent = '';
+      UI.alert('拉取失败', String(e.message || e));
+    }
+  },
+  save() {
+    const name = document.getElementById('apiName').value.trim();
+    const url = this.normalizeUrl(document.getElementById('apiUrl').value);
+    const key = document.getElementById('apiKey').value.trim();
+    const modelSel = document.getElementById('apiModel').value;
+    const modelManual = document.getElementById('apiModelManual').value.trim();
+    const model = modelManual || modelSel;
+    if (!name) { UI.toast('请填写名称'); return; }
+    if (!url) { UI.toast('请填写 URL'); return; }
+    if (!key) { UI.toast('请填写 Key'); return; }
+    if (!model) { UI.toast('请选择或填写模型'); return; }
+
+    let item;
+    if (this.editingId) {
+      item = Store.data.apis.find(a => a.id === this.editingId);
+    } else {
+      item = { id: Store.uid() };
+      Store.data.apis.push(item);
+      if (!Store.data.activeApiId) Store.data.activeApiId = item.id;
+    }
+    item.name = name; item.url = url; item.key = key; item.model = model;
+    if (this._lastFetched) item.availableModels = this._lastFetched;
+    Store.save();
+    Settings.refresh();
+    this.renderList();
+    nav.back();
+    UI.toast('已保存');
+  },
+  delete() {
+    if (!this.editingId) return;
+    UI.confirm('删除 API', '该 API 配置将被移除。', () => {
+      Store.data.apis = Store.data.apis.filter(a => a.id !== this.editingId);
+      if (Store.data.activeApiId === this.editingId) {
+        Store.data.activeApiId = Store.data.apis[0]?.id || null;
+      }
+      Store.save();
+      Settings.refresh();
+      this.renderList();
+      nav.back();
+    }, { danger: true, okText: '删除' });
+  },
+  selectActive(id) {
+    // 打开选择菜单：设为当前 或 编辑
+    const item = Store.data.apis.find(a => a.id === id);
+    if (!item) return;
+    UI.sheet(`
+      <div class="list" style="margin:0">
+        <div class="list-item" onclick="API.setActive('${id}');UI.closeSheet()">
+          <span class="list-item-label">设为当前 API</span>
+        </div>
+        <div class="list-item" onclick="UI.closeSheet();API.openEditor('${id}')">
+          <span class="list-item-label">编辑</span>
+        </div>
+      </div>
+      <button class="btn btn-block" style="margin-top:12px" onclick="UI.closeSheet()">取消</button>
+    `);
+  },
+  setActive(id) {
+    Store.data.activeApiId = id;
+    Store.save();
+    Settings.refresh();
+    this.renderList();
+    UI.toast('已切换');
+  },
+  getActive() {
+    return Store.data.apis.find(a => a.id === Store.data.activeApiId) || null;
+  },
+  async chat(messages) {
+    const api = this.getActive();
+    if (!api) throw new Error('未配置 API');
+    const res = await fetch(api.url + '/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + api.key, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: api.model,
+        messages,
+        temperature: 0.8
+      })
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      throw new Error('HTTP ' + res.status + ': ' + t.slice(0, 200));
+    }
+    const data = await res.json();
+    const content = data.choices?.[0]?.message?.content;
+    if (!content) throw new Error('响应无内容');
+    return content;
+  }
+};
+
+/* ============================================================
+   生图 API
+============================================================ */
+const ImgApi = {
+  _pickCharId: null,
+  _saveT: null,
+  render() {
+    const d = Store.data.imgApi;
+    document.getElementById('imgApiEnable').classList.toggle('on', !!d.enabled);
+    document.getElementById('imgApiUrl').value = d.url || '';
+    document.getElementById('imgApiKey').value = d.key || '';
+    document.getElementById('imgApiModel').value = d.model || '';
+    document.getElementById('imgApiSize').value = d.size || 'auto';
+    document.getElementById('imgApiQuality').value = d.quality || 'auto';
+    document.getElementById('imgApiPrompt').value = d.extraPrompt || '';
+    document.getElementById('imgApiTestResult').innerHTML = '';
+    this.renderRefs();
+  },
+  renderRefs() {
+    const box = document.getElementById('imgApiRefList');
+    if (!Store.data.characters.length) {
+      box.innerHTML = `<div class="ref-list-item" style="justify-content:center;color:#8E8E93;font-size:14px;padding:16px">还没有角色，请先在联系人中创建</div>`;
+      return;
+    }
+    box.innerHTML = Store.data.characters.map(ch => `
+      <div class="ref-list-item">
+        <div class="ref-thumb">
+          ${ch.refImage
+            ? `<img src="${ch.refImage}" alt="">`
+            : `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`}
+        </div>
+        <div class="ref-info">
+          <div class="name">${escapeHtml(ch.name)}</div>
+          <div class="sub">${ch.refImage ? '已设置' : '未设置'}</div>
+        </div>
+        <div class="ref-actions">
+          ${ch.refImage ? `<span class="btn text" style="color:#FF3B30" onclick="ImgApi.clearRef('${ch.id}')">移除</span>` : ''}
+          <span class="btn text" onclick="ImgApi.pickRef('${ch.id}')">${ch.refImage ? '更换' : '选择'}</span>
+        </div>
+      </div>
+    `).join('');
+  },
+  toggle() {
+    Store.data.imgApi.enabled = !Store.data.imgApi.enabled;
+    document.getElementById('imgApiEnable').classList.toggle('on', Store.data.imgApi.enabled);
+    Store.save();
+  },
+  autoSave() {
+    const d = Store.data.imgApi;
+    d.url = document.getElementById('imgApiUrl').value;
+    d.key = document.getElementById('imgApiKey').value;
+    d.model = document.getElementById('imgApiModel').value;
+    d.size = document.getElementById('imgApiSize').value;
+    d.quality = document.getElementById('imgApiQuality').value;
+    d.extraPrompt = document.getElementById('imgApiPrompt').value;
+    clearTimeout(this._saveT);
+    this._saveT = setTimeout(() => Store.save(), 300);
+  },
+  normalizeUrl(url) {
+    url = (url || '').trim().replace(/\/+$/, '');
+    if (url.endsWith('/images/generations')) url = url.slice(0, -'/images/generations'.length);
+    if (url.endsWith('/images/edits')) url = url.slice(0, -'/images/edits'.length);
+    if (url.endsWith('/models')) url = url.slice(0, -'/models'.length);
+    return url;
+  },
+  async fetchModels() {
+    const url = this.normalizeUrl(document.getElementById('imgApiUrl').value);
+    const key = document.getElementById('imgApiKey').value.trim();
+    if (!url || !key) { UI.toast('请先填写 URL 和 Key'); return; }
+    UI.toast('拉取中…', 800);
+    try {
+      const res = await fetch(url + '/models', {
+        headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' }
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const models = (data.data || data.models || []).map(m => m.id || m.name || m).filter(Boolean).sort();
+      if (!models.length) throw new Error('未返回任何模型');
+      const html = `
+        <div style="padding:6px 4px 10px;font-size:13px;color:#8E8E93">共 ${models.length} 个模型，点击选择</div>
+        <div class="list" style="margin:0;max-height:50vh;overflow-y:auto">
+          ${models.map(m => `
+            <div class="list-item" onclick="ImgApi.selectModel(${JSON.stringify(m).replace(/"/g, '&quot;')})">
+              <span class="list-item-label">${escapeHtml(m)}</span>
+            </div>
+          `).join('')}
+        </div>
+        <button class="btn btn-block" style="margin-top:12px" onclick="UI.closeSheet()">取消</button>
+      `;
+      UI.sheet(html);
+    } catch (e) {
+      UI.alert('拉取失败', String(e.message || e));
+    }
+  },
+  selectModel(m) {
+    document.getElementById('imgApiModel').value = m;
+    this.autoSave();
+    UI.closeSheet();
+    UI.toast('已选择：' + m);
+  },
+  pickRef(charId) {
+    this._pickCharId = charId;
+    const input = document.getElementById('imgApiRefFile');
+    input.value = '';
+    input.click();
+  },
+  async onRefPick(e) {
+    const file = e.target.files?.[0];
+    const cid = this._pickCharId;
+    if (!file || !cid) return;
+    try {
+      const dataUrl = await resizeImage(file, 512);
+      const ch = Store.data.characters.find(c => c.id === cid);
+      if (ch) {
+        ch.refImage = dataUrl;
+        Store.save();
+        this.renderRefs();
+        UI.toast('已设置');
+      }
+    } catch (err) {
+      UI.alert('处理失败', String(err.message || err));
+    }
+  },
+  clearRef(charId) {
+    UI.confirm('移除参考图', '将清除该角色的锁脸参考图。', () => {
+      const ch = Store.data.characters.find(c => c.id === charId);
+      if (ch) {
+        delete ch.refImage;
+        Store.save();
+        this.renderRefs();
+      }
+    }, { danger: true, okText: '移除' });
+  },
+  buildPrompt(userPrompt) {
+    const d = Store.data.imgApi;
+    let prompt = userPrompt || '';
+    if (d.extraPrompt) prompt = prompt + (prompt ? '\n\n' : '') + d.extraPrompt;
+    if (d.size && d.size !== 'auto') {
+      const map = {
+        '1024x1024': '1:1 正方形',
+        '1024x1536': '2:3 竖版',
+        '1536x1024': '3:2 横版',
+        '1024x1792': '9:16 竖版',
+        '1792x1024': '16:9 横版'
+      };
+      prompt += `\n\n【画面比例】${map[d.size] || d.size}`;
+    }
+    return prompt;
+  },
+  async test() {
+    const d = Store.data.imgApi;
+    if (!d.url || !d.key || !d.model) { UI.toast('请先填写 URL / Key / 模型'); return; }
+    const box = document.getElementById('imgApiTestResult');
+    box.innerHTML = `<div class="test-result loading"><span class="spinner"></span> 生成中，可能需要 10 秒以上…</div>`;
+    try {
+      const prompt = this.buildPrompt('A cute cat sitting on a windowsill, natural window light, photo');
+      const body = { model: d.model, prompt, n: 1 };
+      if (d.size && d.size !== 'auto') body.size = d.size;
+      if (d.quality && d.quality !== 'auto') body.quality = d.quality;
+      const res = await fetch(this.normalizeUrl(d.url) + '/images/generations', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + d.key, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status + '：' + (await res.text()).slice(0, 200));
+      const data = await res.json();
+      const item = data.data?.[0];
+      let src = null;
+      if (item?.url) src = item.url;
+      else if (item?.b64_json) src = 'data:image/png;base64,' + item.b64_json;
+      if (!src) throw new Error('响应中未找到图片');
+      box.innerHTML = `<div class="test-result"><div class="label">测试结果</div><img src="${src}" alt=""></div>`;
+    } catch (e) {
+      box.innerHTML = `<div class="test-result error"><div class="label" style="color:#FF3B30">失败</div>${escapeHtml(String(e.message || e))}</div>`;
+    }
+  }
+};
+
+// 将图片文件按最大边缩放并压缩成 JPEG DataURL
+async function resizeImage(file, maxSize = 512) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > height) {
+          if (width > maxSize) { height = Math.round(height * maxSize / width); width = maxSize; }
+        } else {
+          if (height > maxSize) { width = Math.round(width * maxSize / height); height = maxSize; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        try {
+          resolve(canvas.toDataURL('image/jpeg', 0.85));
+        } catch (e) { reject(e); }
+      };
+      img.onerror = () => reject(new Error('无法解析图片'));
+      img.src = reader.result;
+    };
+    reader.onerror = () => reject(new Error('读取失败'));
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ============================================================
+   世界书
+============================================================ */
+const WB = {
+  editingId: null,
+  editing: null,
+  renderList() {
+    const c = document.getElementById('wbListContent');
+    if (!Store.data.worldBooks.length) {
+      c.innerHTML = `
+        <div class="empty">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+          <div class="empty-title">还没有世界书</div>
+          <div class="empty-sub">点击右上角 + 创建你的第一本世界书</div>
+        </div>`;
+      return;
+    }
+    // 按分组
+    const groups = {};
+    Store.data.worldBooks.forEach(w => {
+      const g = w.group || '未分组';
+      (groups[g] = groups[g] || []).push(w);
+    });
+    let html = '';
+    Object.keys(groups).sort().forEach(g => {
+      html += `<div class="section"><div class="section-title">${escapeHtml(g)}</div><div class="list">`;
+      groups[g].forEach(w => {
+        html += `
+          <div class="list-item" onclick="WB.openEditor('${w.id}')">
+            <div class="list-item-column">
+              <div class="list-item-label">${escapeHtml(w.name)} ${w.isGlobal ? '<span class="badge green">全局</span>' : ''}</div>
+              <div class="list-item-sub">${escapeHtml((w.content || '').slice(0, 40) || '（空）')}</div>
+            </div>
+            <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>`;
+      });
+      html += '</div></div>';
+    });
+    c.innerHTML = html;
+  },
+  openEditor(id) {
+    this.editingId = id || null;
+    const item = id ? Store.data.worldBooks.find(w => w.id === id) : null;
+    this.editing = item ? { ...item } : { isGlobal: false };
+    document.getElementById('wbEditTitle').textContent = item ? '编辑世界书' : '新建世界书';
+    document.getElementById('wbName').value = item?.name || '';
+    document.getElementById('wbGroup').value = item?.group || '';
+    document.getElementById('wbContent').value = item?.content || '';
+    const sw = document.getElementById('wbGlobalSwitch');
+    sw.classList.toggle('on', !!this.editing.isGlobal);
+    document.getElementById('wbDeleteBtn').style.display = item ? 'block' : 'none';
+    nav.go('wbEdit');
+  },
+  toggleGlobal() {
+    this.editing.isGlobal = !this.editing.isGlobal;
+    document.getElementById('wbGlobalSwitch').classList.toggle('on', this.editing.isGlobal);
+  },
+  save() {
+    const name = document.getElementById('wbName').value.trim();
+    const group = document.getElementById('wbGroup').value.trim();
+    const content = document.getElementById('wbContent').value.trim();
+    if (!name) { UI.toast('请填写名称'); return; }
+    if (!content) { UI.toast('请填写内容'); return; }
+    let item;
+    if (this.editingId) {
+      item = Store.data.worldBooks.find(w => w.id === this.editingId);
+    } else {
+      item = { id: Store.uid() };
+      Store.data.worldBooks.push(item);
+    }
+    item.name = name;
+    item.group = group;
+    item.content = content;
+    item.isGlobal = !!this.editing.isGlobal;
+    Store.save();
+    this.renderList();
+    nav.back();
+    UI.toast('已保存');
+  },
+  delete() {
+    if (!this.editingId) return;
+    UI.confirm('删除世界书', '此操作不可撤销。', () => {
+      Store.data.worldBooks = Store.data.worldBooks.filter(w => w.id !== this.editingId);
+      // 从角色绑定中移除
+      Store.data.characters.forEach(c => {
+        if (c.worldBookIds) c.worldBookIds = c.worldBookIds.filter(x => x !== this.editingId);
+      });
+      Store.save();
+      this.renderList();
+      nav.back();
+    }, { danger: true, okText: '删除' });
+  },
+  getApplicableForCharacter(char) {
+    const books = [];
+    Store.data.worldBooks.forEach(w => {
+      if (w.isGlobal) books.push(w);
+      else if (char?.worldBookIds?.includes(w.id)) books.push(w);
+    });
+    return books;
+  }
+};
+
+/* ============================================================
+   送信（Messaging）
+============================================================ */
+const Msg = {
+  currentTab: 'chats',
+  showTab(tab) {
+    this.currentTab = tab;
+    document.querySelectorAll('#messaging .tab-item').forEach(t => {
+      t.classList.toggle('active', t.dataset.tab === tab);
+    });
+    document.querySelectorAll('#messaging .tab-content').forEach(c => {
+      c.classList.toggle('active', c.id === 'tab-' + tab);
+    });
+    const titles = { chats: '聊天', contacts: '联系人', moments: '动态', me: '我' };
+    document.getElementById('messagingTitle').textContent = titles[tab];
+    const action = document.getElementById('messagingAction');
+    action.style.display = tab === 'contacts' ? 'flex' : 'none';
+    // 渲染
+    if (tab === 'chats') this.renderChats();
+    else if (tab === 'contacts') this.renderContacts();
+    else if (tab === 'moments') this.renderMoments();
+    else if (tab === 'me') this.renderMe();
+  },
+  onActionClick() {
+    if (this.currentTab === 'contacts') Char.openEditor();
+  },
+  renderChats() {
+    const c = document.getElementById('tab-chats');
+    // 有聊天记录的角色
+    const rows = Store.data.characters
+      .filter(ch => (Store.data.chats[ch.id] || []).length > 0)
+      .map(ch => {
+        const msgs = Store.data.chats[ch.id];
+        const last = msgs[msgs.length - 1];
+        let preview = '';
+        if (last.type === 'voice') preview = '[语音]';
+        else if (last.type === 'sticker') preview = '[表情]';
+        else preview = last.content || '';
+        if (last.role === 'user') preview = '你：' + preview;
+        return { ch, last, preview };
+      })
+      .sort((a, b) => b.last.timestamp - a.last.timestamp);
+
+    if (!rows.length) {
+      c.innerHTML = `
+        <div class="empty">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <div class="empty-title">没有聊天</div>
+          <div class="empty-sub">去联系人页面选一个人开始聊吧</div>
+        </div>`;
+      return;
+    }
+    c.innerHTML = rows.map(r => `
+      <div class="chat-row" onclick="Chat.open('${r.ch.id}')">
+        ${renderAvatar(r.ch)}
+        <div class="chat-info">
+          <div class="chat-name">
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(r.ch.name)}</span>
+            <span class="chat-time">${formatTime(r.last.timestamp)}</span>
+          </div>
+          <div class="chat-preview">${escapeHtml(r.preview)}</div>
+        </div>
+      </div>`).join('');
+  },
+  renderContacts() {
+    const c = document.getElementById('tab-contacts');
+    if (!Store.data.characters.length) {
+      c.innerHTML = `
+        <div class="empty">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <div class="empty-title">还没有联系人</div>
+          <div class="empty-sub">点击右上角 + 创建人设</div>
+        </div>`;
+      return;
+    }
+    // 按字母/拼音排序（简化：按 name 排）
+    const list = [...Store.data.characters].sort((a, b) => a.name.localeCompare(b.name, 'zh'));
+    c.innerHTML = `
+      <div style="height:8px"></div>
+      <div class="list" style="margin:0 16px 20px">
+        ${list.map(ch => `
+          <div class="list-item" onclick="Chat.open('${ch.id}')">
+            ${renderAvatar(ch, 'small')}
+            <div style="width:12px"></div>
+            <div class="list-item-column">
+              <div class="list-item-label">${escapeHtml(ch.name)}</div>
+              ${ch.notes ? `<div class="list-item-sub">${escapeHtml(ch.notes)}</div>` : ''}
+            </div>
+            <span class="btn text" onclick="event.stopPropagation();Char.openEditor('${ch.id}')">编辑</span>
+            <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>`).join('')}
+      </div>`;
+  },
+  renderMoments() {
+    const c = document.getElementById('tab-moments');
+    c.innerHTML = `
+      <div class="moments-cover">
+        <div class="me">
+          <span class="name">${escapeHtml(Store.data.userName)}</span>
+          <div class="avatar" style="border-color:#FFFFFF">${initials(Store.data.userName)}</div>
+        </div>
+      </div>
+      <div style="height:40px"></div>
+      <div class="empty">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        <div class="empty-title">动态</div>
+        <div class="empty-sub">这里将展示角色们的动态<br>（后续可扩展）</div>
+      </div>`;
+  },
+  renderMe() {
+    const c = document.getElementById('tab-me');
+    const api = API.getActive();
+    c.innerHTML = `
+      <div class="me-header" onclick="Settings.editUserName()">
+        <div class="avatar large">${initials(Store.data.userName)}</div>
+        <div>
+          <div class="name">${escapeHtml(Store.data.userName)}</div>
+          <div class="sub">点击修改昵称</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="list">
+          <div class="list-item" onclick="nav.go('settings');Settings.refresh()">
+            <div class="item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+            <span class="list-item-label">设置</span>
+            <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+          <div class="list-item">
+            <div class="item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <span class="list-item-label">当前 API</span>
+            <span class="list-item-value">${api ? escapeHtml(api.name) : '未配置'}</span>
+          </div>
+          <div class="list-item">
+            <div class="item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <span class="list-item-label">联系人</span>
+            <span class="list-item-value">${Store.data.characters.length}</span>
+          </div>
+          <div class="list-item" onclick="nav.go('worldbook');WB.renderList()">
+            <div class="item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+            <span class="list-item-label">世界书</span>
+            <span class="list-item-value">${Store.data.worldBooks.length}</span>
+            <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+        </div>
+      </div>`;
+  }
+};
+
+/* ============================================================
+   角色
+============================================================ */
+const Char = {
+  editingId: null,
+  editing: null,
+  openEditor(id) {
+    this.editingId = id || null;
+    const item = id ? Store.data.characters.find(c => c.id === id) : null;
+    this.editing = item ? { ...item, worldBookIds: [...(item.worldBookIds || [])] } : { worldBookIds: [] };
+    document.getElementById('charEditTitle').textContent = item ? '编辑人设' : '创建人设';
+    document.getElementById('charName').value = item?.name || '';
+    document.getElementById('charNotes').value = item?.notes || '';
+    document.getElementById('charPersona').value = item?.persona || '';
+    document.getElementById('charAvatarStatus').textContent = item?.avatar ? '已设置' : '未设置';
+    document.getElementById('charDeleteBtn').style.display = item ? 'block' : 'none';
+    this.renderWorldbookList();
+    nav.go('charEdit');
+  },
+  renderWorldbookList() {
+    const box = document.getElementById('charWorldbookList');
+    if (!Store.data.worldBooks.length) {
+      box.innerHTML = '<div class="list-item" style="color:#8E8E93;justify-content:center">还没有世界书</div>';
+      return;
+    }
+    box.innerHTML = Store.data.worldBooks.map(w => {
+      const isGlobal = w.isGlobal;
+      const checked = isGlobal || this.editing.worldBookIds.includes(w.id);
+      return `
+        <div class="check-item ${checked ? 'checked' : ''}" onclick="Char.toggleWB('${w.id}', ${isGlobal})">
+          <div class="check"></div>
+          <div class="info">
+            <div class="name">${escapeHtml(w.name)} ${isGlobal ? '<span class="badge green">全局</span>' : (w.group ? `<span class="badge">${escapeHtml(w.group)}</span>` : '')}</div>
+            <div class="sub">${escapeHtml((w.content || '').slice(0, 40))}</div>
+          </div>
+        </div>`;
+    }).join('');
+  },
+  toggleWB(id, isGlobal) {
+    if (isGlobal) { UI.toast('全局世界书默认生效'); return; }
+    const idx = this.editing.worldBookIds.indexOf(id);
+    if (idx >= 0) this.editing.worldBookIds.splice(idx, 1);
+    else this.editing.worldBookIds.push(id);
+    this.renderWorldbookList();
+  },
+  onAvatarPick(e) {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.editing.avatar = reader.result;
+      document.getElementById('charAvatarStatus').textContent = '已设置';
+    };
+    reader.readAsDataURL(f);
+  },
+  save() {
+    const name = document.getElementById('charName').value.trim();
+    const notes = document.getElementById('charNotes').value.trim();
+    const persona = document.getElementById('charPersona').value.trim();
+    if (!name) { UI.toast('请填写姓名'); return; }
+    let item;
+    if (this.editingId) {
+      item = Store.data.characters.find(c => c.id === this.editingId);
+    } else {
+      item = { id: Store.uid() };
+      Store.data.characters.push(item);
+    }
+    item.name = name;
+    item.notes = notes;
+    item.persona = persona;
+    item.worldBookIds = [...this.editing.worldBookIds];
+    if (this.editing.avatar !== undefined) item.avatar = this.editing.avatar;
+    Store.save();
+    Msg.showTab('contacts');
+    nav.back();
+    UI.toast('已保存');
+  },
+  delete() {
+    if (!this.editingId) return;
+    UI.confirm('删除人设', '角色及其所有聊天记录都将被删除。', () => {
+      Store.data.characters = Store.data.characters.filter(c => c.id !== this.editingId);
+      delete Store.data.chats[this.editingId];
+      Store.save();
+      Msg.showTab('contacts');
+      nav.back();
+    }, { danger: true, okText: '删除' });
+  }
+};
+
+/* ============================================================
+   聊天
+============================================================ */
+const Chat = {
+  currentId: null,
+  loading: false,
+  open(id) {
+    this.currentId = id;
+    const ch = Store.data.characters.find(c => c.id === id);
+    if (!ch) return;
+    document.getElementById('chatHeaderInfo').innerHTML = `
+      ${renderAvatar(ch, 'small')}
+      <span class="name">${escapeHtml(ch.name)}</span>
+    `;
+    this.render();
+    document.getElementById('chatInput').value = '';
+    this.autoResize();
+    // 关闭 plus 面板
+    document.getElementById('plusPanel').classList.remove('show');
+    nav.go('chat');
+    setTimeout(() => this.scrollBottom(), 50);
+  },
+  render() {
+    const box = document.getElementById('chatMessages');
+    const msgs = Store.data.chats[this.currentId] || [];
+    const ch = Store.data.characters.find(c => c.id === this.currentId);
+    if (!msgs.length) {
+      box.innerHTML = `
+        <div class="empty" style="padding:80px 24px">
+          ${renderAvatar(ch, 'large')}
+          <div class="empty-title" style="margin-top:12px">${escapeHtml(ch.name)}</div>
+          <div class="empty-sub">${escapeHtml(ch.notes || '发送第一条消息开始聊天')}</div>
+        </div>`;
+      return;
+    }
+    let html = '';
+    let lastDay = null;
+    let lastRole = null;
+    msgs.forEach((m, i) => {
+      const d = new Date(m.timestamp);
+      const day = d.toDateString();
+      if (day !== lastDay) {
+        html += `<div class="msg-day">${formatDay(m.timestamp)}</div>`;
+        lastDay = day;
+        lastRole = null;
+      }
+      const side = m.role === 'user' ? 'self' : 'other';
+      const group = lastRole === m.role ? 'grouped' : 'new-group';
+      lastRole = m.role;
+      html += `<div class="msg-row ${side} ${group}">${renderMsgBubble(m, i)}</div>`;
+    });
+    if (this.loading) {
+      html += `<div class="msg-row other new-group">
+        <div class="msg-bubble" style="padding:0"><div class="typing"><span></span><span></span><span></span></div></div>
+      </div>`;
+    }
+    box.innerHTML = html;
+    // 语音消息点击
+    box.querySelectorAll('[data-voice-idx]').forEach(el => {
+      el.onclick = () => {
+        const next = el.parentElement.querySelector('.msg-voice-text');
+        if (next) next.classList.toggle('show');
+      };
+    });
+    this.scrollBottom();
+  },
+  scrollBottom() {
+    const c = document.getElementById('chatContent');
+    c.scrollTop = c.scrollHeight;
+  },
+  autoResize() {
+    const t = document.getElementById('chatInput');
+    t.style.height = 'auto';
+    t.style.height = Math.min(t.scrollHeight, 100) + 'px';
+  },
+  togglePlus() {
+    const p = document.getElementById('plusPanel');
+    const isShow = p.classList.contains('show');
+    if (isShow) {
+      p.classList.remove('show');
+    } else {
+      // 默认显示 plus-menu
+      document.getElementById('plusMenu').style.display = '';
+      document.getElementById('stickerPanel').style.display = 'none';
+      p.classList.add('show');
+      setTimeout(() => this.scrollBottom(), 20);
+    }
+  },
+  openVoiceInput() {
+    document.getElementById('plusPanel').classList.remove('show');
+    UI.prompt('发送语音', '输入这条语音的内容（模拟）', '', v => {
+      if (!v) return;
+      this._sendMessage({ role: 'user', type: 'voice', content: v, duration: Math.max(1, Math.min(60, Math.ceil(v.length / 3))) });
+    });
+  },
+  openStickers() {
+    document.getElementById('plusMenu').style.display = 'none';
+    document.getElementById('stickerPanel').style.display = 'block';
+    Sticker.render();
+    setTimeout(() => this.scrollBottom(), 20);
+  },
+  send() {
+    if (this.loading) { UI.toast('请等待回复完成'); return; }
+    const t = document.getElementById('chatInput');
+    const text = t.value.trim();
+    if (!text) return;
+    t.value = '';
+    this.autoResize();
+    this._sendMessage({ role: 'user', type: 'text', content: text });
+  },
+  _sendMessage(msg) {
+    msg.timestamp = Date.now();
+    const arr = (Store.data.chats[this.currentId] = Store.data.chats[this.currentId] || []);
+    arr.push(msg);
+    Store.save();
+    this.render();
+    // 触发 AI 回复
+    this.askAI();
+  },
+  sendSticker(stickerId) {
+    this._sendMessage({ role: 'user', type: 'sticker', content: stickerId });
+    document.getElementById('plusPanel').classList.remove('show');
+  },
+  async askAI() {
+    const api = API.getActive();
+    if (!api) {
+      UI.alert('未配置 API', '请先在“设置”中添加并选择一个 API。');
+      return;
+    }
+    const ch = Store.data.characters.find(c => c.id === this.currentId);
+    if (!ch) return;
+    const worldBooks = WB.getApplicableForCharacter(ch);
+    // 构造 system prompt
+    let sys = '';
+    if (ch.persona) sys += `# 角色设定\n你的名字是「${ch.name}」。\n${ch.persona}\n\n`;
+    else sys += `你正在扮演一个名为「${ch.name}」的角色。\n\n`;
+    if (ch.notes) sys += `# 备注\n${ch.notes}\n\n`;
+    if (worldBooks.length) {
+      sys += `# 世界书守则（必须严格遵守）\n`;
+      worldBooks.forEach(w => {
+        sys += `## ${w.name}\n${w.content}\n\n`;
+      });
+    }
+    sys += `# 对话须知\n- 始终以「${ch.name}」的第一人称回复\n- 保持角色一致\n- 回复自然、口语化\n- 若回复内容较长，可以在段落之间用空行分隔，将被拆分为多条消息发送`;
+
+    // 组装历史（把语音/表情转成可理解格式）
+    const history = (Store.data.chats[this.currentId] || []).map(m => {
+      let content = m.content;
+      if (m.type === 'voice') content = `[语音消息] ${m.content}`;
+      else if (m.type === 'sticker') {
+        const s = Store.data.stickers.find(x => x.id === m.content);
+        content = `[发送了表情包：${s?.name || '未知'}]`;
+      }
+      return { role: m.role, content };
+    });
+
+    const messages = [{ role: 'system', content: sys }, ...history];
+    this.loading = true;
+    this.render();
+    try {
+      const reply = await API.chat(messages);
+      // 拆分为多条消息
+      const chunks = reply.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+      const arr = Store.data.chats[this.currentId];
+      const now = Date.now();
+      chunks.forEach((c, i) => {
+        arr.push({ role: 'assistant', type: 'text', content: c, timestamp: now + i });
+      });
+      Store.save();
+    } catch (e) {
+      const arr = Store.data.chats[this.currentId];
+      arr.push({ role: 'assistant', type: 'text', content: '[出错] ' + (e.message || e), timestamp: Date.now(), isError: true });
+    } finally {
+      this.loading = false;
+      this.render();
+    }
+  },
+  openInfo() {
+    const ch = Store.data.characters.find(c => c.id === this.currentId);
+    if (!ch) return;
+    UI.sheet(`
+      <div style="text-align:center;padding:16px 0">
+        ${renderAvatar(ch, 'large')}
+        <div style="font-size:18px;font-weight:500;margin-top:8px">${escapeHtml(ch.name)}</div>
+        ${ch.notes ? `<div style="font-size:13px;color:#8E8E93;margin-top:4px">${escapeHtml(ch.notes)}</div>` : ''}
+      </div>
+      <div class="list" style="margin:0">
+        <div class="list-item" onclick="UI.closeSheet();Char.openEditor('${ch.id}')">
+          <span class="list-item-label">编辑人设</span>
+          <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+        <div class="list-item" onclick="Chat.clearHistory()">
+          <span class="list-item-label" style="color:#FF3B30">清空聊天记录</span>
+        </div>
+      </div>
+      <button class="btn btn-block" style="margin-top:12px" onclick="UI.closeSheet()">取消</button>
+    `);
+  },
+  clearHistory() {
+    UI.closeSheet();
+    UI.confirm('清空聊天记录', '此角色的对话历史将被删除。', () => {
+      delete Store.data.chats[this.currentId];
+      Store.save();
+      this.render();
+    }, { danger: true, okText: '清空' });
+  }
+};
+
+/* ============================================================
+   表情包
+============================================================ */
+const Sticker = {
+  editMode: false,
+  render() {
+    const g = document.getElementById('stickerGrid');
+    const panel = document.getElementById('stickerPanel');
+    panel.classList.toggle('edit-mode', this.editMode);
+    let html = '';
+    Store.data.stickers.forEach(s => {
+      html += `
+        <div class="sticker-item" title="${escapeHtml(s.name)}" onclick="Sticker.onClick('${s.id}')">
+          <img src="${s.dataUrl}" alt="${escapeHtml(s.name)}">
+          <div class="del" onclick="event.stopPropagation();Sticker.delete('${s.id}')">×</div>
+        </div>`;
+    });
+    html += `
+      <div class="sticker-add" onclick="document.getElementById('stickerFileInput').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>`;
+    g.innerHTML = html;
+  },
+  onClick(id) {
+    if (this.editMode) return;
+    Chat.sendSticker(id);
+  },
+  toggleEdit() {
+    this.editMode = !this.editMode;
+    document.getElementById('stickerEditBtn').textContent = this.editMode ? '完成' : '管理';
+    this.render();
+  },
+  delete(id) {
+    Store.data.stickers = Store.data.stickers.filter(s => s.id !== id);
+    Store.save();
+    this.render();
+  },
+  onImport(e) {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    let done = 0;
+    let added = 0;
+    files.forEach(f => {
+      if (!f.type.startsWith('image/')) { done++; if (done === files.length) finish(); return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        // 自动识别名字：文件名去扩展名
+        const name = f.name.replace(/\.[^.]+$/, '').trim() || '表情';
+        Store.data.stickers.push({
+          id: Store.uid(),
+          name,
+          dataUrl: reader.result
+        });
+        added++;
+        done++;
+        if (done === files.length) finish();
+      };
+      reader.onerror = () => { done++; if (done === files.length) finish(); };
+      reader.readAsDataURL(f);
+    });
+    const self = this;
+    function finish() {
+      Store.save();
+      self.render();
+      UI.toast(`已导入 ${added} 个表情`);
+      // 清空以便重复选同一文件
+      document.getElementById('stickerFileInput').value = '';
+    }
+  }
+};
+
+/* ============================================================
+   辅助
+============================================================ */
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function initials(name) {
+  if (!name) return '?';
+  const s = name.trim();
+  // 取前 1-2 个字符（中文取1，英文取2首字母）
+  if (/[\u4e00-\u9fa5]/.test(s[0])) return s[0];
+  const parts = s.split(/\s+/).filter(Boolean);
+  return (parts[0][0] + (parts[1]?.[0] || '')).toUpperCase();
+}
+function renderAvatar(ch, size = '') {
+  const cls = 'avatar' + (size ? ' ' + size : '');
+  if (ch?.avatar) return `<div class="${cls}"><img src="${ch.avatar}" alt=""></div>`;
+  return `<div class="${cls}">${escapeHtml(initials(ch?.name))}</div>`;
+}
+function formatTime(ts) {
+  const d = new Date(ts);
+  const now = new Date();
+  const sameDay = d.toDateString() === now.toDateString();
+  const pad = n => String(n).padStart(2, '0');
+  if (sameDay) return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  const yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
+  if (d.toDateString() === yesterday.toDateString()) return '昨天';
+  return `${d.getMonth() + 1}/${d.getDate()}`;
+}
+function formatDay(ts) {
+  const d = new Date(ts);
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const time = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  const sameDay = d.toDateString() === now.toDateString();
+  if (sameDay) return `今天 ${time}`;
+  const yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
+  if (d.toDateString() === yesterday.toDateString()) return `昨天 ${time}`;
+  return `${d.getMonth() + 1}月${d.getDate()}日 ${time}`;
+}
+function renderMsgBubble(m, i) {
+  if (m.type === 'voice') {
+    const bars = [];
+    for (let k = 0; k < 14; k++) bars.push(`<span style="height:${4 + Math.round(Math.random() * 14)}px"></span>`);
+    return `
+      <div>
+        <div class="msg-bubble msg-voice" data-voice-idx="${i}">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+          <div class="msg-voice-wave">${bars.join('')}</div>
+          <span class="msg-voice-duration">${m.duration || 1}"</span>
+        </div>
+        <div class="msg-voice-text">${escapeHtml(m.content)}</div>
+      </div>`;
+  }
+  if (m.type === 'sticker') {
+    const s = Store.data.stickers.find(x => x.id === m.content);
+    if (!s) return `<div class="msg-bubble">[表情包已删除]</div>`;
+    return `<div class="sticker-wrap"><img class="msg-sticker" src="${s.dataUrl}" alt="${escapeHtml(s.name)}"></div>`;
+  }
+  return `<div class="msg-bubble">${escapeHtml(m.content)}</div>`;
+}
+
+/* ============================================================
+   启动
+============================================================ */
+function updateHomeTime() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  document.getElementById('homeTime').textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+  document.getElementById('homeDate').textContent = `${days[d.getDay()]}  ${d.getMonth() + 1}月${d.getDate()}日`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  Store.load();
+  Settings.refresh();
+  updateHomeTime();
+  setInterval(updateHomeTime, 1000 * 30);
+
+  // 输入框自动调整
+  const t = document.getElementById('chatInput');
+  t.addEventListener('input', () => Chat.autoResize());
+  t.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+      e.preventDefault();
+      Chat.send();
+    }
+  });
+
+  // 点 + 时若正在聊天，先关闭表情面板
+  document.getElementById('chatInput').addEventListener('focus', () => {
+    document.getElementById('plusPanel').classList.remove('show');
+  });
+});
+</script>
+</body>
+</html>

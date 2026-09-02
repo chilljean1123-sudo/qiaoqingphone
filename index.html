@@ -2601,6 +2601,68 @@
   .secret-private p { margin-top:7px; color:#c9c3b9; white-space:pre-wrap; font:12px/1.7 "Songti SC",serif; }
   .secret-bottom { position:absolute; left:15px; right:15px; bottom:calc(14px + env(safe-area-inset-bottom,0px)); }
 
+  /* ============ 小说 ============ */
+  #novelHome,#novelSetup,#novelReader { background:#f3efe7;color:#28241e; }
+  .novel-nav { background:rgba(247,243,235,.92)!important;border-bottom-color:rgba(75,60,39,.1)!important;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px); }
+  .novel-nav .nav-back,.novel-nav .nav-action { color:#655038; }
+  .novel-home-body { flex:1;overflow-y:auto;padding:18px 15px 45px;background:radial-gradient(circle at 90% 0,rgba(168,135,89,.13),transparent 30%),#f3efe7; }
+  .novel-hero { padding:25px 21px;border-radius:24px;color:#f8f2e8;background:linear-gradient(145deg,#372e25,#171512);box-shadow:0 17px 34px rgba(52,43,32,.17); }
+  .novel-hero-kicker { color:#bea782;font:9px ui-monospace,monospace;letter-spacing:.2em; }
+  .novel-hero-title { margin-top:9px;font:700 28px/1.25 "Songti SC","STSong",serif; }
+  .novel-hero-copy { max-width:82%;margin-top:8px;color:#bdb2a3;font:10px/1.7 "Songti SC",serif; }
+  .novel-new-btn { width:100%;height:45px;margin-top:17px;border:1px solid rgba(255,255,255,.18);border-radius:15px;color:#2e261d;background:#d9c5a3;font-size:12px;font-weight:750; }
+  .novel-section-title { display:flex;align-items:end;justify-content:space-between;margin:23px 3px 10px; }
+  .novel-section-title strong { font:700 17px "Songti SC",serif; }
+  .novel-section-title span { color:#948878;font-size:9px; }
+  .novel-draft { padding:16px;border:1px solid rgba(104,83,55,.12);border-radius:19px;background:rgba(255,255,255,.58); }
+  .novel-draft-top { display:flex;justify-content:space-between;color:#8a7864;font-size:9px; }
+  .novel-draft-name { margin-top:7px;font:700 15px/1.4 "Songti SC",serif; }
+  .novel-draft button { width:100%;height:38px;margin-top:12px;border:0;border-radius:12px;color:#fff;background:#44382c;font-size:11px; }
+  .novel-shelf { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px; }
+  .novel-book { position:relative;min-height:205px;padding:16px 13px 14px;border:0;border-radius:4px 16px 16px 4px;color:#f6efe4;text-align:left;background:linear-gradient(145deg,#65503a,#2c241d);box-shadow:7px 10px 22px rgba(64,49,34,.16),inset 4px 0 0 rgba(255,255,255,.09); }
+  .novel-book:nth-child(3n+2){background:linear-gradient(145deg,#465248,#222923)}
+  .novel-book:nth-child(3n){background:linear-gradient(145deg,#4d485a,#25222d)}
+  .novel-book:before { content:"";position:absolute;left:9px;top:12px;bottom:12px;width:1px;background:rgba(255,255,255,.13); }
+  .novel-book-genre { margin-left:8px;color:#c8b79f;font-size:8px;letter-spacing:.12em; }
+  .novel-book-title { margin:45px 6px 0 12px;font:700 17px/1.5 "Songti SC",serif; }
+  .novel-book-meta { position:absolute;left:25px;right:12px;bottom:14px;color:#b7aa99;font-size:8px; }
+  .novel-empty { grid-column:1/-1;padding:50px 20px;text-align:center;color:#9b8d7b;font:11px/1.8 "Songti SC",serif; }
+  .novel-form-body { flex:1;overflow-y:auto;padding:17px 15px 110px; }
+  .novel-form-intro { padding:18px;border-radius:20px;background:#e7dece; }
+  .novel-form-intro strong { font:700 19px "Songti SC",serif; }
+  .novel-form-intro p { margin-top:5px;color:#806f5c;font-size:10px;line-height:1.6; }
+  .novel-field { margin-top:15px; }
+  .novel-field label { display:block;margin:0 3px 7px;color:#756653;font-size:10px;font-weight:700; }
+  .novel-field select,.novel-field textarea,.novel-field input[type=text] { width:100%;border:1px solid rgba(96,77,51,.12);border-radius:14px;outline:0;color:#302920;background:rgba(255,255,255,.68);font-size:12px; }
+  .novel-field select,.novel-field input[type=text] { height:45px;padding:0 13px; }
+  .novel-field textarea { min-height:95px;padding:12px;line-height:1.6;resize:none; }
+  .novel-length-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:8px; }
+  .novel-length { height:58px;border:1px solid rgba(96,77,51,.13);border-radius:14px;color:#6f6253;background:rgba(255,255,255,.55);font-size:11px; }
+  .novel-length b { display:block;margin-top:3px;font-size:8px;font-weight:500; }
+  .novel-length.on { color:#f7f2e9;border-color:#493c2d;background:#493c2d; }
+  .novel-range-line { display:flex;align-items:center;gap:12px;padding:0 3px; }
+  .novel-range-line input { flex:1;accent-color:#5b4935; }
+  .novel-range-value { width:72px;color:#5b4935;text-align:right;font-size:11px;font-weight:700; }
+  .novel-start-btn { position:absolute;left:15px;right:15px;bottom:calc(15px + env(safe-area-inset-bottom,0px));z-index:30;height:48px;border:0;border-radius:16px;color:#fff;background:#332a21;font-size:12px;font-weight:750;box-shadow:0 10px 25px rgba(52,42,31,.2); }
+  .novel-reader-shell { flex:1;min-height:0;display:flex;flex-direction:column; }
+  .novel-reader-meta { padding:11px 18px;border-bottom:1px solid rgba(82,64,42,.09);color:#8b7b68;background:#eee7dc;font-size:9px;display:flex;justify-content:space-between; }
+  .novel-pages { flex:1;overflow-y:auto;padding:25px 22px 230px; }
+  .novel-title-page { margin-bottom:27px;text-align:center; }
+  .novel-reader-book-title { color:#8b7860;font-size:10px;letter-spacing:.15em; }
+  .novel-reader-chapter { margin-top:8px;font:700 23px/1.4 "Songti SC","STSong",serif; }
+  .novel-content { color:#332d26;font:14px/2.05 "Songti SC","STSong",serif;white-space:pre-wrap;text-align:justify;word-break:break-word; }
+  .novel-reader-controls { position:absolute;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:32;padding:12px;border:1px solid rgba(99,78,52,.11);border-radius:20px;background:rgba(247,243,235,.96);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);box-shadow:0 12px 30px rgba(55,44,30,.15); }
+  .novel-option { width:100%;min-height:39px;margin-bottom:7px;padding:8px 12px;border:1px solid #d9cdbb;border-radius:13px;color:#493c2d;text-align:left;background:#fffdf9;font:11px/1.45 "Songti SC",serif; }
+  .novel-custom-line { display:flex;gap:7px; }
+  .novel-custom-line input { flex:1;min-width:0;height:40px;padding:0 11px;border:1px solid #ddd2c2;border-radius:12px;outline:0;background:#fff;font-size:10px; }
+  .novel-custom-line button,.novel-next-btn { height:40px;border:0;border-radius:12px;color:#fff;background:#44372a;font-size:10px;font-weight:700; }
+  .novel-custom-line button { width:68px; }
+  .novel-next-btn { width:100%; }
+  .novel-loading { padding:12px;text-align:center;color:#887965;font:10px "Songti SC",serif; }
+  .novel-finished { text-align:center; }
+  .novel-finished div { margin-bottom:10px;color:#786956;font:11px "Songti SC",serif; }
+  .novel-finished button { width:100%;height:42px;border:0;border-radius:13px;color:#fff;background:#493b2d;font-size:11px; }
+
   /* ============ 购物 ============ */
   #shoppingHome,#shoppingDetail,#shoppingCheckout { background:#f4f5f7; color:#15191e; }
   .shop-nav { background:rgba(255,255,255,.94)!important; border-bottom-color:rgba(15,23,42,.07)!important; }
@@ -2788,6 +2850,12 @@
         </div>
         <div class="app-label">购物</div>
       </div>
+      <div class="app-icon" data-theme-app="novel" onclick="nav.go('novelHome');Novel.renderHome()">
+        <div class="app-icon-box" data-app-icon="novel" style="background:linear-gradient(145deg,#66523d,#2a231d);color:#e5d2b3">
+          <svg viewBox="0 0 24 24"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22Z"/><path d="M4 4.5v15M8 6h8M8 10h6"/></svg>
+        </div>
+        <div class="app-label">小说</div>
+      </div>
     </div>
     <div class="home-dock"></div>
   </div>
@@ -2868,6 +2936,23 @@
   <div class="screen hidden" id="dangerGame">
     <div class="nav-bar danger-nav"><div class="nav-back" onclick="Danger.exitGame()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>存档退出</span></div><div class="nav-title" id="dangerGameTitle">冒险</div><div class="nav-action" onclick="Danger.saveGame()">保存</div></div>
     <div class="danger-game-shell"><div class="danger-hud"><div class="danger-hud-top"><span id="dangerRound"></span><span id="dangerRoles"></span></div><div class="danger-hp-line"><div class="danger-hp-track"><div class="danger-hp-fill" id="dangerHpFill"></div></div><span class="danger-hp-value" id="dangerHpValue">100/100</span></div></div><div class="danger-log" id="dangerLog"></div><div class="danger-controls" id="dangerControls"></div></div>
+  </div>
+
+  <!-- ========== 小说 ========== -->
+  <div class="screen hidden" id="novelHome">
+    <div class="nav-bar novel-nav"><div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>主屏</span></div><div class="nav-title">小说</div><div class="nav-action" onclick="Novel.openSetup()">新建</div></div>
+    <div class="novel-home-body"><div class="novel-hero"><div class="novel-hero-kicker">FICTION STUDIO</div><div class="novel-hero-title">让角色走进<br>另一种人生</div><div class="novel-hero-copy">只借用角色人设，背景与世界重新架空。书稿不会写入主要记忆。</div><button class="novel-new-btn" onclick="Novel.openSetup()">开始一本新小说</button></div><div id="novelDraftArea"></div><div class="novel-section-title"><strong>我的书架</strong><span id="novelShelfCount">0 本</span></div><div class="novel-shelf" id="novelShelf"></div></div>
+  </div>
+
+  <div class="screen hidden" id="novelSetup">
+    <div class="nav-bar novel-nav"><div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>小说</span></div><div class="nav-title">新建小说</div></div>
+    <div class="novel-form-body"><div class="novel-form-intro"><strong>构思故事</strong><p>角色保留本机人设，但不会继承原世界书背景。</p></div><div class="novel-field"><label>主角原型</label><select id="novelChar"></select></div><div class="novel-field"><label>题材</label><select id="novelGenre"><option>都市情感</option><option>悬疑推理</option><option>架空奇幻</option><option>末日生存</option><option>历史架空</option><option>科幻未来</option><option>治愈日常</option><option>惊悚怪谈</option></select></div><div class="novel-field"><label>篇幅</label><div class="novel-length-grid"><button class="novel-length on" data-chapters="8" onclick="Novel.pickLength(8)">短篇<b>8 章</b></button><button class="novel-length" data-chapters="12" onclick="Novel.pickLength(12)">中篇<b>12 章</b></button><button class="novel-length" data-chapters="20" onclick="Novel.pickLength(20)">长篇<b>20 章</b></button></div></div><div class="novel-field"><label>每章字数</label><div class="novel-range-line"><input type="range" id="novelWords" min="800" max="2500" step="100" value="1200" oninput="Novel.paintWords()"><span class="novel-range-value" id="novelWordsValue">1200 字</span></div></div><div class="novel-field"><label>故事走向</label><textarea id="novelDirection" maxlength="600" placeholder="例如：慢热感情线、身份误会、最终和解；也可以写禁忌、氛围或必须出现的情节。"></textarea></div></div>
+    <button class="novel-start-btn" onclick="Novel.start()">生成第一章</button>
+  </div>
+
+  <div class="screen hidden" id="novelReader">
+    <div class="nav-bar novel-nav"><div class="nav-back" onclick="Novel.exitReader()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>书架</span></div><div class="nav-title" id="novelReaderTitle">小说</div><div class="nav-action" onclick="Novel.saveToShelf()">存书架</div></div>
+    <div class="novel-reader-shell"><div class="novel-reader-meta"><span id="novelReaderProgress"></span><span id="novelReaderWords"></span></div><div class="novel-pages" id="novelPages"></div><div class="novel-reader-controls" id="novelControls"></div></div>
   </div>
 
   <!-- ========== 购物 ========== -->
@@ -3981,6 +4066,8 @@ const Store = {
     this.data.shopping = { ...d.shopping, ...(this.data.shopping || {}) };
     if (!Array.isArray(this.data.shopping.products)) this.data.shopping.products = [];
     if (!Array.isArray(this.data.shopping.orders)) this.data.shopping.orders = [];
+    this.data.novel = { ...d.novel, ...(this.data.novel || {}) };
+    if (!Array.isArray(this.data.novel.books)) this.data.novel.books = [];
     this.data.interactionSettings = { ...d.interactionSettings, ...(this.data.interactionSettings || {}) };
     if (!Array.isArray(this.data.interactionSettings.characterIds)) this.data.interactionSettings.characterIds = [];
     this.data.imgApi = { ...d.imgApi, ...(this.data.imgApi || {}) };
@@ -4028,6 +4115,7 @@ const Store = {
       secretForum: { posts: [], settings: { rules: '', topics: '', characterIds: [] } },
       danger: { quests: [], saves: [], selectedCharId: '', currentSaveId: '' },
       shopping: { products: [], orders: [], address: '', category: '全部', currentProductId: '', seed: 0 },
+      novel: { books: [], draft: null, selectedLength: 8 },
       chats: {},        // { charId: [ {role,content,type,duration?,timestamp} ] }
       chatSettings: {},
       friendRequests: [],
@@ -5110,6 +5198,83 @@ const Theme = {
 /* ============================================================
    险境文字跑团
 ============================================================ */
+const Novel = {
+  busy:false,
+  data(){return Store.data.novel;},
+  draft(){return this.data().draft;},
+  parse(raw){
+    const text=String(raw||'').trim().replace(/^```(?:json)?/i,'').replace(/```$/,'').trim();
+    try{const a=text.indexOf('{'),b=text.lastIndexOf('}');if(a>=0&&b>a)return JSON.parse(text.slice(a,b+1));}catch(_){}
+    return {};
+  },
+  renderHome(){
+    const d=this.data(),draft=d.draft;
+    document.getElementById('novelDraftArea').innerHTML=draft&&!draft.saved?'<div class="novel-section-title"><strong>未完成书稿</strong><span>自动保留进度</span></div><div class="novel-draft"><div class="novel-draft-top"><span>'+escapeHtml(draft.genre)+'</span><span>'+draft.chapters.length+' / '+draft.totalChapters+' 章</span></div><div class="novel-draft-name">'+escapeHtml(draft.title||'尚未命名')+'</div><button onclick="Novel.continueDraft()">继续写作</button></div>':'';
+    document.getElementById('novelShelfCount').textContent=d.books.length+' 本';
+    document.getElementById('novelShelf').innerHTML=d.books.map(b=>'<button class="novel-book" onclick="Novel.openBook(\''+b.id+'\')"><div class="novel-book-genre">'+escapeHtml(b.genre)+'</div><div class="novel-book-title">'+escapeHtml(b.title||'未命名小说')+'</div><div class="novel-book-meta">'+b.chapters.length+' / '+b.totalChapters+' 章 · '+(b.completed?'已完结':'连载中')+'</div></button>').join('')||'<div class="novel-empty">书架还是空的<br>写完章节后可以把书稿收藏到这里</div>';
+  },
+  openSetup(){
+    if(!Store.data.characters.length)return UI.toast('请先在联系人里创建角色');
+    document.getElementById('novelChar').innerHTML=Store.data.characters.map(ch=>'<option value="'+ch.id+'">'+escapeHtml(ch.name)+'</option>').join('');
+    this.pickLength(this.data().selectedLength||8);this.paintWords();nav.go('novelSetup');
+  },
+  pickLength(n){this.data().selectedLength=n;document.querySelectorAll('.novel-length').forEach(x=>x.classList.toggle('on',Number(x.dataset.chapters)===n));},
+  paintWords(){const n=Number(document.getElementById('novelWords')?.value||1200);const el=document.getElementById('novelWordsValue');if(el)el.textContent=n+' 字';},
+  async start(){
+    if(this.busy)return;const charId=document.getElementById('novelChar').value,ch=Store.data.characters.find(x=>x.id===charId);if(!ch)return UI.toast('请选择主角');
+    if(!API.getActive())return UI.toast('请先配置聊天 API');
+    const genre=document.getElementById('novelGenre').value,direction=document.getElementById('novelDirection').value.trim(),words=Number(document.getElementById('novelWords').value||1200),total=this.data().selectedLength||8;
+    this.data().draft={id:'novel_'+Date.now(),title:'',charId,charName:ch.name,genre,direction,wordsPerChapter:words,totalChapters:total,chapters:[],createdAt:Date.now(),updatedAt:Date.now(),completed:false,saved:false};
+    Store.save();nav.go('novelReader');this.renderReader();await this.generateChapter('故事由此开始');
+  },
+  continueDraft(){if(!this.draft())return;nav.go('novelReader');this.renderReader();},
+  openBook(id){const book=this.data().books.find(x=>x.id===id);if(!book)return;this.data().draft=JSON.parse(JSON.stringify(book));this.data().draft.saved=true;Store.save();nav.go('novelReader');this.renderReader();},
+  exitReader(){nav.back();this.renderHome();},
+  context(book){
+    const recent=book.chapters.slice(-2).map(x=>'第'+x.number+'章 '+x.title+'\n'+x.content.slice(-2400)).join('\n\n');
+    return recent||'尚无正文';
+  },
+  normalizeOptions(v){const arr=Array.isArray(v)?v.map(x=>String(x||'').trim().slice(0,30)).filter(Boolean):[];while(arr.length<2)arr.push(arr.length?'主角追查被掩盖的真相':'主角选择冒险主动出击');return arr.slice(0,2);},
+  async generateChapter(direction){
+    const b=this.draft();if(!b||this.busy||b.completed)return;const ch=Store.data.characters.find(x=>x.id===b.charId);if(!ch)return;
+    if(b.chapters.length>=b.totalChapters){b.completed=true;Store.save();this.renderReader();return;}
+    this.busy=true;this.renderReader();
+    const no=b.chapters.length+1,isFinal=no===b.totalChapters;
+    const prompt='创作一部完全原创的中文小说。主角以给定角色的人格、习惯和关系模式为原型，但必须置于重新架空的背景，不引用或继承任何世界书、原作品地名与专有设定。\n题材：'+b.genre+'\n全书：'+b.totalChapters+'章；当前第'+no+'章；每章目标约'+b.wordsPerChapter+'字。\n主角：'+ch.name+'\n主角人设：'+(ch.persona||'请依据姓名塑造自然、立体的性格')+'\n用户设定的总体走向：'+(b.direction||'自由发展，但人物行为需合理')+'\n本章选择的走向：'+direction+'\n近期正文：\n'+this.context(b)+'\n要求：正文完整、有场景和人物行动，避免梗概式叙述。'+(isFinal?'这是最终章，要完成主要冲突并形成有余韵的结局，不再设置选择。':'尚未完结，本章结尾必须落在自然且有吸引力的悬念上；给出两个合理、差异明显的后续选项，每个不超过30字。')+'严格返回JSON：{"novelTitle":"仅第一章生成整本书名","chapterTitle":"本章标题","content":"正文","options":["方向1","方向2"],"summary":"本章一句话摘要"}';
+    try{
+      const out=this.parse(await API.chat([{role:'system',content:'你是中文小说作者，只输出合法JSON，不解释。不要调用世界书或聊天记忆。'},{role:'user',content:prompt}]));
+      const content=String(out.content||'').trim();if(!content)throw new Error('正文为空');
+      if(!b.title)b.title=String(out.novelTitle||ch.name+'的另一种人生').slice(0,40);
+      b.chapters.push({number:no,title:String(out.chapterTitle||'第'+no+'章').slice(0,50),content,options:isFinal?[]:this.normalizeOptions(out.options),summary:String(out.summary||'').slice(0,180),direction,timestamp:Date.now()});
+      b.completed=isFinal;b.updatedAt=Date.now();Store.save();
+      if(b.saved)this.upsertShelf();
+    }catch(e){UI.alert('生成失败',e.message||'没有取得有效正文，请稍后重试。');}
+    finally{this.busy=false;this.renderReader();}
+  },
+  renderReader(){
+    const b=this.draft();if(!b)return;
+    document.getElementById('novelReaderTitle').textContent=b.title||'正在起笔';
+    document.getElementById('novelReaderProgress').textContent=b.chapters.length+' / '+b.totalChapters+' 章';
+    document.getElementById('novelReaderWords').textContent='目标 '+b.wordsPerChapter+' 字/章';
+    const last=b.chapters[b.chapters.length-1];
+    document.getElementById('novelPages').innerHTML=last?'<div class="novel-title-page"><div class="novel-reader-book-title">'+escapeHtml(b.title)+'</div><div class="novel-reader-chapter">第 '+last.number+' 章 · '+escapeHtml(last.title)+'</div></div><div class="novel-content">'+escapeHtml(last.content)+'</div>':'<div class="novel-loading">正在铺开第一页……</div>';
+    const controls=document.getElementById('novelControls');
+    if(this.busy)controls.innerHTML='<div class="novel-loading">正在续写第 '+(b.chapters.length+1)+' 章，请稍候……</div>';
+    else if(b.completed)controls.innerHTML='<div class="novel-finished"><div>全书已经写至终章</div><button onclick="Novel.saveToShelf()">保存到书架</button></div>';
+    else if(last)controls.innerHTML=last.options.map((x,i)=>'<button class="novel-option" onclick="Novel.choose('+i+')">'+(i+1)+'. '+escapeHtml(x)+'</button>').join('')+'<div class="novel-custom-line"><input id="novelCustomDirection" maxlength="180" placeholder="输入你想看到的后续情节"><button onclick="Novel.customNext()">续写</button></div>';
+    else controls.innerHTML='<button class="novel-next-btn" onclick="Novel.generateChapter(\'故事由此开始\')">重新生成第一章</button>';
+    setTimeout(()=>{const el=document.getElementById('novelPages');if(el)el.scrollTop=0;},20);
+  },
+  choose(i){const b=this.draft(),last=b?.chapters[b.chapters.length-1],v=last?.options?.[i];if(v)this.generateChapter(v);},
+  customNext(){const v=(document.getElementById('novelCustomDirection')?.value||'').trim();if(!v)return UI.toast('请写下想看的情节');this.generateChapter(v);},
+  upsertShelf(){
+    const b=this.draft();if(!b)return;const copy=JSON.parse(JSON.stringify(b));copy.saved=true;
+    const i=this.data().books.findIndex(x=>x.id===b.id);if(i>=0)this.data().books[i]=copy;else this.data().books.unshift(copy);
+    b.saved=true;Store.save();
+  },
+  saveToShelf(){const b=this.draft();if(!b||!b.chapters.length)return UI.toast('至少写完一章才能保存');this.upsertShelf();UI.toast('已保存到书架');this.renderReader();}
+};
+
 const Shopping = {
   categories:['全部','外卖','奢侈品','服装','化妆品','电子产品'],
   catalog:[

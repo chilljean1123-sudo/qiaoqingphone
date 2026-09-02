@@ -2546,6 +2546,66 @@
   .secret-private b { color:#c8797b; font-size:10px; }
   .secret-private p { margin-top:7px; color:#c9c3b9; white-space:pre-wrap; font:12px/1.7 "Songti SC",serif; }
   .secret-bottom { position:absolute; left:15px; right:15px; bottom:calc(14px + env(safe-area-inset-bottom,0px)); }
+
+  /* ============ 险境文字跑团 ============ */
+  #dangerHome,#dangerGame { background:#171a17; color:#e8e2d5; }
+  .danger-nav { background:rgba(23,26,23,.92)!important; border-bottom-color:rgba(209,183,125,.12)!important; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); }
+  .danger-nav .nav-back,.danger-nav .nav-title,.danger-nav .nav-action { color:#e8e2d5; }
+  .danger-body { flex:1; overflow-y:auto; padding:18px 15px 40px; background:radial-gradient(circle at 80% 4%,rgba(111,86,42,.18),transparent 28%),linear-gradient(#171a17,#1c211c); }
+  .danger-banner { position:relative; padding:24px 20px; border:1px solid rgba(209,183,125,.15); border-radius:25px; background:linear-gradient(145deg,#252b24,#171a17); overflow:hidden; box-shadow:0 18px 38px rgba(0,0,0,.2); }
+  .danger-banner:after { content:"⚔"; position:absolute; right:20px; top:16px; color:rgba(205,177,113,.2); font-size:65px; transform:rotate(-10deg); }
+  .danger-kicker { color:#a9905f; font-size:9px; letter-spacing:.22em; }
+  .danger-title { position:relative; z-index:1; margin-top:8px; font:700 27px/1.35 "Songti SC","STSong",serif; }
+  .danger-sub { position:relative; z-index:1; max-width:76%; margin-top:8px; color:#858878; font-size:10px; line-height:1.6; }
+  .danger-section-head { display:flex; align-items:center; justify-content:space-between; margin:22px 3px 10px; }
+  .danger-section-head strong { font-size:15px; }
+  .danger-section-head button { border:0; color:#c1a66d; background:none; font-size:10px; }
+  .danger-party { display:flex; gap:8px; overflow-x:auto; padding-bottom:3px; }
+  .danger-char { flex:none; display:flex; align-items:center; gap:7px; height:39px; padding:0 13px 0 6px; border:1px solid rgba(209,183,125,.14); border-radius:20px; color:#989b8c; background:#20241f; font-size:10px; }
+  .danger-char.on { color:#251f15; background:#d2bc89; border-color:#d2bc89; }
+  .danger-char .avatar { width:27px!important; height:27px!important; font-size:9px!important; }
+  .danger-save-card { padding:16px; border:1px solid rgba(143,171,126,.2); border-radius:20px; background:rgba(81,103,70,.13); }
+  .danger-save-top { display:flex; justify-content:space-between; color:#9cac90; font-size:10px; }
+  .danger-save-name { margin-top:7px; font:700 15px "Songti SC",serif; }
+  .danger-save-meta { margin-top:6px; color:#737b6e; font-size:9px; }
+  .danger-save-card button { width:100%; height:39px; margin-top:12px; border:0; border-radius:13px; color:#1c2519; background:#9caf91; font-size:11px; font-weight:700; }
+  .danger-quest { width:100%; margin-bottom:11px; padding:17px; border:1px solid rgba(209,183,125,.12); border-radius:21px; color:#ded8ca; text-align:left; background:#222720; box-shadow:0 12px 26px rgba(0,0,0,.13); }
+  .danger-quest-top { display:flex; gap:10px; align-items:flex-start; }
+  .danger-quest-seal { flex:none; width:39px; height:45px; display:grid; place-items:center; border-radius:5px 12px 12px 5px; color:#2c2417; background:#c5aa70; font-size:17px; }
+  .danger-quest-copy { min-width:0; flex:1; }
+  .danger-quest-name { font:700 15px/1.4 "Songti SC",serif; }
+  .danger-stars { margin-top:3px; color:#c9a75f; font-size:11px; letter-spacing:2px; }
+  .danger-quest-desc { margin-top:11px; color:#a2a294; font:11px/1.65 "Songti SC",serif; }
+  .danger-quest-foot { display:flex; justify-content:space-between; margin-top:12px; color:#777a6e; font-size:9px; }
+  .danger-empty { padding:55px 20px; text-align:center; color:#797c70; font:11px/1.8 "Songti SC",serif; }
+  .danger-game-shell { flex:1; min-height:0; display:flex; flex-direction:column; background:#171a17; }
+  .danger-hud { padding:10px 15px 11px; border-bottom:1px solid rgba(209,183,125,.1); background:#1d211d; }
+  .danger-hud-top { display:flex; justify-content:space-between; color:#aaa28f; font-size:9px; }
+  .danger-hp-line { display:flex; align-items:center; gap:9px; margin-top:7px; }
+  .danger-hp-track { flex:1; height:8px; overflow:hidden; border-radius:5px; background:#34372f; }
+  .danger-hp-fill { height:100%; border-radius:5px; background:linear-gradient(90deg,#7c302f,#bc5148); transition:.3s; }
+  .danger-hp-value { width:44px; color:#d8b6a9; font:10px ui-monospace,monospace; text-align:right; }
+  .danger-log { flex:1; overflow-y:auto; padding:16px 14px 190px; }
+  .danger-msg { margin-bottom:12px; }
+  .danger-msg-label { margin-bottom:5px; color:#817d70; font-size:9px; }
+  .danger-msg.host .danger-msg-label { color:#c0a56d; }
+  .danger-msg.char .danger-msg-label { color:#91a88a; }
+  .danger-msg.user { padding-left:34px; }
+  .danger-msg-box { padding:13px 14px; border-radius:16px; color:#c8c4b9; background:#222620; white-space:pre-wrap; font:12px/1.75 "Songti SC","STSong",serif; }
+  .danger-msg.host .danger-msg-box { border-left:2px solid #a88a4f; border-radius:3px 16px 16px 3px; background:#24271f; }
+  .danger-msg.char .danger-msg-box { border-left:2px solid #71846b; border-radius:3px 16px 16px 3px; }
+  .danger-msg.user .danger-msg-box { color:#282316; background:#c8b17c; }
+  .danger-msg.system .danger-msg-box { color:#a89d88; text-align:center; background:transparent; font-size:10px; }
+  .danger-controls { position:absolute; z-index:4; left:12px; right:12px; bottom:calc(12px + env(safe-area-inset-bottom,0px)); padding:10px; border:1px solid rgba(209,183,125,.13); border-radius:20px; background:rgba(27,31,27,.95); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); box-shadow:0 15px 35px rgba(0,0,0,.28); }
+  .danger-options { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .danger-option { min-height:53px; padding:10px; border:1px solid rgba(209,183,125,.13); border-radius:14px; color:#bbb6aa; background:#252923; font:10px/1.45 "Songti SC",serif; text-align:left; }
+  .danger-option:disabled { opacity:.35; }
+  .danger-identities { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .danger-identity { min-height:68px; padding:11px; border:1px solid rgba(209,183,125,.14); border-radius:14px; color:#c8c1b2; background:#242820; text-align:left; }
+  .danger-identity b { display:block; color:#d1b777; font-size:11px; }
+  .danger-identity span { display:block; margin-top:4px; color:#828579; font-size:9px; line-height:1.4; }
+  .danger-finish { width:100%; height:46px; border:0; border-radius:14px; color:#201b13; background:#c7af78; font-size:12px; font-weight:700; }
+  .danger-loading { padding:14px; color:#9d947f; text-align:center; font-size:10px; }
 </style>
 </head>
 <body>
@@ -2587,6 +2647,12 @@
           <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 10a3 3 0 1 1 6 0c0 2-3 2-3 4"/><path d="M12 17h.01"/></svg>
         </div>
         <div class="app-label">秘密</div>
+      </div>
+      <div class="app-icon" data-theme-app="danger" onclick="nav.go('dangerHome');Danger.renderHome()">
+        <div class="app-icon-box" data-app-icon="danger" style="background:linear-gradient(145deg,#34402f,#171a17);color:#d3ba82">
+          <svg viewBox="0 0 24 24"><path d="M12 3 4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7Z"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+        </div>
+        <div class="app-label">险境</div>
       </div>
     </div>
     <div class="home-dock"></div>
@@ -2657,6 +2723,17 @@
   <div class="screen hidden" id="secretDetail">
     <div class="nav-bar secret-nav"><div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>秘密</span></div><div class="nav-title">匿名帖</div><div class="secret-nav-actions"><button onclick="SecretForum.refreshComments()" aria-label="刷新评论"><svg viewBox="0 0 24 24"><path d="M20 6v5h-5"/><path d="M4 18v-5h5"/><path d="M18.5 9A7 7 0 0 0 6.2 6.2L4 8M5.5 15A7 7 0 0 0 17.8 17.8L20 16"/></svg></button></div></div>
     <div class="secret-detail-body"><div id="secretDetailPost"></div><div class="secret-comment-head"><strong>匿名回应</strong><button onclick="SecretForum.writeComment()">＋ 写一条新评论</button></div><div id="secretCommentList"></div></div>
+  </div>
+
+  <!-- ========== 险境文字跑团 ========== -->
+  <div class="screen hidden" id="dangerHome">
+    <div class="nav-bar danger-nav"><div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>主屏</span></div><div class="nav-title">险境</div><div class="nav-action" onclick="Danger.refreshQuests()"><svg viewBox="0 0 24 24"><path d="M20 6v5h-5"/><path d="M4 18v-5h5"/><path d="M18.5 9A7 7 0 0 0 6.2 6.2L4 8M5.5 15A7 7 0 0 0 17.8 17.8L20 16"/></svg></div></div>
+    <div class="danger-body"><div class="danger-banner"><div class="danger-kicker">TABLETOP ADVENTURE</div><div class="danger-title">掷骰之前，先选一个同行者</div><div class="danger-sub">原创高魔世界。主持人掌管迷雾、陷阱、判定与那些不怀好意的偶然。</div></div><div class="danger-section-head"><strong>同行角色</strong><span></span></div><div class="danger-party" id="dangerParty"></div><div id="dangerContinue"></div><div class="danger-section-head"><strong>委托告示</strong><button onclick="Danger.refreshQuests()">刷新三份任务</button></div><div id="dangerQuestList"></div></div>
+  </div>
+
+  <div class="screen hidden" id="dangerGame">
+    <div class="nav-bar danger-nav"><div class="nav-back" onclick="Danger.exitGame()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>存档退出</span></div><div class="nav-title" id="dangerGameTitle">冒险</div><div class="nav-action" onclick="Danger.saveGame()">保存</div></div>
+    <div class="danger-game-shell"><div class="danger-hud"><div class="danger-hud-top"><span id="dangerRound"></span><span id="dangerRoles"></span></div><div class="danger-hp-line"><div class="danger-hp-track"><div class="danger-hp-fill" id="dangerHpFill"></div></div><span class="danger-hp-value" id="dangerHpValue">100/100</span></div></div><div class="danger-log" id="dangerLog"></div><div class="danger-controls" id="dangerControls"></div></div>
   </div>
 
   <!-- ========== 设置 ========== -->
@@ -3737,6 +3814,9 @@ const Store = {
     this.data.secretForum = { ...d.secretForum, ...(this.data.secretForum || {}), settings: { ...d.secretForum.settings, ...((this.data.secretForum || {}).settings || {}) } };
     if (!Array.isArray(this.data.secretForum.posts)) this.data.secretForum.posts = [];
     if (!Array.isArray(this.data.secretForum.settings.characterIds)) this.data.secretForum.settings.characterIds = [];
+    this.data.danger = { ...d.danger, ...(this.data.danger || {}) };
+    if (!Array.isArray(this.data.danger.quests)) this.data.danger.quests = [];
+    if (!Array.isArray(this.data.danger.saves)) this.data.danger.saves = [];
     this.data.interactionSettings = { ...d.interactionSettings, ...(this.data.interactionSettings || {}) };
     if (!Array.isArray(this.data.interactionSettings.characterIds)) this.data.interactionSettings.characterIds = [];
     this.data.imgApi = { ...d.imgApi, ...(this.data.imgApi || {}) };
@@ -3781,6 +3861,7 @@ const Store = {
       regexRules: [],
       moodDiary: { entries: [], settings: { enabled: false, startHour: 21, endHour: 23, characterIds: [], targetDate: '', targetHour: 21 } },
       secretForum: { posts: [], settings: { rules: '', topics: '', characterIds: [] } },
+      danger: { quests: [], saves: [], selectedCharId: '', currentSaveId: '' },
       chats: {},        // { charId: [ {role,content,type,duration?,timestamp} ] }
       chatSettings: {},
       friendRequests: [],
@@ -4858,6 +4939,98 @@ const Theme = {
       UI.toast('外观已恢复默认');
     }, { danger: true, okText: '恢复' });
   }
+};
+
+/* ============================================================
+   险境文字跑团
+============================================================ */
+const Danger = {
+  busy:false,
+  data(){return Store.data.danger;},
+  save(){return this.data().saves.find(s=>s.id===this.data().currentSaveId);},
+  char(save=this.save()){return Store.data.characters.find(ch=>ch.id===(save?.charId||this.data().selectedCharId));},
+  parse(raw){
+    let text=String(raw||'').trim().replace(/^```(?:json)?/i,'').replace(/```$/,'').trim();
+    try{const a=text.indexOf('{'),b=text.lastIndexOf('}');if(a>=0&&b>a)return JSON.parse(text.slice(a,b+1));}catch(_){}
+    return {};
+  },
+  stars(n){return '★'.repeat(Math.max(1,Math.min(3,Number(n)||1)))+'☆'.repeat(3-Math.max(1,Math.min(3,Number(n)||1)));},
+  renderHome(){
+    const d=this.data(),party=document.getElementById('dangerParty');
+    party.innerHTML=Store.data.characters.map(ch=>'<button class="danger-char '+(d.selectedCharId===ch.id?'on':'')+'" onclick="Danger.selectChar(\''+ch.id+'\')">'+renderAvatar(ch)+'<span>'+escapeHtml(ch.name)+'</span></button>').join('')||'<div class="danger-empty" style="padding:20px">先在联系人里创建角色</div>';
+    const active=d.saves.find(s=>s.status==='playing');
+    document.getElementById('dangerContinue').innerHTML=active?'<div class="danger-section-head"><strong>未完的冒险</strong><span>已自动存档</span></div><div class="danger-save-card"><div class="danger-save-top"><span>'+escapeHtml(Store.data.characters.find(ch=>ch.id===active.charId)?.name||'同行者')+'</span><span>HP '+active.hp+'/100</span></div><div class="danger-save-name">'+escapeHtml(active.quest.title)+'</div><div class="danger-save-meta">第 '+active.round+' / '+active.targetRounds+' 轮 · '+this.stars(active.difficulty)+'</div><button onclick="Danger.continueGame(\''+active.id+'\')">继续存档</button></div>':'';
+    const quests=d.quests||[];
+    document.getElementById('dangerQuestList').innerHTML=quests.map(q=>'<button class="danger-quest" onclick="Danger.acceptQuest(\''+q.id+'\')"><div class="danger-quest-top"><span class="danger-quest-seal">✦</span><span class="danger-quest-copy"><span class="danger-quest-name">'+escapeHtml(q.title)+'</span><span class="danger-stars">'+this.stars(q.difficulty)+'</span></span></div><div class="danger-quest-desc">'+escapeHtml(q.description)+'</div><div class="danger-quest-foot"><span>'+escapeHtml(q.location||'未知之地')+'</span><span>预计 '+(q.difficulty===1?'4':q.difficulty===2?'7':'10')+' 轮</span></div></button>').join('')||'<div class="danger-empty">告示板被雨水打湿了<br>点击右上角刷新三份委托</div>';
+  },
+  selectChar(id){this.data().selectedCharId=id;Store.save();this.renderHome();},
+  fallbackQuests(){return [
+    {title:'雾沼失踪的钟声',description:'边境礼拜堂每到午夜便在无人敲击时鸣响，三名调查者进入沼泽后再未回来。',location:'灰苇沼泽',difficulty:1},
+    {title:'倒悬塔的契约',description:'一座倒悬在裂谷上空的法师塔重新亮起灯火，旧契约正在向附近村落索取代价。',location:'碎冠裂谷',difficulty:2},
+    {title:'无月城下的王骸',description:'地下王陵开启，死去的军团开始寻找一位并不存在的继承人，诸方势力都在赶往墓门。',location:'无月古城',difficulty:3}
+    ];},
+  async refreshQuests(){
+    if(this.busy)return;if(!API.getActive()){this.data().quests=this.fallbackQuests().map(q=>({...q,id:Store.uid()}));Store.save();this.renderHome();return;}
+    this.busy=true;UI.toast('主持人正在更换告示…');
+    const prompt='为原创高魔黑暗奇幻文字跑团生成三份差异明显的冒险委托，分别为简单、中等、困难。要有具体地点、冲突、悬念，不使用任何现成作品的专有角色或地名。严格返回JSON：{"quests":[{"title":"任务名","description":"80字内简介","location":"地点","difficulty":1},{"title":"任务名","description":"简介","location":"地点","difficulty":2},{"title":"任务名","description":"简介","location":"地点","difficulty":3}]}';
+    try{const out=this.parse(await API.chat([{role:'system',content:'你是高魔奇幻跑团主持人，只输出合法JSON。'},{role:'user',content:prompt}])),rows=Array.isArray(out.quests)?out.quests:this.fallbackQuests();this.data().quests=rows.slice(0,3).map((q,i)=>({id:Store.uid(),title:String(q.title||'无名委托').slice(0,60),description:String(q.description||'').slice(0,240),location:String(q.location||'未知之地').slice(0,40),difficulty:i+1}));Store.save();this.renderHome();}catch(_){this.data().quests=this.fallbackQuests().map(q=>({...q,id:Store.uid()}));Store.save();this.renderHome();}finally{this.busy=false;}
+  },
+  acceptQuest(id){
+    const quest=this.data().quests.find(q=>q.id===id),ch=Store.data.characters.find(x=>x.id===this.data().selectedCharId);
+    if(!ch){UI.toast('先选择同行角色');return;}if(!quest)return;
+    const save={id:Store.uid(),quest:JSON.parse(JSON.stringify(quest)),charId:ch.id,difficulty:quest.difficulty,targetRounds:quest.difficulty===1?4:quest.difficulty===2?7:10,round:0,hp:100,status:'playing',phase:'identity',userRole:'',charRole:this.pickCharRole(ch),messages:[{role:'system',content:'你与'+ch.name+'接下了委托《'+quest.title+'》。主持人正在铺开地图。'}],options:[],createdAt:Date.now(),updatedAt:Date.now()};
+    this.data().saves.unshift(save);this.data().currentSaveId=save.id;Store.save();this.openGame();
+  },
+  pickCharRole(ch){const roles=['暮誓战士','荒径游侠','秘法学者','影契游荡者','星辉祭司','吟游说客'];return roles[Math.abs(this.hash((ch.persona||'')+ch.name))%roles.length];},
+  hash(text){let h=0;for(const x of String(text))h=(Math.imul(h,31)+x.charCodeAt(0))|0;return h;},
+  continueGame(id){this.data().currentSaveId=id;Store.save();this.openGame();},
+  openGame(){const s=this.save();if(!s)return;document.getElementById('dangerGameTitle').textContent=s.quest.title;this.renderGame();nav.go('dangerGame');},
+  identities(){return [
+    {name:'铁誓卫士',desc:'护甲、威压与正面突破'},
+    {name:'秘法行者',desc:'法术、知识与危险实验'},
+    {name:'暮影游荡者',desc:'潜行、机关与不光彩的办法'},
+    {name:'余烬祭司',desc:'治疗、感知与古老信仰'}
+  ];},
+  chooseIdentity(name){const s=this.save();if(!s||s.phase!=='identity')return;s.userRole=name;s.phase='playing';s.messages.push({role:'user',content:'我选择成为「'+name+'」。'});s.messages.push({role:'char',content:'那我就是「'+s.charRole+'」。别指望我每次都替你收拾残局。'});Store.save();this.generateOpening();},
+  async generateOpening(){
+    const s=this.save(),ch=this.char();if(!s||!ch||this.busy)return;this.busy=true;this.renderGame();
+    const prompt='你是原创高魔黑暗奇幻文字跑团主持人。为任务开场，先描述当前环境、危险迹象和眼前目标，再让同行角色先给一句符合人设的建议或吐槽，最后给玩家四个方向明显不同的行动选项。严格返回JSON：{"narration":"环境与事件","charLine":"角色先发言","options":["选项1","选项2","选项3","选项4"]}。\n任务：'+JSON.stringify(s.quest)+'\n玩家身份：'+s.userRole+'\n同行者：'+ch.name+'，身份：'+s.charRole+'，人设：'+(ch.persona||'');
+    try{const out=this.parse(await API.chat([{role:'system',content:'只输出合法JSON，不替玩家选择。'},{role:'user',content:prompt}]));s.messages.push({role:'host',content:String(out.narration||'冷雨落在石板路上，远处的废墟中亮起一盏不该存在的灯。')});s.messages.push({role:'char',content:String(out.charLine||'先看清退路，再决定要不要逞强。')});s.options=this.normalizeOptions(out.options);Store.save();}catch(_){s.messages.push({role:'host',content:'你们抵达'+s.quest.location+'。风里有铁锈与潮湿泥土的气味，前方留下了三种不同的足迹。'});s.messages.push({role:'char',content:'我有种不太好的预感，不过现在回头也太没面子了。'});s.options=this.normalizeOptions([]);Store.save();}finally{this.busy=false;this.renderGame();}
+  },
+  normalizeOptions(options){const fallback=['正面调查最明显的线索','绕到侧面寻找隐蔽入口','先观察环境并检定知识','制造动静引出藏匿者'];const list=Array.isArray(options)?options.map(x=>String(x||'').slice(0,100)).filter(Boolean):[];while(list.length<4)list.push(fallback[list.length]);return list.slice(0,4);},
+  renderGame(){
+    const s=this.save();if(!s)return;const ch=this.char(s);
+    document.getElementById('dangerRound').textContent='第 '+s.round+' / '+s.targetRounds+' 轮 · '+this.stars(s.difficulty);
+    document.getElementById('dangerRoles').textContent=(s.userRole||'待选身份')+' × '+(s.charRole||'同行者');
+    document.getElementById('dangerHpValue').textContent=s.hp+'/100';document.getElementById('dangerHpFill').style.width=Math.max(0,s.hp)+'%';
+    document.getElementById('dangerLog').innerHTML=(s.messages||[]).map(m=>'<div class="danger-msg '+m.role+'"><div class="danger-msg-label">'+(m.role==='host'?'主持人':m.role==='char'?escapeHtml(ch?.name||'同行者'):m.role==='user'?'你的行动':'命运记录')+'</div><div class="danger-msg-box">'+escapeHtml(m.content)+'</div></div>').join('');
+    const controls=document.getElementById('dangerControls');
+    if(s.status!=='playing'){controls.innerHTML='<button class="danger-finish" onclick="Danger.returnBoard()">返回委托告示</button>';}
+    else if(s.phase==='identity'){controls.innerHTML='<div class="danger-identities">'+this.identities().map(r=>'<button class="danger-identity" onclick="Danger.chooseIdentity(\''+r.name+'\')"><b>'+r.name+'</b><span>'+r.desc+'</span></button>').join('')+'</div>';}
+    else if(this.busy){controls.innerHTML='<div class="danger-loading">骰子正在桌面上滚动……</div>';}
+    else{controls.innerHTML='<div class="danger-options">'+(s.options||[]).map((o,i)=>'<button class="danger-option" onclick="Danger.chooseOption('+i+')">'+(i+1)+'. '+escapeHtml(o)+'</button>').join('')+'</div>';}
+    setTimeout(()=>{const log=document.getElementById('dangerLog');log.scrollTop=log.scrollHeight;},30);
+  },
+  async chooseOption(index){
+    const s=this.save(),ch=this.char();if(!s||!ch||this.busy||!s.options[index])return;const choice=s.options[index];s.messages.push({role:'user',content:choice});s.options=[];s.round++;this.busy=true;this.renderGame();
+    const roll=1+Math.floor(Math.random()*20),threshold=s.difficulty===1?8:s.difficulty===2?11:14,success=roll>=threshold;
+    const damage=!success&&Math.random()<.72?8+Math.floor(Math.random()*(9+s.difficulty*5)):0,heal=success&&Math.random()<.18?6+Math.floor(Math.random()*15):0;
+    s.hp=Math.max(0,Math.min(100,s.hp-damage+heal));
+    const final=s.hp<=0?'failure':s.round>=s.targetRounds?'success':'';
+    const history=s.messages.slice(-10).map(m=>m.role+':'+m.content).join('\n');
+    const prompt='你是原创高魔奇幻跑团主持人。玩家选择后，依据给定骰点判定描述结果；如果冒险未结束，推进场景并给四个不同方向的新选项，同行角色必须在选项出现前先建议或吐槽。如果标注任务结束，就给结局，不再给选项。严格返回JSON：{"narration":"判定、伤害或回血及新环境","charLine":"同行角色发言","options":["1","2","3","4"],"ending":"结束时的结局文字"}。\n任务：'+s.quest.title+'\n轮数：'+s.round+'/'+s.targetRounds+'\n玩家身份：'+s.userRole+'\n同行角色：'+ch.name+'，'+s.charRole+'，人设：'+(ch.persona||'')+'\n玩家选择：'+choice+'\n骰点：'+roll+'，难度阈值：'+threshold+'，判定：'+(success?'通过':'失败')+'，扣血：'+damage+'，回血：'+heal+'，当前HP：'+s.hp+'\n任务结束：'+(final||'否')+'\n近期记录：'+history;
+    try{const out=this.parse(await API.chat([{role:'system',content:'严格主持判定，只输出JSON，不修改给定骰点与血量。'},{role:'user',content:prompt}]));s.messages.push({role:'host',content:String(out.narration||('骰点 '+roll+'，'+(success?'判定通过。':'判定失败。')+(damage?' 你失去 '+damage+' 点生命。':'')+(heal?' 偶发事件使你恢复 '+heal+' 点生命。':'')))});if(out.charLine)s.messages.push({role:'char',content:String(out.charLine)});if(final&&out.ending)s.messages.push({role:'host',content:String(out.ending)});s.options=final?[]:this.normalizeOptions(out.options);}catch(_){s.messages.push({role:'host',content:'骰点 '+roll+'：'+(success?'行动奏效，局势向前推进。':'行动出了岔子。')+(damage?' 你失去 '+damage+' 点生命。':'')+(heal?' 你意外恢复 '+heal+' 点生命。':'')});s.messages.push({role:'char',content:success?'这回运气站在我们这边。':'我就知道不会这么顺利。'});s.options=final?[]:this.normalizeOptions([]);}
+    if(final)await this.finish(final);else{this.busy=false;s.updatedAt=Date.now();Store.save();this.renderGame();}
+  },
+  async finish(status){
+    const s=this.save(),ch=this.char();if(!s||!ch)return;s.status=status;s.phase='finished';s.options=[];s.messages.push({role:'system',content:status==='success'?'任务完成。篝火旁终于可以卸下武器。':'任务失败。你的生命值已经归零，故事在这里暂时中断。'});
+    const prompt='冒险已经'+(status==='success'?'完成':'失败')+'。你是'+ch.name+'，请结合你的人设、这次搭档的表现和结局，发表一段自然的感想，可以吐槽、安慰、佩服、后怕或不服气，不超过400字。\n角色人设：'+(ch.persona||'')+'\n任务：'+s.quest.title+'\n玩家身份：'+s.userRole+'\n剩余HP：'+s.hp+'\n冒险记录：'+s.messages.slice(-12).map(m=>m.content).join('\n');
+    try{const thought=String(await API.chat([{role:'system',content:'保持角色身份，直接说感想。'},{role:'user',content:prompt}])).slice(0,500);s.messages.push({role:'char',content:thought});}catch(_){s.messages.push({role:'char',content:status==='success'?'至少我们都活着回来了，这趟够我说很久。':'别摆出那副表情。输一次而已，下次我还跟你去。'});}
+    this.busy=false;s.updatedAt=Date.now();Store.save();this.renderGame();
+  },
+  saveGame(){const s=this.save();if(!s)return;s.updatedAt=Date.now();Store.save();UI.toast('冒险已存档');},
+  exitGame(){this.saveGame();nav.back();this.renderHome();},
+  returnBoard(){this.data().currentSaveId='';Store.save();nav.back();this.renderHome();}
 };
 
 /* ============================================================

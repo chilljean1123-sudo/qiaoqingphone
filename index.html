@@ -2269,8 +2269,10 @@
 
 
   /* ============ 聊天气泡美化 ============ */
-  #chat .msg-row.self .msg-bubble { background:var(--chat-self-bubble,#007AFF); color:var(--chat-self-text,#fff); font-size:var(--chat-bubble-font,16px); }
-  #chat .msg-row.other .msg-bubble { background:var(--chat-other-bubble,#E9E9EB); color:var(--chat-other-text,#1C1C1E); font-size:var(--chat-bubble-font,16px); }
+  #chat .msg-row.self .msg-bubble:not(.system) { background:var(--chat-self-bubble,#007AFF); color:var(--chat-self-text,#fff); font-size:var(--chat-bubble-font,16px) !important; }
+  #chat .msg-row.other .msg-bubble:not(.system) { background:var(--chat-other-bubble,#E9E9EB); color:var(--chat-other-text,#1C1C1E); font-size:var(--chat-bubble-font,16px) !important; }
+  #chat .msg-row .msg-bubble:not(.system) .msg-voice-text,
+  #chat .msg-row .msg-bubble:not(.system) .msg-photo-desc { font-size:inherit !important; }
   .chat-beauty-screen { position:absolute; z-index:208; inset:0; display:none; flex-direction:column; background:#f4f4f7; color:#222b37; }
   .chat-beauty-screen.show { display:flex; }
   .chat-beauty-body { flex:1; overflow-y:auto; padding:18px 15px 32px; }
@@ -3578,6 +3580,8 @@ const nav = {
 ============================================================ */
 const Push = {
   syncTimer: null,
+  pullPromise: null,
+  recoveryTimer: null,
   cfg() { return Store.data.notificationSettings; },
   baseUrl() { return String(this.cfg().supabaseUrl || '').trim().replace(/\/+$/, ''); },
   randomHex(bytes = 16) {
@@ -3821,11 +3825,20 @@ const Push = {
   },
   async pull() {
     if (!this.cfg().enabled || !this.isConfigured()) return [];
-    const result = await this.gateway('pull');
-    const rows = Array.isArray(result.messages) ? result.messages : [];
-    const ids = await this.injectMessages(rows);
-    if (ids.length) await this.gateway('ack', { messageIds: ids });
-    return rows;
+    if (this.pullPromise) return this.pullPromise;
+    this.pullPromise = (async () => {
+      const result = await this.gateway('pull');
+      const rows = Array.isArray(result.messages) ? result.messages : [];
+      const ids = await this.injectMessages(rows);
+      if (ids.length) await this.gateway('ack', { messageIds: ids });
+      return rows;
+    })();
+    try { return await this.pullPromise; }
+    finally { this.pullPromise = null; }
+  },
+  recover() {
+    if (document.visibilityState !== 'visible') return;
+    this.pull().catch(error => console.warn('message recovery pull failed', error));
   },
   canRelayChat() {
     return !!(this.cfg().enabled && this.isConfigured() && this.cfg().deviceId);
@@ -3890,8 +3903,13 @@ const Push = {
       }
     });
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') this.pull().catch(() => {});
+      if (document.visibilityState === 'visible') this.recover();
     });
+    window.addEventListener('pageshow', () => this.recover());
+    window.addEventListener('focus', () => this.recover());
+    window.addEventListener('online', () => this.recover());
+    clearInterval(this.recoveryTimer);
+    this.recoveryTimer = setInterval(() => this.recover(), 8000);
   }
 };
 
@@ -6042,7 +6060,7 @@ const ChatSettings = {
     const pin='<svg viewBox="0 0 24 24"><path d="m15 4 5 5-4 2-3 5-2-2-5 5-1-1 5-5-2-2 5-3Z"/></svg>';
     const image='<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-4 4-2-2-7 6"/></svg>';
     const reply='<svg viewBox="0 0 24 24"><path d="M9 17 4 12l5-5"/><path d="M4 12h9a6 6 0 0 1 6 6v1"/></svg>';
-    const palette='<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18h1.5a1.5 1.5 0 0 0 0-3H12a2 2 0 0 1 0-4h3a6 6 0 0 0 0-12Z"/><circle cx="8" cy="10" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="14" cy="7" r="1"/></svg>';
+    const palette='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M4 12h4M12 12h8"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/><circle cx="10" cy="12" r="2"/></svg>';
     const box=document.getElementById('chatSettingsBody');
     box.innerHTML='<div class="chat-settings-profile">'+renderAvatar(ch,'large')+'<div><div class="chat-settings-profile-name">'+escapeHtml(this.name(ch))+'</div></div></div>'+
       '<div class="chat-settings-group">'+row(palette,'聊天美化','',"ChatSettings.openBeauty()",arrow)+row(person,'备注',c.remark||'未设置',"ChatSettings.editRemark()",arrow)+row(search,'查找聊天记录','',"ChatSettings.openSearch()",arrow)+row(pin,'置顶聊天','',"ChatSettings.toggle(\'pinned\')",'<span class="chat-setting-switch '+(c.pinned?'on':'')+'"></span>')+'</div>'+
@@ -6081,6 +6099,8 @@ const ChatSettings = {
     a.style.background=self;a.style.color=this.contrast(self);a.style.fontSize=size+'px';
     b.style.background=other;b.style.color=this.contrast(other);b.style.fontSize=size+'px';
     document.getElementById('beautyFontValue').textContent=size+'px';
+    const screen=document.getElementById('chat');
+    if(screen) screen.style.setProperty('--chat-bubble-font',Math.max(11,Math.min(24,Number(size)||16))+'px');
   },
   saveBeauty(){
     const c=this.cfg();c.selfBubbleColor=document.getElementById('beautySelfColor').value;c.otherBubbleColor=document.getElementById('beautyOtherColor').value;c.bubbleFontSize=Number(document.getElementById('beautyFontSize').value)||16;

@@ -617,7 +617,7 @@
   .chat-header-info {
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 62%;
     transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
@@ -625,33 +625,33 @@
     z-index: 1;
   }
   .chat-header-info .avatar {
-    width: 64px;
-    height: 64px;
-    font-size: 24px;
+    width: 82px;
+    height: 82px;
+    font-size: 30px;
   }
   .chat-header-info .name {
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 650;
     color: #1C1C1E;
-    margin-top: 7px;
+    margin-top: 9px;
     max-width: 220px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   .chat-header-status {
-    margin-top: 2px;
-    font-size: 11px;
+    margin-top: 3px;
+    font-size: 12px;
     color: #007AFF;
-    height: 14px;
-    line-height: 14px;
+    height: 15px;
+    line-height: 15px;
   }
   .chat-screen .nav-bar {
     background: transparent;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     border-bottom: 0;
-    min-height: 114px;
+    min-height: 152px;
   }
   .chat-messages {
     padding: 12px;
@@ -2363,7 +2363,7 @@
   .wb-new-card { border:1.5px dashed #cfc9be; background:rgba(255,255,255,.42); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#8e887f; }
   .wb-new-plus { width:54px; height:54px; display:grid; place-items:center; border-radius:50%; background:#fff; font-size:30px; font-weight:250; box-shadow:0 7px 18px rgba(67,60,49,.1); }
   .wb-new-label { margin-top:13px; font-size:13px; font-weight:650; }
-  .wb-editor-body { padding:15px 15px 110px; overflow-y:auto; }
+  .wb-editor-body { padding:15px 15px 110px; overflow-y:auto; overflow-x:hidden; }
   .wb-cover-card { padding:18px; border-radius:25px; background:linear-gradient(145deg,#474138,#776e60); color:#fff; }
   .wb-title-input,.wb-desc-input { width:100%; border:0; outline:0; color:#fff; background:transparent; }
   .wb-title-input { font-size:24px; font-weight:760; }
@@ -2385,8 +2385,8 @@
   .wb-entry-mark { flex:none; width:39px; height:39px; display:grid; place-items:center; border-radius:13px; background:#eeeae2; color:#6f6659; }
   .wb-entry-mark svg { width:21px; height:21px; fill:none; stroke:currentColor; stroke-width:1.8; }
   .wb-entry-copy { min-width:0; flex:1; }
-  .wb-entry-name { font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .wb-entry-preview { margin-top:4px; color:#99938a; font-size:10px; line-height:1.45; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .wb-entry-name { display:block; max-width:100%; font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .wb-entry-preview { display:block; max-width:100%; margin-top:4px; color:#99938a; font-size:10px; line-height:1.45; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .wb-entry-tags { display:flex; gap:5px; margin-top:8px; }
   .wb-entry-toggle { flex:none; width:36px; height:22px; padding:3px; border-radius:12px; background:#d8d5cf; }
   .wb-entry-toggle:after { content:""; display:block; width:16px; height:16px; border-radius:50%; background:#fff; transition:.2s; }
@@ -7923,7 +7923,7 @@ const Chat = {
     }
   },
   typingDelay(text) {
-    return Math.min(2600, Math.max(550, String(text||'').length * 55));
+    return Math.min(2000, Math.max(1000, String(text||'').length * 60));
   },
   // 把一行文字按句末标点进一步拆开，防止角色把好几句话写成不带换行的
   // 一整段，导致挤在同一个气泡里；标记（如 [转账:...]）内部没有句末标点，

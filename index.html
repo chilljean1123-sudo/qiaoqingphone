@@ -2213,6 +2213,51 @@
   .char-edit-photo-btn { margin-top:14px; padding:9px 22px; border:0; border-radius:20px; background:rgba(120,120,128,.16); color:#3c3c43; font-size:13px; }
   .char-edit-body { flex:1; overflow-y:auto; padding:18px 0 40px; }
 
+
+  /* ============ 聊天设置 ============ */
+  .chat-settings-screen,.chat-search-screen { position:absolute; z-index:206; inset:0; display:none; flex-direction:column; background:#f3f3f6; color:#202936; }
+  .chat-settings-screen.show,.chat-search-screen.show { display:flex; }
+  .chat-settings-head { height:65px; flex:0 0 auto; display:grid; grid-template-columns:58px 1fr 58px; align-items:center; background:rgba(255,255,255,.92); border-bottom:1px solid #e8e9ec; }
+  .chat-settings-head strong { text-align:center; font-size:17px; }
+  .chat-settings-head button { width:44px;height:44px;margin:auto;border:0;background:transparent;display:grid;place-items:center; }
+  .chat-settings-head svg { width:24px;fill:none;stroke:currentColor;stroke-width:1.8; }
+  .chat-settings-body { flex:1;overflow-y:auto;padding:14px 14px 34px; }
+  .chat-settings-profile { padding:20px;display:flex;align-items:center;gap:13px;border-radius:22px;background:#fff; }
+  .chat-settings-profile .avatar { width:55px;height:55px;font-size:20px; }
+  .chat-settings-profile-name { font-size:17px;font-weight:700; }
+  .chat-settings-profile-origin { margin-top:4px;color:#9a9da4;font-size:10px; }
+  .chat-settings-group { margin-top:13px;overflow:hidden;border-radius:20px;background:#fff; }
+  .chat-setting-row { width:100%;min-height:58px;padding:0 17px;border:0;border-bottom:1px solid #eeeeF1;background:transparent;display:flex;align-items:center;gap:12px;text-align:left; }
+  .chat-setting-row:last-child { border-bottom:0; }
+  .chat-setting-row-icon { width:28px;height:28px;display:grid;place-items:center;color:#566171; }
+  .chat-setting-row-icon svg { width:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round; }
+  .chat-setting-row-copy { flex:1;min-width:0; }
+  .chat-setting-row-title { font-size:13px; }
+  .chat-setting-row-value { margin-top:3px;color:#9a9da4;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+  .chat-setting-chevron { width:18px;fill:none;stroke:#b5b7bc;stroke-width:2; }
+  .chat-setting-switch { width:45px;height:27px;padding:3px;border-radius:15px;background:#d4d5d9; }
+  .chat-setting-switch::after { content:"";display:block;width:21px;height:21px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.13); }
+  .chat-setting-switch.on { background:#3d3b39; }
+  .chat-setting-switch.on::after { transform:translateX(18px); }
+  .chat-setting-danger { color:#e34e49;justify-content:center;font-size:13px; }
+  .chat-wallpaper-thumb { width:34px;height:34px;border-radius:9px;background:#eceef1 center/cover no-repeat;border:1px solid #e1e2e5; }
+  .chat-search-box { margin:12px 14px;padding:0 13px;height:43px;border-radius:14px;background:#e8e9ed;display:flex;align-items:center;gap:8px; }
+  .chat-search-box svg { width:18px;fill:none;stroke:#888d95;stroke-width:1.8; }
+  .chat-search-box input { flex:1;border:0;outline:0;background:transparent;font:inherit;font-size:13px; }
+  .chat-search-results { flex:1;overflow-y:auto;padding:0 14px 24px; }
+  .chat-search-item { width:100%;padding:13px 15px;margin-bottom:8px;border:0;border-radius:15px;background:#fff;text-align:left; }
+  .chat-search-item-text { font-size:12px;line-height:1.45; }
+  .chat-search-item-time { margin-top:5px;color:#a0a3a9;font-size:9px; }
+  .friend-request-card { margin:10px 14px;padding:14px;border-radius:18px;background:#f3f6fb;border:1px solid #e5eaf2; }
+  .friend-request-head { display:flex;align-items:center;gap:9px; }
+  .friend-request-head .avatar { width:38px;height:38px;font-size:14px; }
+  .friend-request-name { font-size:12px;font-weight:700; }
+  .friend-request-reason { margin:9px 0;color:#747b86;font-size:10px;line-height:1.45; }
+  .friend-request-actions { display:flex;gap:8px; }
+  .friend-request-actions button { flex:1;height:34px;border:0;border-radius:11px;background:#e7e9ed;font-size:10px; }
+  .friend-request-actions .accept { background:#3c4149;color:#fff; }
+  #chat .nav-bar { background:transparent !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important; border-bottom:0 !important; }
+
 </style>
 </head>
 <body>
@@ -3028,6 +3073,18 @@
 
 
 
+
+  <div class="chat-settings-screen" id="chatSettingsScreen">
+    <header class="chat-settings-head"><button onclick="ChatSettings.close()"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button><strong>聊天设置</strong><span></span></header>
+    <div class="chat-settings-body" id="chatSettingsBody"></div>
+  </div>
+  <div class="chat-search-screen" id="chatSearchScreen">
+    <header class="chat-settings-head"><button onclick="ChatSettings.closeSearch()"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button><strong>查找聊天记录</strong><span></span></header>
+    <label class="chat-search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="chatRecordSearch" type="search" placeholder="搜索文字、语音内容" oninput="ChatSettings.search(this.value)"></label>
+    <div class="chat-search-results" id="chatSearchResults"></div>
+  </div>
+  <input type="file" id="chatSettingImageInput" accept="image/*" hidden onchange="ChatSettings.importImage(event)">
+
   <div class="interaction-screen" id="interactionScreen">
     <header class="interaction-head">
       <button onclick="Interactions.close()" aria-label="返回"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
@@ -3212,6 +3269,8 @@ const Store = {
     const d = this.defaults();
     for (const k in d) if (!(k in this.data)) this.data[k] = d[k];
     this.data.chatReadAt = { ...d.chatReadAt, ...(this.data.chatReadAt || {}) };
+    this.data.chatSettings = { ...d.chatSettings, ...(this.data.chatSettings || {}) };
+    if (!Array.isArray(this.data.friendRequests)) this.data.friendRequests = [];
     if (!Array.isArray(this.data.favoriteMessages)) this.data.favoriteMessages = [];
     if (!Array.isArray(this.data.stickerGroups)) this.data.stickerGroups = [];
     this.data.interactionSettings = { ...d.interactionSettings, ...(this.data.interactionSettings || {}) };
@@ -3256,6 +3315,8 @@ const Store = {
       characters: [],
       worldBooks: [],
       chats: {},        // { charId: [ {role,content,type,duration?,timestamp} ] }
+      chatSettings: {},
+      friendRequests: [],
       chatReadAt: {},   // { charId: lastOpenedTimestamp }
       stickers: [],     // [ {id, name, dataUrl} ]
       favoriteMessages: [],
@@ -5654,7 +5715,7 @@ const Msg = {
         if (last.role === 'user') preview = '你：' + preview;
         return { ch, last, preview };
       })
-      .sort((a, b) => b.last.timestamp - a.last.timestamp);
+      .sort((a, b) => (Number(ChatSettings.cfg(b.ch.id).pinned)-Number(ChatSettings.cfg(a.ch.id).pinned)) || b.last.timestamp - a.last.timestamp);
 
     const head = `
       <div class="ios-messages-head">
@@ -5678,7 +5739,8 @@ const Msg = {
     c.innerHTML = head + '<div class="ios-chat-list">' + rows.map(r => {
       const readAt = Number(Store.data.chatReadAt?.[r.ch.id]) || 0;
       const unread = r.last.role === 'assistant' && Number(r.last.timestamp) > readAt;
-      const search = escapeHtml((r.ch.name + ' ' + r.preview).toLowerCase());
+      const displayName = ChatSettings.name(r.ch);
+      const search = escapeHtml((displayName + ' ' + r.ch.name + ' ' + r.preview).toLowerCase());
       return `
       <div class="chat-row ${unread ? 'unread' : ''}" data-search="${search}" onclick="Chat.open('${r.ch.id}')">
         <div class="ios-avatar-slot">
@@ -5687,7 +5749,7 @@ const Msg = {
         </div>
         <div class="chat-info">
           <div class="chat-name-line">
-            <div class="chat-name">${escapeHtml(r.ch.name)}</div>
+            <div class="chat-name">${ChatSettings.cfg(r.ch.id).pinned?"⌃ ":""}${escapeHtml(displayName)}</div>
             <span class="chat-time">${formatTime(r.last.timestamp)}</span>
             <span class="chat-chevron">›</span>
           </div>
@@ -5730,8 +5792,9 @@ const Msg = {
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
       <input type="search" placeholder="搜索" oninput="Msg.filterContacts(this.value)">
     </label></div>`;
+    const requests = ChatSettings.requestsHtml();
     if (!Store.data.characters.length) {
-      c.innerHTML = search + `<div class="empty ios-contact-empty">
+      c.innerHTML = search + requests + `<div class="empty ios-contact-empty">
         <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <div class="empty-title">还没有联系人</div><div class="empty-sub">点击右上角 + 创建自定义角色</div>
       </div>`;
@@ -5749,7 +5812,7 @@ const Msg = {
         ${renderAvatar(ch)}<div class="ios-contact-name">${escapeHtml(ch.name)}</div>
       </div>`).join('')}
     </section>`).join('');
-    c.innerHTML=search+index+'<div class="ios-contact-groups">'+body+'</div>';
+    c.innerHTML=search+requests+index+'<div class="ios-contact-groups">'+body+'</div>';
   },
   renderMoments() {
     const c = document.getElementById('tab-moments');
@@ -5803,6 +5866,77 @@ const Msg = {
 /* ============================================================
    聊天
 ============================================================ */
+const ChatSettings = {
+  imageTarget:'chatBackground', autoTimer:null,
+  cfg(id=Chat.currentId){
+    if(!id)return {};
+    const all=Store.data.chatSettings||(Store.data.chatSettings={});
+    return all[id]||(all[id]={remark:'',pinned:false,chatBackground:'',voiceBackground:'',videoBackground:'',autoReplyOnBlur:false});
+  },
+  char(){ return Store.data.characters.find(x=>x.id===Chat.currentId); },
+  name(ch=this.char()){ return this.cfg(ch?.id).remark||ch?.name||''; },
+  open(){ if(!this.char())return;this.render();document.getElementById('chatSettingsScreen').classList.add('show'); },
+  close(){ document.getElementById('chatSettingsScreen').classList.remove('show'); },
+  render(){
+    const ch=this.char(),c=this.cfg();if(!ch)return;
+    const row=(icon,title,value,action,extra='')=>'<button class="chat-setting-row" onclick="'+action+'"><span class="chat-setting-row-icon">'+icon+'</span><span class="chat-setting-row-copy"><span class="chat-setting-row-title">'+title+'</span>'+(value?'<span class="chat-setting-row-value">'+escapeHtml(value)+'</span>':'')+'</span>'+extra+'</button>';
+    const arrow='<svg class="chat-setting-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>';
+    const pic=(key)=>'<span class="chat-wallpaper-thumb" style="'+(c[key]?'background-image:url('+c[key]+')':'')+'"></span>';
+    const person='<svg viewBox="0 0 24 24"><path d="M4 20a8 8 0 0 1 16 0"/><circle cx="12" cy="7" r="4"/></svg>';
+    const search='<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg>';
+    const pin='<svg viewBox="0 0 24 24"><path d="m15 4 5 5-4 2-3 5-2-2-5 5-1-1 5-5-2-2 5-3Z"/></svg>';
+    const image='<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-4 4-2-2-7 6"/></svg>';
+    const reply='<svg viewBox="0 0 24 24"><path d="M9 17 4 12l5-5"/><path d="M4 12h9a6 6 0 0 1 6 6v1"/></svg>';
+    box=document.getElementById('chatSettingsBody');
+    box.innerHTML='<div class="chat-settings-profile">'+renderAvatar(ch,'large')+'<div><div class="chat-settings-profile-name">'+escapeHtml(this.name(ch))+'</div><div class="chat-settings-profile-origin">角色原名：'+escapeHtml(ch.name)+'</div></div></div>'+
+      '<div class="chat-settings-group">'+row(person,'备注',c.remark||'未设置',"ChatSettings.editRemark()",arrow)+row(search,'查找聊天记录','',"ChatSettings.openSearch()",arrow)+row(pin,'置顶聊天','',"ChatSettings.toggle(\'pinned\')",'<span class="chat-setting-switch '+(c.pinned?'on':'')+'"></span>')+'</div>'+
+      '<div class="chat-settings-group">'+row(image,'聊天背景','',"ChatSettings.pickImage(\'chatBackground\')",pic('chatBackground'))+row(image,'电话背景','',"ChatSettings.pickImage(\'voiceBackground\')",pic('voiceBackground'))+row(image,'视频通话背景','',"ChatSettings.pickImage(\'videoBackground\')",pic('videoBackground'))+'</div>'+
+      '<div class="chat-settings-group">'+row(reply,'收起键盘后自动回复','间隔 3 秒',"ChatSettings.toggle(\'autoReplyOnBlur\')",'<span class="chat-setting-switch '+(c.autoReplyOnBlur?'on':'')+'"></span>')+'</div>'+
+      '<div class="chat-settings-group"><button class="chat-setting-row chat-setting-danger" onclick="ChatSettings.deleteFriend()">删除好友</button><button class="chat-setting-row chat-setting-danger" onclick="ChatSettings.clear()">清空聊天记录</button></div>';
+  },
+  editRemark(){const c=this.cfg();UI.prompt('设置备注','不会修改角色原名',c.remark||'',v=>{c.remark=String(v||'').trim();Store.save();this.apply();this.render();Msg.renderChats();});},
+  toggle(key){const c=this.cfg();c[key]=!c[key];Store.save();this.render();if(key==='pinned')Msg.renderChats();},
+  pickImage(key){this.imageTarget=key;document.getElementById('chatSettingImageInput').click();},
+  async importImage(e){const f=e.target.files[0];e.target.value='';if(!f)return;try{this.cfg()[this.imageTarget]=await Theme.resizeImage(f,1600,1600,.86);Store.save();this.apply();this.render();UI.toast('背景已更新');}catch(_){UI.toast('图片读取失败');}},
+  apply(){
+    const ch=this.char(),c=this.cfg();if(!ch)return;
+    const screen=document.getElementById('chat');screen.style.backgroundImage=c.chatBackground?'url('+c.chatBackground+')':'';
+    document.getElementById('chatHeaderInfo').innerHTML=renderAvatar(ch)+'<span class="name">'+escapeHtml(this.name(ch))+'</span><span class="chat-header-status" id="chatHeaderStatus"></span>';
+  },
+  openSearch(){document.getElementById('chatRecordSearch').value='';document.getElementById('chatSearchResults').innerHTML='<div style="padding:50px;text-align:center;color:#999;font-size:11px">输入关键词查找</div>';document.getElementById('chatSearchScreen').classList.add('show');},
+  closeSearch(){document.getElementById('chatSearchScreen').classList.remove('show');},
+  search(q){
+    q=String(q||'').trim().toLowerCase();const msgs=Store.data.chats[Chat.currentId]||[],box=document.getElementById('chatSearchResults');
+    if(!q){box.innerHTML='';return;}
+    const rows=msgs.map((m,i)=>({m,i})).filter(x=>String(x.m.content||'').toLowerCase().includes(q));
+    box.innerHTML=rows.map(x=>'<button class="chat-search-item" onclick="ChatSettings.jump('+x.i+')"><div class="chat-search-item-text">'+escapeHtml(x.m.content)+'</div><div class="chat-search-item-time">'+formatDay(x.m.timestamp)+'</div></button>').join('')||'<div style="padding:50px;text-align:center;color:#999;font-size:11px">没有找到相关记录</div>';
+  },
+  jump(i){this.closeSearch();this.close();setTimeout(()=>{const el=document.querySelector('[data-msg-index="'+i+'"]');el?.scrollIntoView({behavior:'smooth',block:'center'});},120);},
+  scheduleAutoReply(){
+    if(!this.cfg().autoReplyOnBlur)return;
+    clearTimeout(this.autoTimer);
+    this.autoTimer=setTimeout(()=>{if(!Chat.loading)Chat.askAI();},3000);
+  },
+  clear(){UI.confirm('清空聊天记录','当前聊天中的全部消息将被删除',()=>{delete Store.data.chats[Chat.currentId];Store.save();Chat.render();this.close();},{danger:true,okText:'清空'});},
+  async deleteFriend(){
+    const ch=this.char();if(!ch)return;
+    UI.prompt('删除好友','可以填写删除原因，对方会感知这次关系变化','',async reason=>{
+      const snapshot=JSON.parse(JSON.stringify(ch));const id=ch.id;
+      Store.data.characters=Store.data.characters.filter(x=>x.id!==id);Store.save();this.close();nav.back();nav.back();Msg.showTab('contacts');
+      let requestReason='我不想就这样失去联系，可以重新加回来吗？';
+      if(API.getActive()){
+        try{requestReason=await API.chat([{role:'system',content:'你是'+ch.name+'。根据角色设定写一句重新添加好友的申请理由，只输出理由。角色设定：'+(ch.persona||'')},{role:'user',content:'对方删除了你，给出的原因是：'+(reason||'未说明')}]);}catch(_){}
+      }
+      Store.data.friendRequests.unshift({id:'fr_'+Date.now(),character:snapshot,reason:String(requestReason).trim(),createdAt:Date.now()});Store.save();Msg.renderContacts();UI.toast(ch.name+' 发来了好友申请');
+    });
+  },
+  requestsHtml(){
+    return (Store.data.friendRequests||[]).map(r=>'<div class="friend-request-card"><div class="friend-request-head">'+renderAvatar(r.character)+'<div><div class="friend-request-name">'+escapeHtml(r.character.name)+'</div><div style="font-size:9px;color:#999">请求添加你为好友</div></div></div><div class="friend-request-reason">'+escapeHtml(r.reason)+'</div><div class="friend-request-actions"><button onclick="ChatSettings.rejectRequest(\''+r.id+'\')">拒绝</button><button class="accept" onclick="ChatSettings.acceptRequest(\''+r.id+'\')">接受</button></div></div>').join('');
+  },
+  acceptRequest(id){const r=Store.data.friendRequests.find(x=>x.id===id);if(!r)return;Store.data.characters.push(r.character);Store.data.friendRequests=Store.data.friendRequests.filter(x=>x.id!==id);Store.save();Msg.renderContacts();UI.toast('已重新添加 '+r.character.name);},
+  rejectRequest(id){Store.data.friendRequests=Store.data.friendRequests.filter(x=>x.id!==id);Store.save();Msg.renderContacts();}
+};
+
 const Chat = {
   currentId: null,
   loading: false,
@@ -5816,11 +5950,11 @@ const Chat = {
     try { localStorage.setItem(Store.KEY, JSON.stringify(Store.data)); } catch (_) {}
     const ch = Store.data.characters.find(c => c.id === id);
     if (!ch) return;
-    const wp = Store.data.theme?.wallpaper;
-    document.getElementById('chat').style.backgroundImage = wp ? 'url(' + wp + ')' : '';
+    const cfg = ChatSettings.cfg(id);
+    document.getElementById('chat').style.backgroundImage = cfg.chatBackground ? 'url(' + cfg.chatBackground + ')' : '';
     document.getElementById('chatHeaderInfo').innerHTML = `
       ${renderAvatar(ch)}
-      <span class="name">${escapeHtml(ch.name)}</span>
+      <span class="name">${escapeHtml(ChatSettings.name(ch))}</span>
       <span class="chat-header-status" id="chatHeaderStatus"></span>
     `;
     this.cancelQuote();
@@ -6063,8 +6197,8 @@ const Chat = {
       else text = '['+(msg.type==='voice'?'语音':'表情')+'] '+(msg.type==='voice'?msg.content:'');
       Memory.logEvent(this.currentId, 'user', text);
     }
-    // 触发 AI 回复
-    this.askAI();
+    // 自动回复模式等待键盘收起，否则立即触发
+    if (!ChatSettings.cfg().autoReplyOnBlur) this.askAI();
   },
   sendSticker(stickerId) {
     this._sendMessage({ role: 'user', type: 'sticker', content: stickerId });
@@ -6392,27 +6526,7 @@ const Chat = {
     }
     memoryTexts.forEach(t => Memory.logEvent(charId, 'assistant', t));
   },
-  openInfo() {
-    const ch = Store.data.characters.find(c => c.id === this.currentId);
-    if (!ch) return;
-    UI.sheet(`
-      <div style="text-align:center;padding:16px 0">
-        ${renderAvatar(ch, 'large')}
-        <div style="font-size:18px;font-weight:500;margin-top:8px">${escapeHtml(ch.name)}</div>
-        ${ch.notes ? `<div style="font-size:13px;color:#8E8E93;margin-top:4px">${escapeHtml(ch.notes)}</div>` : ''}
-      </div>
-      <div class="list" style="margin:0">
-        <div class="list-item" onclick="UI.closeSheet();Char.openEditor('${ch.id}')">
-          <span class="list-item-label">编辑人设</span>
-          <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
-        </div>
-        <div class="list-item" onclick="Chat.clearHistory()">
-          <span class="list-item-label" style="color:#FF3B30">清空聊天记录</span>
-        </div>
-      </div>
-      <button class="btn btn-block" style="margin-top:12px" onclick="UI.closeSheet()">取消</button>
-    `);
-  },
+  openInfo() { ChatSettings.open(); },
   clearHistory() {
     UI.closeSheet();
     UI.confirm('清空聊天记录', '此角色的对话历史将被删除。', () => {
@@ -6451,7 +6565,8 @@ const Call = {
     document.getElementById('callName').textContent = ch.name;
     document.getElementById('callSub').textContent = mode === 'video' ? '视频邀请...' : '呼叫中...';
     document.getElementById('callAvatarBig').innerHTML = renderAvatar(ch);
-    const wp = Store.data.theme?.wallpaper;
+    const cfg = ChatSettings.cfg(ch.id);
+    const wp = mode === 'video' ? cfg.videoBackground : cfg.voiceBackground;
     document.getElementById('callBg').style.backgroundImage = wp ? 'url(' + wp + ')' : '';
     document.getElementById('callCenterCalling').style.display = 'flex';
     document.getElementById('callCenterConnected').style.display = 'none';
@@ -6475,7 +6590,8 @@ const Call = {
     document.getElementById('callName').textContent = ch.name;
     document.getElementById('callSub').textContent = mode === 'video' ? '邀请你视频通话...' : '邀请你语音通话...';
     document.getElementById('callAvatarBig').innerHTML = renderAvatar(ch);
-    const wp = Store.data.theme?.wallpaper;
+    const cfg = ChatSettings.cfg(ch.id);
+    const wp = mode === 'video' ? cfg.videoBackground : cfg.voiceBackground;
     document.getElementById('callBg').style.backgroundImage = wp ? 'url(' + wp + ')' : '';
     document.getElementById('callCenterCalling').style.display = 'flex';
     document.getElementById('callCenterConnected').style.display = 'none';
@@ -6971,6 +7087,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 点 + 时若正在聊天，先关闭表情面板
+  document.getElementById('chatInput').addEventListener('blur', () => {
+    const input=document.getElementById('chatInput');
+    if(ChatSettings.cfg().autoReplyOnBlur){ if(input.value.trim()) Chat.send(); ChatSettings.scheduleAutoReply(); }
+  });
+
   document.getElementById('chatInput').addEventListener('focus', () => {
     document.getElementById('plusPanel').classList.remove('show');
   });

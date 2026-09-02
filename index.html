@@ -1961,6 +1961,14 @@
   .transfer-field label { display:block; font-size:11px; color:#8E8E93; margin-bottom:6px; }
   .transfer-field input { width:100%; box-sizing:border-box; height:46px; padding:0 14px; border:1px solid #E5E5EA; border-radius:12px; font:inherit; font-size:14px; }
 
+  /* ============ 铃声 ============ */
+  .ringtone-screen { position:absolute; z-index:204; inset:0; display:none; flex-direction:column; background:#F2F2F7; }
+  .ringtone-screen.show { display:flex; }
+  .ringtone-card { background:#fff; margin:0 16px 12px; border-radius:12px; padding:14px 16px; }
+  .ringtone-status { font-size:12px; color:#8E8E93; margin-top:2px; word-break:break-all; }
+  .ringtone-actions { display:flex; gap:8px; margin-top:12px; }
+  .ringtone-actions .btn { flex:1; height:38px; font-size:13px; }
+
 </style>
 </head>
 <body>
@@ -2741,6 +2749,22 @@
     <div class="wallet-body" id="walletBody"></div>
   </div>
 
+  <div class="ringtone-screen" id="ringtoneScreen">
+    <div class="nav-bar">
+      <div class="nav-back" onclick="Ringtone.close()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>我</span></div>
+      <div class="nav-title">铃声</div>
+    </div>
+    <div class="content">
+      <div class="section">
+        <div class="section-title">通知与铃声</div>
+        <div id="ringtoneBody"></div>
+      </div>
+      <div class="section-hint">支持上传本地音频文件，或填写一个可直接播放的音频 URL；都不设置时使用系统默认提示音。</div>
+    </div>
+    <input type="file" id="ringtoneFileInput" accept="audio/*" hidden onchange="Ringtone.onFilePick(event)">
+    <audio id="ringtonePreviewAudio" hidden></audio>
+  </div>
+
   <div class="memory-screen" id="memoryDetailScreen">
     <header class="memory-head">
       <button onclick="Memory.closeDetail()" aria-label="返回"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
@@ -2895,6 +2919,8 @@ const Store = {
     this.data.wallet = { ...d.wallet, ...(this.data.wallet || {}) };
     if (!Array.isArray(this.data.wallet.transactions)) this.data.wallet.transactions = [];
     this.data.memoryApi = { ...d.memoryApi, ...(this.data.memoryApi || {}) };
+    this.data.ringtones = { ...d.ringtones, ...(this.data.ringtones || {}) };
+    Object.keys(d.ringtones).forEach(k => { this.data.ringtones[k] = { ...d.ringtones[k], ...(this.data.ringtones[k] || {}) }; });
     // 后台项目升级时只迁移一次，保留设备身份、开关和消息间隔。
     if (this.data.notificationSettings.backendProject !== d.notificationSettings.backendProject) {
       Object.assign(this.data.notificationSettings, {
@@ -2963,7 +2989,13 @@ const Store = {
         lastSyncAt: 0
       },
       wallet: { balance: 2500, transactions: [] },
-      memoryApi: { url: '', key: '', model: '', availableModels: [] }
+      memoryApi: { url: '', key: '', model: '', availableModels: [] },
+      ringtones: {
+        message: { mode: 'default', source: '', name: '' },
+        moments: { mode: 'default', source: '', name: '' },
+        call: { mode: 'default', source: '', name: '' },
+        video: { mode: 'default', source: '', name: '' }
+      }
     };
   },
   uid() { return 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
@@ -4514,7 +4546,7 @@ const Favorite = {
 
 const Me = {
   profile() {
-    if (!Store.data.meProfile) Store.data.meProfile={status:'今天也要认真生活',enterToSend:true,ringtone:'默认铃声'};
+    if (!Store.data.meProfile) Store.data.meProfile={status:'今天也要认真生活',enterToSend:true};
     return Store.data.meProfile;
   },
   edit() { UserProfile.edit(); },
@@ -4528,11 +4560,6 @@ const Me = {
     }, { maxlength:10, placeholder:'十个字以内' });
   },
   toggleEnter() { const p=this.profile(); p.enterToSend=!p.enterToSend; Store.save(); Msg.renderMe(); UI.toast(p.enterToSend?'回车键发送已开启':'回车键发送已关闭'); },
-  ringtone() {
-    UI.sheet('<div class="sheet-title">铃声</div>'+
-      ['默认铃声','轻柔','清脆','静音'].map(x=>'<button class="sheet-action" onclick="Me.setRingtone(\''+x+'\')">'+x+'</button>').join(''));
-  },
-  setRingtone(v){ this.profile().ringtone=v; Store.save(); UI.closeSheet(); Msg.renderMe(); UI.toast('已设为'+v); },
   feature(type) {
     if(type==='favorites'){ Favorite.open(); return; }
     if(type==='memory'){ Memory.openList(); return; }
@@ -5032,6 +5059,79 @@ const Status = {
   }
 };
 
+const RINGTONE_SLOTS = [
+  { key: 'message', label: '来信通知' },
+  { key: 'moments', label: '动态通知' },
+  { key: 'call', label: '来电铃声' },
+  { key: 'video', label: '视频铃声' }
+];
+const Ringtone = {
+  activeSlot: null,
+  cfg(key) { return Store.data.ringtones[key]; },
+  open() { this.render(); document.getElementById('ringtoneScreen').classList.add('show'); },
+  close() { document.getElementById('ringtoneScreen').classList.remove('show'); },
+  statusText(slot) {
+    if (slot.mode === 'file') return '本地文件：' + (slot.name || '未命名音频');
+    if (slot.mode === 'url') return 'URL：' + (slot.name || slot.source || '');
+    return '系统默认';
+  },
+  render() {
+    document.getElementById('ringtoneBody').innerHTML = RINGTONE_SLOTS.map(s => {
+      const slot = this.cfg(s.key);
+      const urlValue = slot.mode === 'url' ? (slot.source || '') : '';
+      return '<div class="ringtone-card">'+
+        '<div class="card-label">'+s.label+'</div>'+
+        '<div class="ringtone-status">'+escapeHtml(this.statusText(slot))+'</div>'+
+        '<div class="ringtone-actions">'+
+          '<button class="btn secondary" onclick="Ringtone.pickFile(\''+s.key+'\')">本地文件</button>'+
+          '<button class="btn secondary" onclick="Ringtone.preview(\''+s.key+'\')" '+(slot.mode==='default'?'disabled':'')+'>试听</button>'+
+          '<button class="btn text" onclick="Ringtone.reset(\''+s.key+'\')">恢复默认</button>'+
+        '</div>'+
+        '<input class="card-input" style="margin-top:10px" placeholder="或填写音频 URL" value="'+escapeHtml(urlValue)+'" onchange="Ringtone.setUrl(\''+s.key+'\', this.value)">'+
+      '</div>';
+    }).join('');
+  },
+  pickFile(key) { this.activeSlot = key; document.getElementById('ringtoneFileInput').click(); },
+  async onFilePick(event) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file || !this.activeSlot) return;
+    if (file.size > 5 * 1024 * 1024) { UI.toast('音频文件请控制在 5MB 以内', 3200); return; }
+    try {
+      const data = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const slot = this.cfg(this.activeSlot);
+      slot.mode = 'file'; slot.source = data; slot.name = file.name;
+      Store.save(); this.render();
+      UI.toast('已设置');
+    } catch (_) { UI.toast('读取失败'); }
+  },
+  setUrl(key, value) {
+    value = String(value || '').trim();
+    const slot = this.cfg(key);
+    if (!value) { if (slot.mode === 'url') this.reset(key); return; }
+    slot.mode = 'url'; slot.source = value; slot.name = value;
+    Store.save(); this.render();
+    UI.toast('已设置');
+  },
+  reset(key) {
+    const slot = this.cfg(key);
+    slot.mode = 'default'; slot.source = ''; slot.name = '';
+    Store.save(); this.render();
+  },
+  preview(key) {
+    const slot = this.cfg(key);
+    if (slot.mode === 'default' || !slot.source) return;
+    const audio = document.getElementById('ringtonePreviewAudio');
+    audio.src = slot.source;
+    audio.play().catch(() => UI.toast('无法播放，请检查文件或 URL'));
+  }
+};
+
 const Moments = {
   draftImages: [],
   profile() {
@@ -5298,9 +5398,9 @@ const Msg = {
           '<button class="me-p2-orbit" onclick="Me.feature(\'memory\')"><span class="me-p2-orbit-icon"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5Z"/><path d="M8 3v17M12 8h4M12 12h4"/></svg></span><span class="me-p2-orbit-label">记忆</span></button>'+
         '</nav>'+
         '<button class="me-p2-card" onclick="Me.wallet()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><path d="M3 7h16a2 2 0 0 1 2 2v10H5a2 2 0 0 1-2-2Z"/><path d="M3 7V5a2 2 0 0 1 2-2h13v4"/><path d="M16 12h5v4h-5a2 2 0 0 1 0-4Z"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">钱包</span></span><svg class="me-p2-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>'+
-        '<button class="me-p2-card" onclick="Me.editStatus()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">今日状态</span><span class="me-p2-card-sub">'+escapeHtml(p.status)+'</span></span><svg class="me-p2-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>'+
+        '<button class="me-p2-card" onclick="Me.editStatus()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">今日状态</span></span><svg class="me-p2-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>'+
         '<button class="me-p2-card" onclick="Me.toggleEnter()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><path d="M20 5v8a3 3 0 0 1-3 3H5"/><path d="m9 12-4 4 4 4"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">回车键发送</span></span><span class="me-p2-switch '+(p.enterToSend?'on':'')+'"></span></button>'+
-        '<button class="me-p2-card" onclick="Me.ringtone()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10 20h4"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">铃声</span></span><span class="me-p2-card-value">'+escapeHtml(p.ringtone)+'</span></button>'+
+        '<button class="me-p2-card" onclick="Ringtone.open()"><span class="me-p2-card-icon"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10 20h4"/></svg></span><span class="me-p2-card-copy"><span class="me-p2-card-title">铃声</span></span><svg class="me-p2-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>'+
       '</div>';
   }};
 

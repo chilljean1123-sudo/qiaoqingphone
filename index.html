@@ -4037,6 +4037,50 @@ const WB = {
 
 
 const UserProfile = {
+  edit() {
+    UI.sheet('<div class="sheet-title">User 设定</div>'+
+      '<button class="sheet-action" onclick="UI.closeSheet();document.getElementById(\'userAvatarInput\').click()">设定头像</button>'+
+      '<button class="sheet-action" onclick="UI.closeSheet();Settings.editUserName()">设定姓名</button>');
+  },
+  async importAvatar(event) {
+    const file=event.target.files[0]; event.target.value=''; if(!file)return;
+    try {
+      Store.data.userAvatar=await Theme.resizeImage(file,900,900,.9);
+      Store.save(); Msg.renderMe(); Msg.renderMoments(); UI.toast('User 头像已更新');
+    } catch(_){ UI.toast('头像读取失败'); }
+  }
+};
+
+const Favorite = {
+  list(){ if(!Array.isArray(Store.data.favoriteMessages)) Store.data.favoriteMessages=[]; return Store.data.favoriteMessages; },
+  key(charId,index){ return String(charId)+'_'+String(index); },
+  isSaved(charId,index){ return this.list().some(x=>x.key===this.key(charId,index)); },
+  toggle(charId,index) {
+    const msg=(Store.data.chats[charId]||[])[index]; if(!msg)return;
+    const key=this.key(charId,index), list=this.list(), pos=list.findIndex(x=>x.key===key);
+    if(pos>=0){ list.splice(pos,1); UI.toast('已取消收藏'); }
+    else {
+      const ch=Store.data.characters.find(x=>x.id===charId);
+      list.unshift({key,charId,charName:ch?.name||'联系人',message:{...msg},savedAt:Date.now()});
+      UI.toast('已收藏到喜欢的消息');
+    }
+    Store.save(); Chat.render();
+  },
+  open() {
+    const list=this.list();
+    const body=list.length?'<div class="favorite-list">'+list.map(x=>{
+      const m=x.message||{}, content=m.type==='sticker'?'[表情包]':m.type==='voice'?'[语音] '+m.content:m.content;
+      return '<div class="favorite-item"><div class="favorite-item-head"><span>'+escapeHtml(x.charName)+'</span><span>'+new Date(x.savedAt).toLocaleDateString('zh-CN')+'</span></div><div class="favorite-item-text">'+escapeHtml(content||'')+'</div></div>';
+    }).join('')+'</div>':'<div style="padding:34px 8px;text-align:center;color:#999;font-size:12px">还没有喜欢的消息<br>点击聊天气泡即可收藏</div>';
+    UI.sheet('<div class="sheet-title">喜欢的消息</div>'+body);
+  }
+};
+
+const Me = {
+  profile() {
+    if (!Store.data.meProfile) Store.data.meProfile={status:'今天也要认真生活',enterToSend:true,ringtone:'默认铃声'};
+    return Store.data.meProfile;
+  },
   edit() { UserProfile.edit(); },
   editStatus() {
     UI.prompt('今日状态','写下此刻的心情',this.profile().status||'',v=>{
@@ -4056,7 +4100,7 @@ const UserProfile = {
     const count=(Store.data.stickers||[]).length;
     UI.alert('表情包','当前已保存 '+count+' 个表情包，在聊天输入栏的表情入口中使用。');
   },
-  wallet(){ UI.alert('钱包','这里预留角色关系、积分与虚拟物品功能入口。'); }
+  wallet(){ UI.alert('钱包','这里预留关系积分与虚拟物品功能入口。'); }
 };
 
 const Moments = {

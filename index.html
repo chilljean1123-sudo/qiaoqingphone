@@ -6724,6 +6724,17 @@ const Memory = {
     await this.rebuildCore(ch, false);
   },
 
+  clearAll(charId) {
+    const ch = this.char(charId);
+    if (!ch) return;
+    const cfg = this.cfg(ch);
+    cfg.pendingEvents = [];
+    cfg.eventsSinceSummary = 0;
+    cfg.longTermSinceCore = 0;
+    cfg.longTerm = [];
+    cfg.core = '';
+    cfg.coreUpdatedAt = 0;
+  },
   logEvent(charId, role, text, kind) {
     kind = kind || 'chat';
     const ch = this.char(charId); if (!ch) return;
@@ -6894,6 +6905,7 @@ const Status = {
   async reactAsCharacter(ch, text) {
     const worldBooks = WB.getApplicableForCharacter(ch);
     let sys = '';
+    sys += timeContextPrompt();
     if (ch.persona) sys += `# 角色设定\n你的名字是「${ch.name}」。\n${ch.persona}\n\n`;
     else sys += `你正在扮演一个名为「${ch.name}」的角色。\n\n`;
     if (ch.notes) sys += `# 备注\n${ch.notes}\n\n`;
@@ -7337,7 +7349,7 @@ const ChatSettings = {
     box.innerHTML=rows.map(x=>'<button class="chat-search-item" onclick="ChatSettings.jump('+x.i+')"><div class="chat-search-item-text">'+escapeHtml(x.m.content)+'</div><div class="chat-search-item-time">'+formatDay(x.m.timestamp)+'</div></button>').join('')||'<div style="padding:50px;text-align:center;color:#999;font-size:11px">没有找到相关记录</div>';
   },
   jump(i){this.closeSearch();this.close();setTimeout(()=>{const el=document.querySelector('[data-msg-index="'+i+'"]');el?.scrollIntoView({behavior:'smooth',block:'center'});},120);},
-  clear(){UI.confirm('清空聊天记录','当前聊天中的全部消息将被删除',()=>{delete Store.data.chats[Chat.currentId];Store.save();Chat.render();this.close();},{danger:true,okText:'清空'});},
+  clear(){UI.confirm('清空聊天记录','当前聊天中的全部消息和角色对这段关系的记忆都会被清除，但角色本身不会被删除。',()=>{delete Store.data.chats[Chat.currentId];Memory.clearAll(Chat.currentId);Store.save();Chat.render();this.close();},{danger:true,okText:'清空'});},
   async deleteFriend(){
     const ch=this.char();if(!ch)return;
     UI.prompt('删除好友','可以填写删除原因，对方会感知这次关系变化','',async reason=>{
@@ -7356,6 +7368,19 @@ const ChatSettings = {
   acceptRequest(id){const r=Store.data.friendRequests.find(x=>x.id===id);if(!r)return;Store.data.characters.push(r.character);Store.data.friendRequests=Store.data.friendRequests.filter(x=>x.id!==id);Store.save();Msg.renderContacts();UI.toast('已重新添加 '+r.character.name);},
   rejectRequest(id){Store.data.friendRequests=Store.data.friendRequests.filter(x=>x.id!==id);Store.save();Msg.renderContacts();}
 };
+
+// 全局时间感知：无论用户设备时区是什么，统一按北京时间（UTC+8）注入给 AI，
+// 让角色的问候语、作息反应等符合真实的当前时间。
+function beijingNow() {
+  return new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Shanghai' }));
+}
+function timeContextPrompt() {
+  const d = beijingNow();
+  const weekday = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][d.getDay()];
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  return `# 当前时间\n现在是北京时间 ${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 ${weekday} ${hh}:${mm}。你对时间的感知、问候语（早上好/晚安等）、作息反应都要符合这个真实时间，不要自行编造或忽略时间流逝。\n\n`;
+}
 
 const ROLE_THINK_PROTOCOL = `
 # 内部角色校准协议（仅供内部执行，严禁展示）
@@ -7851,6 +7876,7 @@ const Chat = {
     const worldBooks = WB.getApplicableForCharacter(ch);
     // 构造 system prompt
     let sys = '';
+    sys += timeContextPrompt();
     if (ch.persona) sys += `# 角色设定\n你的名字是「${ch.name}」。\n${ch.persona}\n\n`;
     else sys += `你正在扮演一个名为「${ch.name}」的角色。\n\n`;
     if (ch.notes) sys += `# 备注\n${ch.notes}\n\n`;
@@ -8160,6 +8186,7 @@ const Call = {
   buildSystemPrompt(ch) {
     const worldBooks = WB.getApplicableForCharacter(ch);
     let sys = '';
+    sys += timeContextPrompt();
     if (ch.persona) sys += `# 角色设定\n你的名字是「${ch.name}」。\n${ch.persona}\n\n`;
     else sys += `你正在扮演一个名为「${ch.name}」的角色。\n\n`;
     if (ch.notes) sys += `# 备注\n${ch.notes}\n\n`;

@@ -7993,7 +7993,7 @@ const Chat = {
     const memoryTexts = [];
     let notificationPreview = '';
     for (let i = 0; i < chunks.length; i++) {
-      if (i > 0) await sleep(this.typingDelay(chunks[i-1]));
+      await sleep(this.typingDelay(chunks[i]));
       if (cancelSignal?.aborted) break;
       const c = chunks[i];
       const tm = c.match(/^\[转账[:：]\s*([\d.]+)\s*[:：]?\s*(.*?)\]$/);
@@ -8257,7 +8257,7 @@ const Call = {
       const reply = await API.chat(messages);
       const chunks = reply.split(/\n+/).flatMap(s => Chat.splitSentences(s)).map(s => s.trim()).filter(Boolean);
       for (let i = 0; i < chunks.length; i++) {
-        if (i > 0) await sleep(Chat.typingDelay(chunks[i-1]));
+        await sleep(Chat.typingDelay(chunks[i]));
         this.messages.push({ role: 'assistant', content: chunks[i], timestamp: Date.now() });
         this.renderMessages();
       }

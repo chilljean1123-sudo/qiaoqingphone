@@ -917,6 +917,9 @@
   .icon-btn.send { background: #007AFF; }
   .icon-btn.send svg { stroke: #FFFFFF; width: 18px; height: 18px; stroke-width: 2.2; }
   .icon-btn.send:disabled { background: #B0D5FF; cursor: not-allowed; }
+  .icon-btn.send.thinking { background: #8E8E93; border-radius: 9px; }
+  .icon-btn.send.thinking svg { display: none; }
+  .icon-btn.send.thinking::after { content: ""; width: 12px; height: 12px; background: #fff; border-radius: 2px; }
 
   .input-wrap {
     flex: 1;
@@ -5757,7 +5760,7 @@ const API = {
   getActive() {
     return Store.data.apis.find(a => a.id === Store.data.activeApiId) || null;
   },
-  async chat(messages) {
+  async chat(messages, opts) {
     const api = this.getActive();
     if (!api) throw new Error('未配置 API');
     const res = await fetch(api.url + '/chat/completions', {
@@ -5767,7 +5770,8 @@ const API = {
         model: api.model,
         messages,
         temperature: 0.8
-      })
+      }),
+      signal: opts?.signal
     });
     if (!res.ok) {
       const t = await res.text();
@@ -7275,13 +7279,11 @@ const ChatSettings = {
     const search='<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg>';
     const pin='<svg viewBox="0 0 24 24"><path d="m15 4 5 5-4 2-3 5-2-2-5 5-1-1 5-5-2-2 5-3Z"/></svg>';
     const image='<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-4 4-2-2-7 6"/></svg>';
-    const reply='<svg viewBox="0 0 24 24"><path d="M9 17 4 12l5-5"/><path d="M4 12h9a6 6 0 0 1 6 6v1"/></svg>';
     const palette='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M4 12h4M12 12h8"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/><circle cx="10" cy="12" r="2"/></svg>';
     const box=document.getElementById('chatSettingsBody');
     box.innerHTML='<button class="chat-settings-profile" onclick="ChatSettings.editPersona()">'+renderAvatar(ch,'large')+'<div><div class="chat-settings-profile-name">'+escapeHtml(this.name(ch))+'</div></div>'+arrow+'</button>'+
       '<div class="chat-settings-group">'+row(palette,'聊天美化','',"ChatSettings.openBeauty()",arrow)+row(person,'备注',c.remark||'未设置',"ChatSettings.editRemark()",arrow)+row(search,'查找聊天记录','',"ChatSettings.openSearch()",arrow)+row(pin,'置顶聊天','',"ChatSettings.toggle(\'pinned\')",'<span class="chat-setting-switch '+(c.pinned?'on':'')+'"></span>')+'</div>'+
       '<div class="chat-settings-group">'+row(image,'聊天背景','',"ChatSettings.pickImage(\'chatBackground\')",pic('chatBackground'))+row(image,'电话背景','',"ChatSettings.pickImage(\'voiceBackground\')",pic('voiceBackground'))+row(image,'视频通话背景','',"ChatSettings.pickImage(\'videoBackground\')",pic('videoBackground'))+'</div>'+
-      '<div class="chat-settings-group">'+row(reply,'收起键盘后自动回复','',"ChatSettings.toggle(\'autoReplyOnBlur\')",'<span class="chat-setting-switch '+(c.autoReplyOnBlur?'on':'')+'"></span>')+'</div>'+
       '<div class="chat-settings-group"><button class="chat-setting-row chat-setting-danger" onclick="ChatSettings.deleteFriend()">删除好友</button><button class="chat-setting-row chat-setting-danger" onclick="ChatSettings.clear()">清空聊天记录</button></div>';
   },
   editRemark(){const c=this.cfg();UI.prompt('设置备注','不会修改角色原名',c.remark||'',v=>{c.remark=String(v||'').trim();Store.save();this.apply();this.render();Msg.renderChats();});},
@@ -7335,11 +7337,6 @@ const ChatSettings = {
     box.innerHTML=rows.map(x=>'<button class="chat-search-item" onclick="ChatSettings.jump('+x.i+')"><div class="chat-search-item-text">'+escapeHtml(x.m.content)+'</div><div class="chat-search-item-time">'+formatDay(x.m.timestamp)+'</div></button>').join('')||'<div style="padding:50px;text-align:center;color:#999;font-size:11px">没有找到相关记录</div>';
   },
   jump(i){this.closeSearch();this.close();setTimeout(()=>{const el=document.querySelector('[data-msg-index="'+i+'"]');el?.scrollIntoView({behavior:'smooth',block:'center'});},120);},
-  scheduleAutoReply(){
-    if(!this.cfg().autoReplyOnBlur)return;
-    clearTimeout(this.autoTimer);
-    this.autoTimer=setTimeout(()=>{if(!Chat.loading)Chat.askAI();},3000);
-  },
   clear(){UI.confirm('清空聊天记录','当前聊天中的全部消息将被删除',()=>{delete Store.data.chats[Chat.currentId];Store.save();Chat.render();this.close();},{danger:true,okText:'清空'});},
   async deleteFriend(){
     const ch=this.char();if(!ch)return;
@@ -7374,6 +7371,8 @@ const ROLE_THINK_PROTOCOL = `
 const Chat = {
   currentId: null,
   loading: false,
+  cancelled: false,
+  abortController: null,
   pendingQuote: null,
   multiSelectMode: false,
   selectedIndices: null,
@@ -7416,6 +7415,7 @@ const Chat = {
     const ch = Store.data.characters.find(c => c.id === this.currentId);
     const statusEl = document.getElementById('chatHeaderStatus');
     if (statusEl) statusEl.textContent = this.loading ? '对方正在回复...' : '';
+    document.getElementById('sendBtn')?.classList.toggle('thinking', this.loading);
     if (!msgs.length) {
       box.innerHTML = `
         <div class="empty" style="padding:80px 24px">
@@ -7607,15 +7607,28 @@ const Chat = {
     this._sendMessage({ role: 'user', type: 'location', content: v });
   },
   send() {
-    if (this.loading) { UI.toast('请等待回复完成'); return; }
+    if (this.loading) { this.cancelAI(); return; }
+    this.pushInputText();
+    this.askAI();
+  },
+  pushInputText() {
+    if (this.loading) { UI.toast('对方正在回复，请先暂停'); return false; }
     const t = document.getElementById('chatInput');
     const text = t.value.trim();
-    if (!text) return;
+    if (!text) return false;
     t.value = '';
     this.autoResize();
-    this._sendMessage({ role: 'user', type: 'text', content: text });
+    this._sendMessage({ role: 'user', type: 'text', content: text }, true);
+    return true;
   },
-  _sendMessage(msg) {
+  cancelAI() {
+    if (!this.loading) return;
+    this.cancelled = true;
+    this.abortController?.abort();
+    this.loading = false;
+    this.render();
+  },
+  _sendMessage(msg, skipAI) {
     if(msg.role==='user'&&msg.type==='text'&&typeof RegexManager!=='undefined') msg.content=RegexManager.apply(msg.content,'userInput',this.currentId,'all');
     msg.timestamp = Date.now();
     if (this.pendingQuote) { msg.quote = this.pendingQuote; this.cancelQuote(); }
@@ -7633,8 +7646,7 @@ const Chat = {
       else text = '['+(msg.type==='voice'?'语音':'表情')+'] '+(msg.type==='voice'?msg.content:'');
       Memory.logEvent(this.currentId, 'user', text);
     }
-    // 自动回复模式等待键盘收起，否则立即触发
-    if (!ChatSettings.cfg().autoReplyOnBlur) this.askAI();
+    if (!skipAI) this.askAI();
   },
   sendSticker(stickerId) {
     this._sendMessage({ role: 'user', type: 'sticker', content: stickerId });
@@ -7894,6 +7906,8 @@ const Chat = {
 
     const messages = [{ role: 'system', content: sys }, ...history];
     this.loading = true;
+    this.cancelled = false;
+    const myController = (this.abortController = new AbortController());
     this.render();
     try {
       if (Push.canRelayChat()) {
@@ -7907,19 +7921,23 @@ const Chat = {
         });
         Push.waitForChat(ch.id).catch(() => {});
       } else {
-        const reply = await API.chat(messages);
-        await this.deliverAssistantReply(this.currentId, reply);
+        const reply = await API.chat(messages, { signal: myController.signal });
+        await this.deliverAssistantReply(this.currentId, reply, myController.signal);
       }
     } catch (e) {
-      if (Push.canRelayChat()) {
+      if (this.cancelled || e.name === 'AbortError') {
+        // 用户手动暂停，不追加错误气泡
+      } else if (Push.canRelayChat()) {
         UI.toast('消息已交给后台，回复完成后会通知你');
       } else {
         const arr = Store.data.chats[this.currentId];
         arr.push({ role: 'assistant', type: 'text', content: '[出错] ' + (e.message || e), timestamp: Date.now(), isError: true });
       }
     } finally {
-      this.loading = false;
-      this.render();
+      if (this.abortController === myController) {
+        this.loading = false;
+        this.render();
+      }
     }
   },
   typingDelay(text) {
@@ -7934,7 +7952,7 @@ const Chat = {
   },
   // 把一段可能含多段落的回复拆成多条消息，模拟真实微信那样一条条陆续发送，
   // 不在一瞬间把所有内容塞进同一条气泡。
-  async deliverAssistantReply(charId, rawReply) {
+  async deliverAssistantReply(charId, rawReply, cancelSignal) {
     const ch = Store.data.characters.find(c => c.id === charId);
     if (!ch) return;
     const privateFiltered = String(rawReply||'')
@@ -7950,6 +7968,7 @@ const Chat = {
     let notificationPreview = '';
     for (let i = 0; i < chunks.length; i++) {
       if (i > 0) await sleep(this.typingDelay(chunks[i-1]));
+      if (cancelSignal?.aborted) break;
       const c = chunks[i];
       const tm = c.match(/^\[转账[:：]\s*([\d.]+)\s*[:：]?\s*(.*?)\]$/);
       const sm = c.match(/^\[表情[:：]\s*(.+?)\]$/);
@@ -8604,16 +8623,11 @@ document.addEventListener('DOMContentLoaded', () => {
   t.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && Me.profile().enterToSend) {
       e.preventDefault();
-      Chat.send();
+      Chat.pushInputText();
     }
   });
 
   // 点 + 时若正在聊天，先关闭表情面板
-  document.getElementById('chatInput').addEventListener('blur', () => {
-    const input=document.getElementById('chatInput');
-    if(ChatSettings.cfg().autoReplyOnBlur){ if(input.value.trim()) Chat.send(); ChatSettings.scheduleAutoReply(); }
-  });
-
   document.getElementById('chatInput').addEventListener('focus', () => {
     document.getElementById('plusPanel').classList.remove('show');
   });

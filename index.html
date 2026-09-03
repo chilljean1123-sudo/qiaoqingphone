@@ -4502,7 +4502,10 @@ const Push = {
         const raw = String(row.content || '');
         if (raw.startsWith('__CHAT_RELAY__')) {
           const before = list.length;
+          const isCurrentChat = Chat.currentId === character.id;
+          if (isCurrentChat) { Chat.loading = true; Chat.render(); }
           await Chat.deliverAssistantReply(character.id, raw.slice('__CHAT_RELAY__'.length));
+          if (isCurrentChat) { Chat.loading = false; Chat.render(); }
           list.slice(before).forEach(message => { message.backgroundSourceId = row.id; });
         } else {
           list.push({ role: 'assistant', type: 'text', content: raw, timestamp: Date.parse(row.created_at || '') || Date.now(), backgroundSourceId: row.id });

@@ -186,6 +186,43 @@
     transition: transform 0.15s;
   }
   .app-icon:active { transform: scale(0.92); }
+  .home-edit-done {
+    position: absolute;
+    top: max(14px, calc(7px + var(--safe-top)));
+    right: max(18px, var(--safe-right));
+    z-index: 12;
+    display: none;
+    min-width: 58px;
+    height: 34px;
+    padding: 0 15px;
+    border: 1px solid rgba(255,255,255,.82);
+    border-radius: 18px;
+    color: #087bff;
+    background: rgba(255,255,255,.62);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: 0 8px 22px rgba(46,68,107,.16), inset 0 1px 0 #fff;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .home-screen.app-editing .home-edit-done { display: block; }
+  .home-screen.app-editing .app-grid { touch-action: none; }
+  .home-screen.app-editing .app-icon { cursor: grab; animation: iconJiggle .16s ease-in-out infinite alternate; }
+  .home-screen.app-editing .app-icon:nth-child(even) { animation-direction: alternate-reverse; }
+  .home-screen.app-editing .app-icon.dragging {
+    position: fixed;
+    z-index: 20;
+    cursor: grabbing;
+    animation: none;
+    pointer-events: none;
+    filter: drop-shadow(0 18px 18px rgba(27,38,62,.26));
+  }
+  .home-screen.app-editing .app-icon.dragging .app-icon-box { transform: scale(1.1); }
+  .app-placeholder { visibility: hidden; }
+  @keyframes iconJiggle {
+    from { transform: rotate(-1.1deg); }
+    to { transform: rotate(1.1deg); }
+  }
   .app-icon-box {
     width: 62px;
     height: 62px;
@@ -1615,12 +1652,11 @@
     box-shadow: 0 24px 60px rgba(0,0,0,.2), 0 0 0 7px #1c1c1e, 0 0 0 9px #3a3a3c;
   }
   .home-screen.theme-wallpaper {
-    background-image:
-      linear-gradient(rgba(255,255,255,.12), rgba(255,255,255,.12)),
-      var(--theme-wallpaper) !important;
+    background-image: var(--theme-wallpaper) !important;
     background-size: cover !important;
     background-position: center !important;
   }
+  .home-screen.theme-wallpaper::before { display: none; }
   .home-screen.theme-wallpaper .home-header,
   .home-screen.theme-wallpaper .app-label {
     text-shadow: 0 1px 6px rgba(255,255,255,.9), 0 1px 2px rgba(0,0,0,.22);
@@ -3051,20 +3087,6 @@
   .ios-search { border: 1px solid rgba(255,255,255,.65); background: rgba(255,255,255,.42); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); box-shadow: inset 0 1px 0 rgba(255,255,255,.7); }
   .avatar { border: 1px solid rgba(255,255,255,.76); background: linear-gradient(145deg, rgba(255,255,255,.78), rgba(152,201,255,.38)); box-shadow: 0 7px 18px rgba(45,65,104,.13), inset 0 1px 0 #fff; }
 
-  @media (prefers-color-scheme: dark) {
-    :root { --ios-ink: #f5f7ff; --ios-muted: rgba(225,231,245,.62); --glass-line: rgba(255,255,255,.18); --glass-shadow: 0 18px 50px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.16); }
-    html, body { background: radial-gradient(circle at 15% 10%, #234f85, transparent 34%), radial-gradient(circle at 90% 16%, #673754, transparent 30%), #10141d; }
-    #phone, .home-screen { background: radial-gradient(circle at 9% 8%, rgba(27,105,195,.58), transparent 31%), radial-gradient(circle at 91% 18%, rgba(174,61,116,.44), transparent 32%), linear-gradient(160deg,#172334,#261d2b 55%,#142a35); }
-    .screen { background: #151b27; }
-    .desktop-widget, .list, .modal-box, .sheet-content, .nav-bar, .tab-bar { background: linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.06)); }
-    .app-icon-box { background: linear-gradient(145deg, rgba(255,255,255,.22), rgba(255,255,255,.07)) !important; }
-    .app-icon svg, .app-label, .home-header .time, .nav-title, .list-item-label, .ios-messages-title { color: var(--ios-ink); stroke: currentColor; }
-    .app-label { text-shadow: 0 1px 8px rgba(0,0,0,.5); }
-    .list-item { background: transparent; }
-    #messaging, #messaging .content, #tab-chats { background:#151b27; }
-    input, textarea, select { color: var(--ios-ink); background: rgba(255,255,255,.1) !important; }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   }
@@ -3075,6 +3097,7 @@
 
   <!-- ========== 主屏 ========== -->
   <div class="screen home-screen" id="home">
+    <button class="home-edit-done" type="button" onclick="HomeLayout.exitEdit()">完成</button>
     <div class="home-header">
       <div class="time" id="homeTime">09:41</div>
       <div class="date" id="homeDate">星期二  9月1日</div>
@@ -4365,6 +4388,7 @@ const Store = {
     this.data.chatReadAt = { ...d.chatReadAt, ...(this.data.chatReadAt || {}) };
     this.data.chatSettings = { ...d.chatSettings, ...(this.data.chatSettings || {}) };
     if (!Array.isArray(this.data.presets)) this.data.presets = [];
+    if (!Array.isArray(this.data.homeAppOrder)) this.data.homeAppOrder = [];
     if (!this.data.activePresetId) this.data.activePresetId = d.activePresetId;
     this.data.desktopWidget = { ...d.desktopWidget, ...(this.data.desktopWidget || {}) };
     if (!Array.isArray(this.data.friendRequests)) this.data.friendRequests = [];
@@ -4423,6 +4447,7 @@ const Store = {
     return {
       apis: [],
       presets: [],
+      homeAppOrder: [],
       activePresetId: 'builtin_default_v1',
       desktopWidget: { photo: '', text: '把今天过成自己喜欢的样子。' },
       activeApiId: null,
@@ -9066,6 +9091,123 @@ function updateHomeTime() {
   document.getElementById('homeDate').textContent = `${days[d.getDay()]}  ${d.getMonth() + 1}月${d.getDate()}日`;
 }
 
+const HomeLayout = {
+  editing: false,
+  pressTimer: 0,
+  pointer: null,
+  drag: null,
+  suppressClick: false,
+  init() {
+    this.home = document.getElementById('home');
+    this.grid = this.home?.querySelector('.app-grid');
+    if (!this.grid) return;
+    this.restoreOrder();
+    this.grid.addEventListener('pointerdown', event => this.onPointerDown(event));
+    document.addEventListener('pointermove', event => this.onPointerMove(event), { passive: false });
+    document.addEventListener('pointerup', event => this.onPointerUp(event));
+    document.addEventListener('pointercancel', event => this.onPointerUp(event));
+    this.home.addEventListener('click', event => {
+      if (event.target.closest('.home-edit-done')) return;
+      if (this.editing || this.suppressClick) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.suppressClick = false;
+        if (!event.target.closest('.app-icon')) this.exitEdit();
+      }
+    }, true);
+  },
+  restoreOrder() {
+    const saved = Store.data.homeAppOrder || [];
+    const apps = [...this.grid.querySelectorAll('.app-icon')];
+    const byKey = new Map(apps.map(app => [app.dataset.themeApp, app]));
+    saved.forEach(key => { const app = byKey.get(key); if (app) this.grid.appendChild(app); });
+    apps.forEach(app => { if (!saved.includes(app.dataset.themeApp)) this.grid.appendChild(app); });
+  },
+  enterEdit() {
+    if (this.editing) return;
+    this.editing = true;
+    this.suppressClick = true;
+    this.home.classList.add('app-editing');
+    navigator.vibrate?.(18);
+  },
+  exitEdit() {
+    clearTimeout(this.pressTimer);
+    if (this.drag) this.finishDrag();
+    this.editing = false;
+    this.suppressClick = false;
+    this.home?.classList.remove('app-editing');
+  },
+  onPointerDown(event) {
+    if (event.button !== undefined && event.button !== 0) return;
+    const app = event.target.closest('.app-icon');
+    if (!app) return;
+    this.pointer = { id: event.pointerId, app, x: event.clientX, y: event.clientY };
+    if (this.editing) {
+      event.preventDefault();
+      this.startDrag(app, event);
+      return;
+    }
+    clearTimeout(this.pressTimer);
+    this.pressTimer = setTimeout(() => {
+      if (!this.pointer || this.pointer.id !== event.pointerId) return;
+      this.enterEdit();
+      this.startDrag(app, event);
+    }, 450);
+  },
+  onPointerMove(event) {
+    if (!this.pointer || event.pointerId !== this.pointer.id) return;
+    const distance = Math.hypot(event.clientX - this.pointer.x, event.clientY - this.pointer.y);
+    if (!this.editing && distance > 8) {
+      clearTimeout(this.pressTimer);
+      this.pointer = null;
+      return;
+    }
+    if (!this.drag) return;
+    event.preventDefault();
+    const { app, offsetX, offsetY, placeholder } = this.drag;
+    app.style.left = `${event.clientX - offsetX}px`;
+    app.style.top = `${event.clientY - offsetY}px`;
+    const target = document.elementFromPoint(event.clientX, event.clientY)?.closest('.app-icon');
+    if (!target || target === app || target.parentElement !== this.grid) return;
+    const rect = target.getBoundingClientRect();
+    const after = event.clientY > rect.top + rect.height / 2 ||
+      (Math.abs(event.clientY - (rect.top + rect.height / 2)) < rect.height / 2 && event.clientX > rect.left + rect.width / 2);
+    this.grid.insertBefore(placeholder, after ? target.nextSibling : target);
+  },
+  onPointerUp(event) {
+    if (!this.pointer || event.pointerId !== this.pointer.id) return;
+    clearTimeout(this.pressTimer);
+    if (this.drag) {
+      this.finishDrag();
+      this.suppressClick = true;
+    }
+    this.pointer = null;
+  },
+  startDrag(app, event) {
+    if (this.drag) return;
+    const rect = app.getBoundingClientRect();
+    const placeholder = document.createElement('div');
+    placeholder.className = 'app-icon app-placeholder';
+    placeholder.style.width = `${rect.width}px`;
+    placeholder.style.height = `${rect.height}px`;
+    this.grid.insertBefore(placeholder, app);
+    this.home.appendChild(app);
+    app.classList.add('dragging');
+    Object.assign(app.style, { width: `${rect.width}px`, height: `${rect.height}px`, left: `${rect.left}px`, top: `${rect.top}px` });
+    this.drag = { app, placeholder, offsetX: event.clientX - rect.left, offsetY: event.clientY - rect.top };
+  },
+  finishDrag() {
+    if (!this.drag) return;
+    const { app, placeholder } = this.drag;
+    placeholder.replaceWith(app);
+    app.classList.remove('dragging');
+    ['width', 'height', 'left', 'top'].forEach(prop => app.style.removeProperty(prop));
+    this.drag = null;
+    Store.data.homeAppOrder = [...this.grid.querySelectorAll('.app-icon')].map(item => item.dataset.themeApp);
+    Store.save();
+  }
+};
+
 const MobileViewport = {
   raf: 0,
   sync() {
@@ -9095,6 +9237,7 @@ const MobileViewport = {
 document.addEventListener('DOMContentLoaded', async () => {
   MobileViewport.init();
   Store.load();
+  HomeLayout.init();
   await PresetManager.ensureBuiltIn();
   Settings.refresh();
   Theme.init();

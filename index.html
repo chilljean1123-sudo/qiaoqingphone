@@ -7,7 +7,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#EAF2FF">
 <link rel="manifest" href="./manifest.webmanifest">
-<link rel="apple-touch-icon" href="./icon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
 <title>AI 小手机</title>
 <style>
   /* ============ 基础 ============ */
@@ -4793,8 +4794,8 @@ const Push = {
       const body=String(preview||'发来一条新消息').replace(/\s+/g,' ').slice(0,120);
       await registration.showNotification(title,{
         body,
-        icon:ch.avatar||'./icon.svg',
-        badge:'./icon.svg',
+        icon:ch.avatar||'./icons/icon-192.png',
+        badge:'./icons/icon-192.png',
         tag:'local-chat-'+charId,
         renotify:true,
         data:{url:'./?chat='+encodeURIComponent(charId),charId}

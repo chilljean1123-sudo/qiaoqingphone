@@ -1,4 +1,4 @@
-const CACHE_NAME = 'qiaoqingphone-shell-v3';
+const CACHE_NAME = 'qiaoqingphone-shell-v4';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './presets/default-builtin.json'];
 
 self.addEventListener('install', event => {

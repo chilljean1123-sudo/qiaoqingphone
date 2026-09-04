@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#F2F2F7">
+<meta name="theme-color" content="#EAF2FF">
 <link rel="manifest" href="./manifest.webmanifest">
-<link rel="apple-touch-icon" href="./icon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
 <title>AI 小手机</title>
 <style>
   /* ============ 基础 ============ */
@@ -2764,6 +2765,229 @@
   .danger-identity span { display:block; margin-top:4px; color:#828579; font-size:9px; line-height:1.4; }
   .danger-finish { width:100%; height:46px; border:0; border-radius:14px; color:#201b13; background:#c7af78; font-size:12px; font-weight:700; }
   .danger-loading { padding:14px; color:#9d947f; text-align:center; font-size:10px; }
+
+  /* ============ iOS 26 Liquid Glass visual system ============ */
+  :root {
+    --ios-blue: #087bff;
+    --ios-indigo: #6558f5;
+    --ios-pink: #ff7bb0;
+    --ios-ink: #172033;
+    --ios-muted: rgba(38, 47, 67, .62);
+    --glass: rgba(255, 255, 255, .48);
+    --glass-strong: rgba(255, 255, 255, .68);
+    --glass-dark: rgba(25, 31, 45, .56);
+    --glass-line: rgba(255, 255, 255, .68);
+    --glass-shadow: 0 18px 50px rgba(53, 73, 112, .16), inset 0 1px 0 rgba(255,255,255,.78);
+    --glass-blur: blur(28px) saturate(185%);
+  }
+
+  html, body {
+    background:
+      radial-gradient(circle at 14% 14%, rgba(126, 186, 255, .78), transparent 30%),
+      radial-gradient(circle at 88% 24%, rgba(255, 175, 210, .58), transparent 32%),
+      linear-gradient(145deg, #d8e8ff 0%, #f5eafa 48%, #e8f5ff 100%);
+  }
+  body::before,
+  body::after {
+    content: "";
+    position: fixed;
+    width: 38vmax;
+    height: 38vmax;
+    border-radius: 50%;
+    filter: blur(34px);
+    opacity: .5;
+    pointer-events: none;
+    animation: glassDrift 15s ease-in-out infinite alternate;
+  }
+  body::before { left: -13vmax; bottom: -18vmax; background: #7ac7ff; }
+  body::after { right: -14vmax; top: -18vmax; background: #ff9bc4; animation-delay: -7s; }
+  @keyframes glassDrift { to { transform: translate3d(5vmax, -3vmax, 0) scale(1.12); } }
+
+  #phone {
+    isolation: isolate;
+    color: var(--ios-ink);
+    background:
+      radial-gradient(circle at 16% 9%, rgba(116, 184, 255, .72), transparent 29%),
+      radial-gradient(circle at 91% 18%, rgba(255, 169, 208, .54), transparent 32%),
+      radial-gradient(circle at 52% 94%, rgba(138, 221, 255, .5), transparent 38%),
+      linear-gradient(165deg, #edf5ff 0%, #f8eff8 50%, #eaf7ff 100%);
+  }
+  #phone::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: .3;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.06'/%3E%3C/svg%3E");
+    mix-blend-mode: soft-light;
+  }
+  @media (min-width: 500px) {
+    #phone {
+      border: 1px solid rgba(255,255,255,.82);
+      box-shadow: 0 32px 90px rgba(41, 56, 87, .3), inset 0 1px 0 #fff, 0 0 0 7px rgba(20,24,32,.9);
+    }
+  }
+
+  .screen { background: rgba(244, 248, 255, .34); }
+  .home-screen {
+    padding-top: max(48px, calc(34px + env(safe-area-inset-top, 0px)));
+    background:
+      radial-gradient(circle at 8% 7%, rgba(70, 151, 255, .56), transparent 30%),
+      radial-gradient(circle at 92% 22%, rgba(255, 118, 180, .45), transparent 32%),
+      radial-gradient(circle at 48% 94%, rgba(95, 213, 255, .44), transparent 38%),
+      linear-gradient(158deg, #e7f3ff 0%, #f9ecf5 51%, #e7f8ff 100%);
+  }
+  .home-screen::before {
+    content: "";
+    position: absolute;
+    width: 235px;
+    height: 235px;
+    top: 29%;
+    right: -120px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.28);
+    filter: blur(2px);
+    box-shadow: -230px 260px 70px rgba(119, 134, 255, .2);
+    pointer-events: none;
+  }
+  .home-header { position: relative; z-index: 1; color: var(--ios-ink); text-align: left; }
+  .home-header .time { color: var(--ios-ink); font-size: 64px; font-weight: 650; letter-spacing: -4px; text-shadow: 0 1px 0 rgba(255,255,255,.55); }
+  .home-header .date { color: var(--ios-muted); font-weight: 600; letter-spacing: .01em; }
+
+  .desktop-widget,
+  .list,
+  .modal-box,
+  .sheet-content {
+    border: 1px solid var(--glass-line);
+    background: linear-gradient(145deg, rgba(255,255,255,.66), rgba(255,255,255,.28));
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+  }
+  .desktop-widget { position: relative; z-index: 1; min-height: 82px; border-radius: 27px; }
+  .desktop-widget::after,
+  .app-icon-box::after,
+  .nav-bar::after,
+  .tab-bar::after,
+  .sheet-content::after {
+    content: "";
+    position: absolute;
+    inset: 1px 12% auto;
+    height: 1px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.95), transparent);
+    pointer-events: none;
+  }
+  .desktop-widget-avatar { background: rgba(255,255,255,.48); box-shadow: inset 0 1px 0 #fff, 0 8px 20px rgba(39,60,95,.12); }
+  .desktop-widget-edit { color: var(--ios-blue); background: rgba(255,255,255,.5); }
+
+  .app-grid { position: relative; z-index: 1; gap: 24px 14px; }
+  .app-icon { transition: transform .24s cubic-bezier(.2,.8,.2,1), filter .24s; }
+  .app-icon:active { transform: scale(.88); filter: brightness(1.06); }
+  .app-icon-box {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.72);
+    border-radius: 19px;
+    color: var(--ios-ink);
+    background: linear-gradient(145deg, rgba(255,255,255,.76), rgba(255,255,255,.28));
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    box-shadow: 0 14px 28px rgba(55,75,112,.16), inset 0 1px 0 #fff, inset 0 -1px 0 rgba(255,255,255,.3);
+  }
+  .app-icon:nth-child(3n+1) .app-icon-box { background: linear-gradient(145deg, rgba(255,255,255,.8), rgba(147,204,255,.32)); }
+  .app-icon:nth-child(3n+2) .app-icon-box { background: linear-gradient(145deg, rgba(255,255,255,.8), rgba(212,180,255,.28)); }
+  .app-icon:nth-child(3n) .app-icon-box { background: linear-gradient(145deg, rgba(255,255,255,.8), rgba(255,177,211,.28)); }
+  .app-icon svg { stroke: #1c2942; stroke-width: 1.65; }
+  .app-label { color: #172033; font-weight: 620; text-shadow: 0 1px 8px rgba(255,255,255,.95); }
+
+  .nav-bar {
+    min-height: 54px;
+    margin: max(8px, env(safe-area-inset-top, 0px)) 10px 6px;
+    padding: 10px 12px;
+    border: 1px solid rgba(255,255,255,.72);
+    border-radius: 24px;
+    background: linear-gradient(145deg, rgba(255,255,255,.7), rgba(255,255,255,.34));
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    box-shadow: 0 12px 34px rgba(49,68,103,.15), inset 0 1px 0 #fff;
+  }
+  .nav-title { color: var(--ios-ink); font-weight: 720; letter-spacing: -.02em; }
+  .nav-back, .nav-action, .nav-left, .nav-right { color: var(--ios-blue); font-weight: 620; }
+  .nav-back svg, .nav-action svg { stroke: currentColor; }
+
+  .tab-bar {
+    position: relative;
+    z-index: 30;
+    margin: 6px 10px max(10px, env(safe-area-inset-bottom, 0px));
+    padding: 7px 5px;
+    border: 1px solid rgba(255,255,255,.74);
+    border-radius: 27px;
+    background: linear-gradient(145deg, rgba(255,255,255,.72), rgba(255,255,255,.32));
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    box-shadow: 0 16px 38px rgba(49,68,103,.18), inset 0 1px 0 #fff;
+  }
+  .tab-item { min-height: 45px; justify-content: center; border-radius: 21px; transition: background .22s, color .22s, transform .22s; }
+  .tab-item.active { color: var(--ios-blue); background: rgba(255,255,255,.56); box-shadow: inset 0 1px 0 rgba(255,255,255,.86), 0 5px 15px rgba(60,80,120,.1); }
+  .tab-item:active { transform: scale(.93); }
+
+  .content { scrollbar-width: none; }
+  .content::-webkit-scrollbar { display: none; }
+  .section { margin: 16px 0; }
+  .section-title { color: var(--ios-muted); padding-left: 27px; font-weight: 650; letter-spacing: .04em; }
+  .list { margin: 0 12px; border-radius: 23px; }
+  .list-item { min-height: 52px; background: transparent; }
+  .list-item:active { background: rgba(255,255,255,.4); }
+  .list-item + .list-item::before { background: rgba(74,89,120,.12); }
+  .list-item-label { color: var(--ios-ink); font-weight: 520; }
+  .list-item-sub, .list-item-value { color: var(--ios-muted); }
+  .chevron, .chevron svg { color: rgba(43,55,82,.35); stroke: currentColor; }
+
+  button, .button, [role="button"] { -webkit-tap-highlight-color: transparent; }
+  button { transition: transform .2s cubic-bezier(.2,.8,.2,1), filter .2s, box-shadow .2s; }
+  button:active { transform: scale(.97); filter: brightness(.98); }
+  input, textarea, select {
+    border-color: rgba(255,255,255,.66) !important;
+    background: rgba(255,255,255,.46) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    backdrop-filter: blur(16px) saturate(160%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.78);
+  }
+  input:focus, textarea:focus, select:focus { border-color: rgba(8,123,255,.48) !important; box-shadow: 0 0 0 4px rgba(8,123,255,.1), inset 0 1px 0 #fff; }
+
+  .modal { background: rgba(34, 43, 62, .24); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+  .modal-box { border-radius: 25px; }
+  .modal-actions { border-top-color: rgba(51,64,92,.12); }
+  .modal-btn { color: var(--ios-blue); font-weight: 620; }
+  .sheet { background: rgba(30,39,58,.18); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+  .sheet-content { position: relative; overflow: hidden; border-radius: 30px 30px 0 0; }
+  .sheet-handle { background: rgba(45,56,80,.24); }
+  .toast { border: 1px solid rgba(255,255,255,.35); border-radius: 16px; background: rgba(24,30,43,.68); -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); box-shadow: 0 14px 34px rgba(22,30,47,.24), inset 0 1px 0 rgba(255,255,255,.24); }
+
+  #messaging, #messaging .content, #tab-chats { background: transparent; }
+  #messaging.messaging-chats-view #messagingNav { background: linear-gradient(145deg, rgba(255,255,255,.72), rgba(255,255,255,.3)); }
+  .ios-messages-title { color: var(--ios-ink); }
+  .ios-search { border: 1px solid rgba(255,255,255,.65); background: rgba(255,255,255,.42); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); box-shadow: inset 0 1px 0 rgba(255,255,255,.7); }
+  .avatar { border: 1px solid rgba(255,255,255,.76); background: linear-gradient(145deg, rgba(255,255,255,.78), rgba(152,201,255,.38)); box-shadow: 0 7px 18px rgba(45,65,104,.13), inset 0 1px 0 #fff; }
+
+  @media (prefers-color-scheme: dark) {
+    :root { --ios-ink: #f5f7ff; --ios-muted: rgba(225,231,245,.62); --glass-line: rgba(255,255,255,.18); --glass-shadow: 0 18px 50px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.16); }
+    html, body { background: radial-gradient(circle at 15% 10%, #234f85, transparent 34%), radial-gradient(circle at 90% 16%, #673754, transparent 30%), #10141d; }
+    #phone, .home-screen { background: radial-gradient(circle at 9% 8%, rgba(27,105,195,.58), transparent 31%), radial-gradient(circle at 91% 18%, rgba(174,61,116,.44), transparent 32%), linear-gradient(160deg,#172334,#261d2b 55%,#142a35); }
+    .screen { background: rgba(15,21,32,.3); }
+    .desktop-widget, .list, .modal-box, .sheet-content, .nav-bar, .tab-bar { background: linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.06)); }
+    .app-icon-box { background: linear-gradient(145deg, rgba(255,255,255,.22), rgba(255,255,255,.07)) !important; }
+    .app-icon svg, .app-label, .home-header .time, .nav-title, .list-item-label, .ios-messages-title { color: var(--ios-ink); stroke: currentColor; }
+    .app-label { text-shadow: 0 1px 8px rgba(0,0,0,.5); }
+    .list-item { background: transparent; }
+    input, textarea, select { color: var(--ios-ink); background: rgba(255,255,255,.1) !important; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
 </style>
 </head>
 <body>
@@ -4570,8 +4794,8 @@ const Push = {
       const body=String(preview||'发来一条新消息').replace(/\s+/g,' ').slice(0,120);
       await registration.showNotification(title,{
         body,
-        icon:ch.avatar||'./icon.svg',
-        badge:'./icon.svg',
+        icon:ch.avatar||'./icons/icon-192.png',
+        badge:'./icons/icon-192.png',
         tag:'local-chat-'+charId,
         renotify:true,
         data:{url:'./?chat='+encodeURIComponent(charId),charId}

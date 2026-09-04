@@ -1,5 +1,5 @@
 const CACHE_NAME = 'qiaoqingphone-shell-v1';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
+const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(SHELL)).catch(() => {}));
@@ -32,8 +32,8 @@ self.addEventListener('push', event => {
   const title = data.title || 'AI 小手机';
   const options = {
     body: data.body || '收到一条新消息',
-    icon: data.icon || './icon.svg',
-    badge: data.badge || './icon.svg',
+    icon: data.icon || './icons/icon-192.png',
+    badge: data.badge || './icons/icon-192.png',
     tag: data.messageId || ('phone-' + (data.charId || 'message')),
     renotify: true,
     data: { url: data.url || './', charId: data.charId || '' }

@@ -2766,6 +2766,17 @@
   .danger-finish { width:100%; height:46px; border:0; border-radius:14px; color:#201b13; background:#c7af78; font-size:12px; font-weight:700; }
   .danger-loading { padding:14px; color:#9d947f; text-align:center; font-size:10px; }
 
+  /* ============ 预设管理 ============ */
+  .preset-body { padding-bottom:38px; }
+  .preset-import-card { margin:12px; padding:18px; border:1px solid rgba(255,255,255,.7); border-radius:24px; background:linear-gradient(145deg,rgba(255,255,255,.68),rgba(255,255,255,.3)); box-shadow:var(--glass-shadow); -webkit-backdrop-filter:var(--glass-blur); backdrop-filter:var(--glass-blur); }
+  .preset-import-kicker { color:var(--ios-blue); font-size:10px; font-weight:750; letter-spacing:.12em; }
+  .preset-import-title { margin-top:7px; font-size:20px; font-weight:760; letter-spacing:-.02em; }
+  .preset-import-copy { margin-top:6px; color:var(--ios-muted); font-size:12px; line-height:1.6; }
+  .preset-import-btn { width:100%; height:44px; margin-top:15px; border:0; border-radius:16px; color:#fff; background:linear-gradient(135deg,var(--ios-blue),var(--ios-indigo)); font-size:13px; font-weight:700; box-shadow:0 9px 20px rgba(46,112,244,.25); }
+  .preset-meta { display:flex; align-items:center; gap:7px; margin-top:4px; color:var(--ios-muted); font-size:11px; }
+  .preset-dot { width:4px; height:4px; border-radius:50%; background:currentColor; opacity:.45; }
+  .preset-remove { margin-left:8px; border:0; color:#ff3b30; background:transparent; font-size:12px; }
+
   /* ============ iOS 26 Liquid Glass visual system ============ */
   :root {
     --ios-blue: #087bff;
@@ -3213,6 +3224,17 @@
             <span class="list-item-label">生图 API</span>
             <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
           </div>
+          <div class="list-item" onclick="nav.go('presetSettings');PresetManager.render()">
+            <div class="item-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H18a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6.5A2.5 2.5 0 0 1 4 18.5z"/>
+                <path d="M8 7h8M8 11h8M8 15h5"/>
+              </svg>
+            </div>
+            <span class="list-item-label">预设</span>
+            <span class="list-item-value" id="settingsPresetValue">默认预设（内置）</span>
+            <span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
         </div>
       </div>
 
@@ -3282,6 +3304,27 @@
       <div class="section">
         <div class="list-hint" style="text-align:center">AI 小手机 · v1.0</div>
       </div>
+    </div>
+  </div>
+
+  <!-- ========== 预设管理 ========== -->
+  <div class="screen hidden" id="presetSettings">
+    <div class="nav-bar">
+      <div class="nav-back" onclick="nav.back()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg><span>设置</span></div>
+      <div class="nav-title">预设</div>
+      <div class="nav-action" onclick="document.getElementById('presetFileInput').click()" aria-label="导入 JSON">
+        <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>
+      </div>
+    </div>
+    <div class="content preset-body">
+      <div class="preset-import-card">
+        <div class="preset-import-kicker">JSON PRESET</div>
+        <div class="preset-import-title">导入聊天预设</div>
+        <div class="preset-import-copy">选择 JSON 文件后会保存到当前设备。导入不会覆盖内置默认预设。</div>
+        <button class="preset-import-btn" onclick="document.getElementById('presetFileInput').click()">选择 JSON 文件</button>
+        <input id="presetFileInput" type="file" accept="application/json,.json" hidden onchange="PresetManager.importFile(event)">
+      </div>
+      <div id="presetListContent"></div>
     </div>
   </div>
 
@@ -4252,6 +4295,8 @@ const Store = {
     for (const k in d) if (!(k in this.data)) this.data[k] = d[k];
     this.data.chatReadAt = { ...d.chatReadAt, ...(this.data.chatReadAt || {}) };
     this.data.chatSettings = { ...d.chatSettings, ...(this.data.chatSettings || {}) };
+    if (!Array.isArray(this.data.presets)) this.data.presets = [];
+    if (!this.data.activePresetId) this.data.activePresetId = d.activePresetId;
     this.data.desktopWidget = { ...d.desktopWidget, ...(this.data.desktopWidget || {}) };
     if (!Array.isArray(this.data.friendRequests)) this.data.friendRequests = [];
     if (!Array.isArray(this.data.favoriteMessages)) this.data.favoriteMessages = [];
@@ -4308,6 +4353,8 @@ const Store = {
   defaults() {
     return {
       apis: [],
+      presets: [],
+      activePresetId: 'builtin_default_v1',
       desktopWidget: { photo: '', text: '把今天过成自己喜欢的样子。' },
       activeApiId: null,
       characters: [],
@@ -5790,6 +5837,98 @@ const MoodDiary = {
 /* ============================================================
    设置 / API
 ============================================================ */
+const PresetManager = {
+  BUILTIN_URL: './presets/default-builtin.json',
+  validate(data) {
+    if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('预设必须是 JSON 对象');
+    if (!Array.isArray(data.prompts)) throw new Error('缺少 prompts 数组');
+    if (!data.name || typeof data.name !== 'string') throw new Error('缺少预设名称');
+    return data;
+  },
+  async ensureBuiltIn() {
+    try {
+      const response = await fetch(this.BUILTIN_URL, { cache:'no-cache' });
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const incoming = this.validate(await response.json());
+      const preset = { ...incoming, id:'builtin_default_v1', name:'默认预设（内置）', builtIn:true };
+      const index = Store.data.presets.findIndex(item => item.id === preset.id);
+      const current = index >= 0 ? Store.data.presets[index] : null;
+      if (!current || Number(current.builtInVersion || 0) < Number(preset.builtInVersion || 0)) {
+        if (index >= 0) Store.data.presets[index] = preset; else Store.data.presets.unshift(preset);
+        Store.save();
+      }
+    } catch (error) {
+      console.warn('内置预设加载失败', error);
+    }
+  },
+  current() {
+    return Store.data.presets.find(item => item.id === Store.data.activePresetId) || Store.data.presets[0] || null;
+  },
+  render() {
+    const box = document.getElementById('presetListContent');
+    if (!box) return;
+    const items = Store.data.presets || [];
+    if (!items.length) {
+      box.innerHTML = '<div class="empty" style="padding-top:45px"><div class="empty-title">还没有预设</div><div class="empty-sub">点击上方按钮导入 JSON 文件</div></div>';
+      return;
+    }
+    box.innerHTML = '<div class="section"><div class="section-title">我的预设</div><div class="list">' + items.map(item => {
+      const active = item.id === Store.data.activePresetId;
+      const count = Array.isArray(item.prompts) ? item.prompts.length : 0;
+      return '<div class="list-item" onclick="PresetManager.select(\'' + item.id + '\')"><div class="list-item-column"><div class="list-item-label">' + escapeHtml(item.name || '未命名预设') + (active ? ' <span class="badge blue">当前</span>' : '') + (item.builtIn ? ' <span class="badge">内置</span>' : '') + '</div><div class="preset-meta"><span>' + count + ' 条提示词</span><span class="preset-dot"></span><span>温度 ' + Number(item.temperature ?? .8) + '</span></div></div>' + (item.builtIn ? '' : '<button class="preset-remove" onclick="event.stopPropagation();PresetManager.remove(\'' + item.id + '\')">删除</button>') + '<span class="chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span></div>';
+    }).join('') + '</div><div class="section-hint">点击预设即可设为当前使用。内置预设会随应用更新。</div></div>';
+  },
+  async importFile(event) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) return UI.alert('无法导入', 'JSON 文件不能超过 5 MB。');
+    try {
+      const data = this.validate(JSON.parse(await file.text()));
+      const preset = JSON.parse(JSON.stringify(data));
+      preset.id = 'preset_' + Store.uid();
+      preset.builtIn = false;
+      preset.importedAt = Date.now();
+      Store.data.presets.push(preset);
+      Store.data.activePresetId = preset.id;
+      Store.save();
+      this.render();
+      Settings.refresh();
+      UI.toast('预设已导入并启用');
+    } catch (error) {
+      UI.alert('导入失败', String(error.message || error));
+    }
+  },
+  select(id) {
+    if (!Store.data.presets.some(item => item.id === id)) return;
+    Store.data.activePresetId = id;
+    Store.save();
+    this.render();
+    Settings.refresh();
+    UI.toast('已切换预设');
+  },
+  remove(id) {
+    const item = Store.data.presets.find(preset => preset.id === id);
+    if (!item || item.builtIn) return;
+    UI.confirm('删除预设', '将从当前设备移除“' + item.name + '”。', () => {
+      Store.data.presets = Store.data.presets.filter(preset => preset.id !== id);
+      if (Store.data.activePresetId === id) Store.data.activePresetId = 'builtin_default_v1';
+      Store.save();
+      this.render();
+      Settings.refresh();
+    }, { danger:true, okText:'删除' });
+  },
+  requestOptions() {
+    const preset = this.current() || {};
+    const options = { temperature:Number(preset.temperature ?? .8) };
+    ['top_p','frequency_penalty','presence_penalty'].forEach(key => {
+      if (Number.isFinite(Number(preset[key]))) options[key] = Number(preset[key]);
+    });
+    if (Number(preset.openai_max_tokens) > 0) options.max_tokens = Number(preset.openai_max_tokens);
+    return options;
+  }
+};
+
 const Settings = {
   refresh() {
     // 更新设置主页的 API 摘要
@@ -5798,6 +5937,8 @@ const Settings = {
       const active = API.getActive();
       apiVal.textContent = active ? active.name : (Store.data.apis.length ? '未选择' : '未配置');
     }
+    const presetVal = document.getElementById('settingsPresetValue');
+    if (presetVal) presetVal.textContent = PresetManager.current()?.name || '未配置';
     Push.refreshStatus();
   },
   editUserName() {
@@ -5993,11 +6134,7 @@ const API = {
     const res = await fetch(api.url + '/chat/completions', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + api.key, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: api.model,
-        messages,
-        temperature: 0.8
-      }),
+      body: JSON.stringify({ model: api.model, messages, ...PresetManager.requestOptions() }),
       signal: opts?.signal
     });
     if (!res.ok) {
@@ -8860,8 +8997,9 @@ function updateHomeTime() {
   document.getElementById('homeDate').textContent = `${days[d.getDay()]}  ${d.getMonth() + 1}月${d.getDate()}日`;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   Store.load();
+  await PresetManager.ensureBuiltIn();
   Settings.refresh();
   Theme.init();
   Push.init();
